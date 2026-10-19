@@ -33,7 +33,8 @@ main>*{flex-shrink:0}
 
 /* ---------- HUD ---------- */
 .hud{display:flex;flex-direction:column;gap:7px;padding-block:8px 8px;border-bottom:2px solid var(--ink)}
-.tiles{display:grid;grid-template-columns:1.1fr 1.35fr .85fr .85fr;gap:6px}
+.tiles{display:grid;grid-template-columns:1.1fr 1.35fr .85fr .85fr .62fr;gap:6px}
+.menubtn .val{justify-content:center}
 .hbtn{text-align:left;cursor:pointer;border-color:rgba(24,40,58,.35);box-shadow:0 2px 0 rgba(24,40,58,.35)}
 .hbtn:active{transform:translateY(2px);box-shadow:none}
 .mapic{width:16px;height:16px;flex:0 0 auto}
@@ -285,6 +286,17 @@ main.ts{position:relative;z-index:1;justify-content:center;align-items:center;ga
 .ts-menu .btn:active{transform:scale(.96) rotate(calc(var(--tilt) * -.5));box-shadow:0 1px 0 var(--ink);transition-duration:.08s}
 .ts-menu .btn:focus-visible{transform:scale(1.05) rotate(var(--tilt))}
 @media (prefers-reduced-motion:reduce){.ts-menu .btn,.ts-menu .btn:hover,.ts-menu .btn:active{transform:none;transition:none}}
+/* pause menu */
+.panel.pause{z-index:40;align-items:center;background:rgba(24,40,58,.62)}
+.pm-in{max-width:420px;height:auto;max-height:100%;display:flex;flex-direction:column;gap:10px;position:relative;padding-top:22px}
+.panel.pause .panel-in>.pclose{position:sticky;align-self:flex-end;float:none}
+.pm-in .rules{margin-top:4px}
+.pm-btns{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.pm-btns .btn{font-size:19px;padding:11px 16px}
+.btn.danger{color:var(--red);border-color:rgba(201,63,49,.55)}
+.btn.primary.danger{background:var(--red);color:#fff;border-color:var(--ink)}
+.pm-sign{position:relative;align-self:center;margin:6px 0 4px;transform:rotate(-3deg);background:var(--paper);border:2.5px solid var(--ink);padding:2px 16px;font-family:var(--f-display);font-weight:800;font-size:20px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 3px 0 var(--ink)}
+.pm-sign::before,.pm-sign::after{content:"";position:absolute;top:-12px;width:2px;height:12px;background:var(--ink)}.pm-sign::before{left:16px}.pm-sign::after{right:16px}
 .ts-sound{position:fixed;z-index:3;top:max(14px,env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));width:44px;height:44px;border-radius:50%;
   display:grid;place-items:center;background:rgba(24,40,58,.55);border:2px solid rgba(242,229,200,.6);color:var(--paper);padding:0}
 .ts-sound svg{width:22px;height:22px}
@@ -375,7 +387,7 @@ main.ts{position:relative;z-index:1;justify-content:center;align-items:center;ga
 .ov-box small{color:var(--muted);text-align:center;font-family:var(--f-display);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 @keyframes thump{from{transform:rotate(-5deg) scale(2.2);opacity:0}to{transform:rotate(-5deg) scale(1);opacity:1}}
 @media (prefers-reduced-motion:reduce){.ov-stamp,.rows li.fresh,.rows li.fresh .mini-stamp,.rows li.fresh .box{animation:none}.card,.card.armed,#peek{transition:none}}
-@media (max-width:360px){.tiles{grid-template-columns:1fr 1.3fr .8fr .9fr}.tile .val{font-size:17px}.title{font-size:48px}}
+@media (max-width:360px){.tiles{grid-template-columns:1fr 1.3fr .8fr .9fr .6fr}.tile .val{font-size:17px}.title{font-size:48px}}
 
 /* ================= landscape / desktop / handheld (Steam Deck-class 1280×800) =================
    Three columns: the office on the left, the hand in the middle, the checklist on the right.
@@ -386,18 +398,19 @@ main.ts{position:relative;z-index:1;justify-content:center;align-items:center;ga
   #app{max-width:1600px;--cw:clamp(360px,calc(var(--lvw,12.8px)*40),600px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
   .hud{padding-block:8px}
   .tiles{width:min(820px,100%);margin:0 auto}
-  main.withdock{display:grid;grid-template-columns:minmax(220px,1fr) var(--cw) minmax(270px,1fr);grid-template-rows:auto minmax(0,1fr);
-    grid-template-areas:"stage log check" "stage mid check";gap:12px 18px;overflow:hidden;padding:14px 0 14px;scroll-padding-bottom:0}
-  main.withdock>.stage{grid-area:stage;align-self:start}
+  /* Office and checklist side by side, centred, above the hand; the log line runs under both. */
+  main.withdock{display:grid;grid-template-columns:minmax(320px,500px) minmax(340px,480px);justify-content:center;grid-template-rows:minmax(0,1fr) auto;
+    grid-template-areas:"stage check" "log log";gap:10px 18px;overflow:hidden;padding:14px 0 calc(var(--fanh,306px) + 4px);scroll-padding-bottom:0}
+  main.withdock>.stage{grid-area:stage;align-self:stretch;min-height:0}
   main.withdock>.check{grid-area:check;align-self:start;max-height:100%;overflow-y:auto;margin-right:6px}
-  main.withdock>.log{grid-area:log;align-self:start;text-align:center;font-size:14px;background:var(--paper-2);border:1.5px solid var(--line);border-radius:8px;padding:8px 12px}
-  main.withdock>.log:empty{display:none}
-  .stage .bg{height:clamp(220px,calc(var(--lvh,8px)*42),380px)}
+  main.withdock>.log{grid-area:log;align-self:start;justify-self:center;max-width:720px;text-align:center;font-size:14px;background:var(--paper-2);border:1.5px solid var(--line);border-radius:8px;padding:6px 12px;min-height:0}
+  main.withdock>.log:empty{visibility:hidden}
+  .stage .bg{position:absolute;inset:0;height:100%}
   .stage{--pw:clamp(84px,calc(var(--lvw,12.8px)*8),124px)}
   .bubble{top:54px;font-size:14px}
-  .portrait{width:clamp(84px,calc(var(--lvw,12.8px)*8),124px);height:clamp(150px,calc(var(--lvh,8px)*30),236px)}
+  .portrait{width:clamp(84px,calc(var(--lvw,12.8px)*8),124px);height:min(calc(100% - 54px),236px)}
   .intent{left:calc(clamp(84px,calc(var(--lvw,12.8px)*8),124px) + 16px)}
-  .dock{left:calc(50% - var(--cw)/2);right:calc(50% - var(--cw)/2);background:none;padding-left:0;padding-right:0;padding-top:0}
+  .dock{left:calc(50% - var(--cw)/2);right:calc(50% - var(--cw)/2);z-index:6;background:none;padding-left:0;padding-right:0;padding-top:0}
   .dock .banner{box-shadow:var(--shadow)}
   .fanwrap{margin:0}
   main:not(.withdock){align-items:center}
@@ -405,6 +418,12 @@ main.ts{position:relative;z-index:1;justify-content:center;align-items:center;ga
   main:not(.withdock)>.sheet{width:min(860px,100%)}
   .route{grid-template-columns:repeat(5,1fr)}
   .check-head{flex-wrap:wrap;row-gap:2px}
+}
+/* Short landscape windows (below the 690 px design height): shrink the hand a little to give the office and checklist room. */
+@media (orientation:landscape) and (min-width:900px) and (min-height:540px) and (max-height:689px){
+  .fanwrap{transform:scale(.84);transform-origin:50% 100%}
+  main.withdock{padding-bottom:calc(var(--fanh,306px)*.84 + 4px)}
+  .bubble{top:46px;font-size:13px}
 }
 /* Phones turned sideways are too short for the hand: ask to rotate. */
 @media (orientation:landscape) and (max-height:500px) and (pointer:coarse){
@@ -583,7 +602,7 @@ function accepts(r,c){if(isFeeRow(r))return c.kind==='doc'&&c.doc===DOCS[r.doc].
 function keeps(c,r){return c.form!=='original'||!!DOCS[c.doc].single||r.form==='alt'}
 
 function newRun(){
-  S={v:9,keeping:null,screen:'intro',patience:80,maxP:80,relics:[],cards:{},deck:[],uid:1,officeIdx:0,office:null,
+  S={v:9,keeping:null,paused:null,screen:'intro',patience:80,maxP:80,relics:[],cards:{},deck:[],uid:1,officeIdx:0,office:null,
      overlays:[],target:null,confirm:null,log:'',choices:null,result:null,pending:null,stats:{turns:0,detours:0,bribes:0,paid:0},carried:null};
   [mkDoc('id'),mkDoc('birth'),mkDoc('birth'),mkDoc('rental'),mkDoc('utility'),mkDoc('joboffer'),mkDoc('stamp_mun'),mkDoc('stamp_fed'),mkDoc('stamp_fed'),mkDoc('stamp_adm'),mkDoc('photo'),mkDoc('photo'),
    mkAct('wait'),mkAct('wait'),mkAct('breath'),mkAct('smile'),mkAct('photocopy'),mkAct('photocopy'),mkAct('notary'),mkAct('rulebook'),mkAct('envelope')
@@ -875,6 +894,7 @@ function status(){
       <div class="tile" style="color:var(--red)"><span class="lbl">Patience</span><span class="val" style="color:var(--ink)">${ICON.heart.replace('class="heart"','class="heart" style="color:#c93f31"')}${S.patience}/${S.maxP}</span><span class="pbar"><i style="width:${p}%"></i></span></div>
       <button class="tile hbtn" data-act="view" data-v="map" aria-label="Run map"><span class="lbl">Map</span><span class="val">${ICON.map}${S.officeIdx+1}/${OFFICES.length}</span></button>
       <button class="tile hbtn" data-act="view" data-v="deck" aria-label="Your cards"><span class="lbl">Cards</span><span class="val">${ICON.deck}${S.deck.length}</span></button>
+      <button class="tile hbtn menubtn" data-act="pause" aria-label="Menu: pause, rules, end run"><span class="lbl">Menu</span><span class="val"><svg viewBox="0 0 18 14" class="mapic" aria-hidden="true"><path d="M1 1.5h16M1 7h16M1 12.5h16" stroke="#18283a" stroke-width="2.4" stroke-linecap="round"/></svg></span></button>
     </div>
   </header>`;
 }
@@ -998,19 +1018,7 @@ function screen(){
       <nav class="ts-menu"><button class="btn" data-act="title">Back to the title</button></nav></main>`;
   case 'rules':return `${soundBtn(true)}<main><div class="sheet">
       <span class="kicker">How it works</span><h2>Rules</h2>
-      <p>You got the job. Your employer pays salaries only into a local bank account, and your first payday is soon. The bank wants your Employment Registration. The employment bureau wants a Tax Number. The tax office wants a Certificate of Residence. The police want a Citizenship Certificate. The registry wants your birth certificate. You have 80 patience.</p>
-      <div class="route">${OFFICES.map((x,i)=>`<figure><img src="${ART['ext_'+x.name]}" alt=""><figcaption>${i+1}. ${esc(x.short)}<small>${esc(x.goal)}</small></figcaption></figure>`).join('')}</div>
-      ${S.carried?`<div class="carry">Carried over from your last run: ${esc(docName(S.carried.doc,S.carried.form))}</div>`:''}
-      <ul class="rules">
-        <li>Your cards (your deck) are <b>documents</b> and <b>actions</b>. Each turn you draw back up to 5. At the end of every turn you choose up to 3 cards to keep; the rest are discarded. Keep none to redraw a fresh 5.</li>
-        <li>Handing in a <b>document</b> is free. <b>Actions</b> show their time cost in the dark circle. You get 3 time a turn.</li>
-        <li>Shady actions (dashed border) also cost <b>patience</b>, shown with a red heart. Patience is your health. At zero you give up.</li>
-        <li>Copies, stamps and photos are kept by the clerk. Originals come back, unless the line says "original or certified copy" and you hand over the original.</li>
-        <li>Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. You might already have it: strange papers turn up in your starting cards, as rewards, and in your aunt's drawer. If not, tap <b>Go get it</b> or bribe it.</li>
-        <li>Fees take a fee stamp. No stamp? Pay at the bank instead, but it costs the rest of your turn.</li>
-        <li><b>Controls.</b> Touch: tap a card to play, hold to look, slide up to play what you're looking at. Mouse: hover to look, click to play. Keys: 1–9 play a card, Space ends the turn, Esc cancels, M map, C cards.</li>
-        <li>When the run ends, keep one paper for the next run.</li>
-      </ul>
+      ${rulesBody()}
       <div class="btnrow"><button class="btn primary" data-act="start">Take a number</button><button class="btn quiet" data-act="title">Back</button></div></div></main>`;
   case 'office':return officeView();
   case 'errand':{const r=S.office.rows[S.pending],e=errandFor(r),d=cur();
@@ -1054,6 +1062,36 @@ function screen(){
       <button class="btn quiet" data-act="carry" data-uid="0">Start fresh, keep nothing</button></div></main>`;}
   }
 }
+function rulesBody(){return `      <p>You got the job. Your employer pays salaries only into a local bank account, and your first payday is soon. The bank wants your Employment Registration. The employment bureau wants a Tax Number. The tax office wants a Certificate of Residence. The police want a Citizenship Certificate. The registry wants your birth certificate. You have 80 patience.</p>
+      <div class="route">${OFFICES.map((x,i)=>`<figure><img src="${ART['ext_'+x.name]}" alt=""><figcaption>${i+1}. ${esc(x.short)}<small>${esc(x.goal)}</small></figcaption></figure>`).join('')}</div>
+      ${S.carried?`<div class="carry">Carried over from your last run: ${esc(docName(S.carried.doc,S.carried.form))}</div>`:''}
+      <ul class="rules">
+        <li>Your cards (your deck) are <b>documents</b> and <b>actions</b>. Each turn you draw back up to 5. At the end of every turn you choose up to 3 cards to keep; the rest are discarded. Keep none to redraw a fresh 5.</li>
+        <li>Handing in a <b>document</b> is free. <b>Actions</b> show their time cost in the dark circle. You get 3 time a turn.</li>
+        <li>Shady actions (dashed border) also cost <b>patience</b>, shown with a red heart. Patience is your health. At zero you give up.</li>
+        <li>Copies, stamps and photos are kept by the clerk. Originals come back, unless the line says "original or certified copy" and you hand over the original.</li>
+        <li>Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. You might already have it: strange papers turn up in your starting cards, as rewards, and in your aunt's drawer. If not, tap <b>Go get it</b> or bribe it.</li>
+        <li>Fees take a fee stamp. No stamp? Pay at the bank instead, but it costs the rest of your turn.</li>
+        <li><b>Controls.</b> Touch: tap a card to play, hold to look, slide up to play what you're looking at. Mouse: hover to look, click to play. Keys: 1–9 play a card, Space ends the turn, Esc cancels or pauses, P pause, M map, C cards. The ☰ Menu button pauses the game.</li>
+        <li>When the run ends, keep one paper for the next run.</li>
+      </ul>`}
+// ---------- pause menu (☰ in the top bar, or Esc / P) ----------
+// Pausing freezes the run: no input reaches the counter and the gossip waits. "End run" asks once, then drops the run and goes to the title.
+function pauseHTML(){
+  if(!S.paused)return '';
+  let body;
+  if(S.paused==='rules')body=`<button class="pclose" data-act="pauseMenu">Back</button><h2>Rules</h2>${rulesBody()}`;
+  else if(S.paused==='confirm')body=`<span class="kicker">End run</span><h2>Give up this run?</h2>
+    <p class="lead">You walk out of the ${esc(cur().full)}. Everything from this run is lost, and you don't get to keep a paper for the next one.</p>
+    <div class="pm-btns"><button class="btn primary danger" data-act="endRunYes">Yes, end the run</button><button class="btn" data-act="pauseMenu">Keep queuing</button></div>`;
+  else body=`<span class="kicker">Paused · ${esc(cur().full)}, office ${S.officeIdx+1} of ${OFFICES.length}</span><h2>Back in a minute</h2>
+    <p class="lead">The clerk puts up a little sign. Nothing happens until you come back.</p>
+    <div class="pm-btns"><button class="btn primary" data-act="resume">Resume</button>
+      <button class="btn" data-act="pauseRules">Rules</button>
+      <button class="btn" data-act="music">Menu music: ${musicOn?'on':'off'}</button>
+      <button class="btn quiet danger" data-act="endRun">End run</button></div>`;
+  return `<div class="panel pause" role="dialog" aria-modal="true" aria-label="Paused"><div class="panel-in pm-in">${S.paused==='menu'?'<span class="pm-sign" aria-hidden="true">Pauza</span>':''}${body}</div></div>`;
+}
 // ---------- side pages: run map and your cards ----------
 function groupCards(uids){const m=new Map();uids.map(C).forEach(c=>{const k=c.kind==='doc'?c.doc+'|'+c.form:'a|'+c.key;if(!m.has(k))m.set(k,{c,n:0});m.get(k).n++});
   return [...m.values()].sort((a,b)=>(a.c.kind===b.c.kind?0:a.c.kind==='doc'?-1:1))}
@@ -1086,7 +1124,7 @@ let lastScreen=null;
 function render(){
   const m=$app.querySelector('main'),lane=$app.querySelector('.lane');
   const keep=lastScreen===S.screen+'|'+S.officeIdx,SC=['main','main>.check'],tops=SC.map(q=>{const el=$app.querySelector(q);return el?el.scrollTop:0});
-  $app.innerHTML=(['intro','rules','closed'].includes(S.screen)?'':status())+screen()+panelHTML()+overlay();
+  $app.innerHTML=(['intro','rules','closed'].includes(S.screen)?'':status())+screen()+panelHTML()+overlay()+pauseHTML();
   if(keep)SC.forEach((q,i)=>{const el=$app.querySelector(q);if(el)el.scrollTop=tops[i]});
   lastScreen=S.screen+'|'+S.officeIdx;
   gossipTick();fitTitle();musicSync();
@@ -1137,7 +1175,7 @@ function drawBubble(anim){
 function gossipStep(){
   clearTimeout(GB.t);const o=S.office;
   if(!o||S.screen!=='office'||!o.gossip){GB.i=-1;return}
-  if(S.overlays.length||S.view){GB.t=setTimeout(gossipStep,600);return} // wait until announcements are closed
+  if(S.overlays.length||S.view||S.paused){GB.t=setTimeout(gossipStep,600);return} // wait until announcements are closed
   const old=$app.querySelector('.stage .bubble');
   const next=GB.i+1;
   if(old&&GB.i>=0){old.classList.remove('pop');old.classList.add('out');GB.i=-2;setTimeout(()=>{GB.i=next;showOrEnd()},230)}
@@ -1164,7 +1202,7 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[da
 // Big landscape screens: scale the whole layout up from a 1280×800 baseline (Steam Deck size) so it doesn't look lost.
 const LANDSCAPE='(orientation:landscape) and (min-width:900px) and (min-height:540px)';
 function fitScreen(){
-  const land=matchMedia(LANDSCAPE).matches,z=land?Math.max(1,Math.min(innerWidth/1280,innerHeight/800,1.6)):1,r=document.documentElement.style;
+  const land=matchMedia(LANDSCAPE).matches,z=land?Math.max(1,Math.min(innerWidth/1100,innerHeight/690,1.9)):1,r=document.documentElement.style;
   r.setProperty('--z',z);r.setProperty('--lvh',(innerHeight/z/100)+'px');r.setProperty('--lvw',(innerWidth/z/100)+'px');
   $app.style.zoom=z===1?'':String(z);
 }
@@ -1190,13 +1228,20 @@ function tapCard(uid){
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,uid=+b.dataset.uid;
-  if(S.overlays.length&&a!=='dismiss')return;
-  if(S.view&&a!=='view')return;
+  if(S.paused){if(!['resume','pauseMenu','pauseRules','music','endRun','endRunYes'].includes(a))return}
+  else{if(S.overlays.length&&a!=='dismiss')return;
+  if(S.view&&a!=='view')return;}
   switch(a){
     case 'dismiss':S.overlays.shift();break;
     case 'view':S.view=b.dataset.v||null;break;
     case 'start':enterOffice();break;
     case 'rules':S.screen='rules';break;
+    case 'pause':S.paused='menu';S.target=null;S.confirm=null;break;
+    case 'resume':S.paused=null;break;
+    case 'pauseMenu':S.paused='menu';break;
+    case 'pauseRules':S.paused='rules';break;
+    case 'endRun':S.paused='confirm';break;
+    case 'endRunYes':S.paused=null;newRun();break;
     case 'title':S.screen='intro';break;
     case 'music':musicOn=!musicOn;try{localStorage.setItem('ft1p.music',musicOn?'on':'off')}catch(_){}break;
     // Quit: a web page can only close itself if a script opened it, so fall back to a "closed" screen.
@@ -1282,7 +1327,7 @@ if(typeof document.createElement==='function'){
     ptr=e.pointerType||'mouse';
     if(ptr!=='mouse'||g||e.buttons)return;
     const over=e.target.closest&&e.target.closest('.lane.fan .card[data-uid]');
-    if(!over||S.overlays.length||S.view){if(hv)hoverOff();return}
+    if(!over||S.overlays.length||S.view||S.paused){if(hv)hoverOff();return}
     const el=cardAt(e.clientX,e.clientY,hv&&hv.isConnected?hv:null)||over;
     if(el===hv)return;
     if(hv&&hv.isConnected)hv.classList.remove('peek');
@@ -1335,8 +1380,11 @@ if(typeof document.createElement==='function'){
   document.addEventListener('keydown',e=>{
     if(!S||e.metaKey||e.ctrlKey||e.altKey)return;
     const k=e.key;
+    const inRun=!['intro','rules','closed','end'].includes(S.screen);
+    if(S.paused){if(k==='Escape'||k==='p'||k==='P'){e.preventDefault();S.paused=S.paused==='menu'?null:'menu';render()}return}
     if(S.overlays.length){if(k==='Enter'||k===' '||k==='Escape'){e.preventDefault();S.overlays.shift();render()}return}
-    if(k==='Escape'){if(S.view)S.view=null;else if(S.target||S.confirm){S.target=null;S.confirm=null}else if(S.keeping)S.keeping=null;else return;render();return}
+    if((k==='p'||k==='P')&&inRun){S.paused='menu';render();return}
+    if(k==='Escape'){if(S.view)S.view=null;else if(S.target||S.confirm){S.target=null;S.confirm=null}else if(S.keeping)S.keeping=null;else if(inRun)S.paused='menu';else return;render();return}
     if(k==='m'||k==='M'||k==='c'||k==='C'){const v=/m/i.test(k)?'map':'deck';if(['intro','rules','closed'].includes(S.screen))return;S.view=S.view===v?null:v;render();return}
     if(S.view||S.screen!=='office')return;
     if(k===' '||k==='e'||k==='E'){e.preventDefault();if(S.keeping)endTurn(S.keeping);else requestEndTurn();render();return}
