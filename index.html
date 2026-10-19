@@ -78,12 +78,21 @@ main>*{flex-shrink:0}
 .intent.blocked .act,.intent.blocked .eff{text-decoration:line-through;color:var(--muted)}
 .intent.blocked .k{color:var(--turquoise)}
 
-/* ---------- gossip ---------- */
-.gossip{position:relative;background:var(--paper-2);border:1.5px solid var(--line);border-radius:12px;padding:8px 12px 9px;margin-left:16px}
-.gossip::before{content:"";position:absolute;left:-9px;top:14px;border:8px solid transparent;border-right-color:var(--paper-2);border-left:0}
-.gossip .k{font-family:var(--f-display);font-weight:700;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.gossip p{margin:2px 0 0;font-size:13.5px;line-height:1.35}
-.gossip p b{font-family:var(--f-display);font-weight:800;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;margin-right:5px;color:var(--navy)}
+/* ---------- gossip: speech bubbles that pop up on the stage now and then ---------- */
+.bubble{position:absolute;z-index:3;top:44px;max-width:min(250px,calc(100% - 120px));background:#fff;border:2px solid var(--ink);border-radius:12px;padding:6px 10px 7px;
+  box-shadow:3px 3px 0 rgba(24,40,58,.35);font-size:13px;line-height:1.3;cursor:pointer;transform-origin:0 100%}
+.bubble b{display:block;font-family:var(--f-display);font-weight:800;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);line-height:1.1}
+.bubble.c{left:calc(var(--pw,84px) + 18px)}
+.bubble.c::before,.bubble.c::after{content:"";position:absolute;left:-12px;top:14px;border:7px solid transparent;border-right:12px solid var(--ink);border-left:0}
+.bubble.c::after{left:-8.5px;border-right-color:#fff}
+.bubble.k{right:10px;transform-origin:100% 100%;background:var(--paper-2)}
+.bubble.k::before,.bubble.k::after{content:"";position:absolute;right:-12px;top:14px;border:7px solid transparent;border-left:12px solid var(--ink);border-right:0}
+.bubble.k::after{right:-8.5px;border-left-color:var(--paper-2)}
+.bubble.pop{animation:bubpop .28s cubic-bezier(.2,1.6,.4,1)}
+.bubble.out{animation:bubout .22s ease-in forwards}
+@keyframes bubpop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes bubout{to{transform:scale(.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.bubble.pop,.bubble.out{animation:none}}
 
 /* ---------- checklist ---------- */
 .check{position:relative;background:var(--paper-2);border:1.5px solid rgba(24,40,58,.35);border-radius:6px;box-shadow:3px 3px 0 #e2d2ad,6px 6px 0 #d8c59b,var(--shadow);margin-right:6px}
@@ -246,8 +255,30 @@ button.piles{background:none;border:0;padding:4px 0;text-decoration:underline;te
 .title{margin:0;font-family:var(--f-display);font-weight:800;font-size:58px;line-height:.86;letter-spacing:-.01em;text-transform:uppercase}
 .title span{display:block}
 .title .t1{color:var(--ink)}.title .t2{color:var(--red)}.title .t3{color:var(--navy)}
-.sun{width:86px;height:86px;flex:0 0 auto;border-radius:50%;background:linear-gradient(var(--gold),var(--orange) 55%,var(--red));position:relative;overflow:hidden;margin-bottom:6px}
-.sun::after{content:"";position:absolute;inset:auto 0 0 0;height:42%;background:repeating-linear-gradient(var(--paper-2) 0 4px,transparent 4px 9px)}
+/* ---------- title screen: office backdrop in navy duotone, logo comped from document cards, stacked menu ---------- */
+.ts-bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--navy)}
+.ts-bg img{width:100%;height:100%;object-fit:cover;object-position:50% 45%;filter:grayscale(1) contrast(1.15) brightness(1.05);mix-blend-mode:multiply;opacity:.55;transform:scale(1.04)}
+.ts-bg::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,60,98,.15),rgba(21,60,98,.35) 45%,rgba(24,40,58,.92))}
+.ts-bg::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(242,229,200,.13) 1.2px,transparent 1.4px);background-size:5px 5px}
+main.ts{position:relative;z-index:1;justify-content:center;align-items:center;gap:0;padding:28px 0 calc(22px + env(safe-area-inset-bottom,0px));text-align:center;color:var(--paper)}
+.ts-logo{position:relative;display:flex;flex-direction:column;align-items:center;margin:auto 0 40px}
+.ts-papers{position:relative;width:236px;height:112px;margin-bottom:-12px}
+.ts-p{position:absolute;bottom:0;left:50%;width:70px;height:94px;margin-left:-35px;border-radius:5px;border:2px solid var(--ink);background:var(--paper-2);padding:4px;box-shadow:3px 4px 0 rgba(0,0,0,.35);transform-origin:50% 140%}
+.ts-p img{width:100%;height:100%;object-fit:cover;border-radius:2px;display:block;filter:saturate(.9)}
+.ts-p.miss{background:transparent;border:2.5px dashed var(--paper);box-shadow:none;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:44px;color:var(--orange);text-shadow:2px 2px 0 var(--ink)}
+.ts-title{margin:0;position:relative;font-family:var(--f-display);font-weight:800;text-transform:uppercase;line-height:.84;letter-spacing:-.005em;font-size:clamp(60px,19vw,96px);text-align:left}
+.ts-title span{display:block;white-space:nowrap;width:max-content}
+.ts-title .l1{color:var(--paper);text-shadow:4px 4px 0 var(--red)}
+.ts-title .l2{color:var(--orange);margin-left:.55em;text-shadow:4px 4px 0 var(--ink)}
+.ts-stamp{position:absolute;right:0;bottom:-30px;transform:rotate(-8deg);font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#cfc4f5;border:3px solid #cfc4f5;border-radius:5px;padding:1px 9px;opacity:.9;mix-blend-mode:screen}
+.ts-menu{display:flex;flex-direction:column;gap:12px;width:min(300px,82%)}
+.ts-menu .btn{font-size:21px;padding:13px 16px;background:var(--paper-2);color:var(--ink)}
+.ts-menu .btn.primary{background:var(--orange);color:#fff}
+.ts-menu .btn.quiet{background:transparent;color:var(--paper);border-color:rgba(242,229,200,.55);box-shadow:none}
+.ts-carry{margin-top:16px;font-size:13.5px;color:var(--gold);max-width:300px}
+.ts-foot{margin-top:auto;padding-top:22px;font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,229,200,.7)}
+@media (max-height:640px){.ts-papers{height:84px;transform:scale(.8)}.ts-logo{margin-bottom:24px}.ts-title{font-size:clamp(52px,15vw,80px)}}
+@media (prefers-reduced-motion:no-preference){.ts-logo{animation:tsin .5s cubic-bezier(.2,1.3,.4,1)}@keyframes tsin{from{transform:translateY(-14px) scale(.96);opacity:0}}}
 .route{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
 .route figure{margin:0;display:flex;flex-direction:column;gap:3px}
 .route img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:5px;border:1.5px solid rgba(24,40,58,.35)}
@@ -329,7 +360,7 @@ button.piles{background:none;border:0;padding:4px 0;text-decoration:underline;te
 @media (max-width:360px){.tiles{grid-template-columns:1fr 1.3fr .8fr .9fr}.tile .val{font-size:17px}.title{font-size:48px}}
 
 /* ================= landscape / desktop / handheld (Steam Deck-class 1280×800) =================
-   Three columns: the office + gossip on the left, the hand in the middle, the checklist on the right.
+   Three columns: the office on the left, the hand in the middle, the checklist on the right.
    Everything is visible at once, so nothing hides behind the fan. */
 .lane.fan .card{cursor:pointer}
 #rotate{display:none}
@@ -338,19 +369,21 @@ button.piles{background:none;border:0;padding:4px 0;text-decoration:underline;te
   .hud{padding-block:8px}
   .tiles{width:min(820px,100%);margin:0 auto}
   main.withdock{display:grid;grid-template-columns:minmax(220px,1fr) var(--cw) minmax(270px,1fr);grid-template-rows:auto minmax(0,1fr);
-    grid-template-areas:"stage log check" "gossip mid check";gap:12px 18px;overflow:hidden;padding:14px 0 14px;scroll-padding-bottom:0}
+    grid-template-areas:"stage log check" "stage mid check";gap:12px 18px;overflow:hidden;padding:14px 0 14px;scroll-padding-bottom:0}
   main.withdock>.stage{grid-area:stage;align-self:start}
-  main.withdock>.gossip{grid-area:gossip;align-self:start;max-height:100%;overflow-y:auto}
   main.withdock>.check{grid-area:check;align-self:start;max-height:100%;overflow-y:auto;margin-right:6px}
   main.withdock>.log{grid-area:log;align-self:start;text-align:center;font-size:14px;background:var(--paper-2);border:1.5px solid var(--line);border-radius:8px;padding:8px 12px}
   main.withdock>.log:empty{display:none}
   .stage .bg{height:clamp(220px,calc(var(--lvh,8px)*42),380px)}
+  .stage{--pw:clamp(84px,calc(var(--lvw,12.8px)*8),124px)}
+  .bubble{top:54px;font-size:14px}
   .portrait{width:clamp(84px,calc(var(--lvw,12.8px)*8),124px);height:clamp(150px,calc(var(--lvh,8px)*30),236px)}
   .intent{left:calc(clamp(84px,calc(var(--lvw,12.8px)*8),124px) + 16px)}
   .dock{left:calc(50% - var(--cw)/2);right:calc(50% - var(--cw)/2);background:none;padding-left:0;padding-right:0;padding-top:0}
   .dock .banner{box-shadow:var(--shadow)}
   .fanwrap{margin:0}
   main:not(.withdock){align-items:center}
+  .ts-title{font-size:104px}
   main:not(.withdock)>.sheet{width:min(860px,100%)}
   .route{grid-template-columns:repeat(5,1fr)}
   .check-head{flex-wrap:wrap;row-gap:2px}
@@ -388,14 +421,14 @@ const ACTIONS={
   breath:{name:'Deep Breath',time:1,text:'Recover 3 patience.'},
   smile:{name:'Polite Smile',time:0,text:'Draw 2 cards.'},
   rulebook:{name:'Know the Rulebook',time:1,text:'Block the clerk\'s next new rule or rejection.'},
-  photocopy:{name:'Photocopy',time:1,target:'original',text:'Copy an original in your folder. The copy lasts this office.'},
-  notary:{name:'Notarize',time:2,target:'copy',text:'A copy in your folder becomes a certified copy.'},
+  photocopy:{name:'Photocopy',time:1,target:'original',text:'Copy an original in your hand. The copy lasts this office.'},
+  notary:{name:'Notarize',time:2,target:'copy',text:'A copy in your hand becomes a certified copy.'},
   argue:{name:'Argue',time:1,text:'Strike the newest added rule. Lose 4 patience.'},
   number:{name:'Take a Number',time:0,once:true,text:'+2 time next turn. Once per office.'},
   coffee:{name:'Coffee for the Clerk',time:1,pat:2,text:'The clerk skips their next action.'},
   envelope:{name:'Small Envelope',time:1,pat:6,burn:true,target:'row',text:'Tick off any one item. Used up: removed from your deck.'},
   cousin:{name:'Call Your Cousin',time:1,pat:2,once:true,text:'Cancel the next action and draw 2. Once per office.'},
-  backdoor:{name:'Notary Owes You',time:1,pat:2,target:'original',text:'An original in your folder gets a certified copy, no copy needed.'}
+  backdoor:{name:'Notary Owes You',time:1,pat:2,target:'original',text:'An original in your hand gets a certified copy, no copy needed.'}
 };
 const REWARD_POOL=['smile','photocopy','notary','rulebook','argue','number','coffee','envelope','cousin','backdoor','breath'];
 // The run: you got a job. Your employer pays salaries only into a local bank account. Four offices stand in the way.
@@ -438,7 +471,7 @@ const STOPS={
   kiosk:{name:'Kiosk & photo booth',text:'Get one fee stamp of each kind (municipal, federal, administrative) and 1 Photo 3×4.'},
   copyshop:{name:'Copy shop',text:'Pick an original. Get 2 copies of it.'},
   cousin:{name:'Visit your cousin',text:'Coffee, gossip, and a useful connection.'},
-  shred:{name:'Clean out your folder',text:'Throw away one card.'},
+  shred:{name:'Clean out your cards',text:'Throw away one card.'},
   drawer:{name:"Your aunt's drawer",text:'She keeps every paper ever issued. Take one strange paper you might need someday.'}
 };
 const RELICS={
@@ -565,8 +598,12 @@ function drawN(n){
     o.hand.push(o.draw.pop());
   }
 }
+// Gossip: not every turn. When it comes, the clerk and the colleague at the next window talk in speech bubbles over the stage.
+const GOSSIP_CHANCE=0.6;
 function rollGossip(){
   const o=S.office,d=cur();
+  o.gossipId=(o.gossipId||0)+1;
+  if(o.turn>1&&Math.random()>GOSSIP_CHANCE){o.gossip=null;return}
   let ex;
   if(Math.random()<.45&&GOSSIP_TELL[o.intent.type])ex=rnd(GOSSIP_TELL[o.intent.type]);
   else{const pool=GOSSIP_LIFE[d.clerk].map((x,i)=>i).filter(i=>!o.usedGossip.includes(i));
@@ -616,8 +653,8 @@ function whyNot(c){
   if(timeCost(c)>S.office.time)return 'Not enough time left this turn.';
   if(c.kind==='doc')return `Nobody here asked for ${docName(c.doc,c.form)}.`;
   if(patCost(c)>=S.patience)return 'You don\'t have the nerves for that right now.';
-  if(c.key==='photocopy'||c.key==='backdoor')return 'You need an original document in your folder first.';
-  if(c.key==='notary')return 'You need a copy in your folder to notarize.';
+  if(c.key==='photocopy'||c.key==='backdoor')return 'You need an original document in your hand first.';
+  if(c.key==='notary')return 'You need a copy in your hand to notarize.';
   if(c.key==='argue')return 'There is no new rule to argue about.';
   return 'Not now.';
 }
@@ -636,9 +673,9 @@ function useAction(c,tgt){
   switch(c.key){
     case 'wait':drawN(3);loseP(1);S.log='The queue moves. Barely.';break;
     case 'breath':S.patience=Math.min(S.maxP,S.patience+3);S.log='In for four. Out for four.';break;
-    case 'smile':drawN(2);S.log=`${clerkName(d)} does not smile back. You use the moment to dig through your folder.`;break;
+    case 'smile':drawN(2);S.log=`${clerkName(d)} does not smile back. You use the moment to dig through your papers.`;break;
     case 'rulebook':if(o.intent.type==='rule'||o.intent.type==='reject'){o.skipIntent=true;S.log='You quote the regulation, article and paragraph. She lets it go.'}else{o.guard=true;S.log='You keep the rulebook open on the counter.'}break;
-    case 'photocopy':{const n=mkDoc(tgt.doc,'copy',{temp:true});o.hand.push(n.uid);S.log=`Copy of ${DOCS[tgt.doc].name} added to your folder for this office.`;break}
+    case 'photocopy':{const n=mkDoc(tgt.doc,'copy',{temp:true});o.hand.push(n.uid);S.log=`Copy of ${DOCS[tgt.doc].name} added to your hand for this office.`;break}
     case 'backdoor':{const n=mkDoc(tgt.doc,'certified',{temp:true});o.hand.push(n.uid);S.log=`The notary owes you one. Certified copy of ${DOCS[tgt.doc].name}, no questions.`;break}
     case 'notary':tgt.form='certified';S.log=`Your copy of ${DOCS[tgt.doc].name} is now certified.`;break;
     case 'envelope':tgt.done=true;tgt.bribed=true;o.fresh=o.rows.indexOf(tgt);S.stats.bribes++;S.log='A small envelope changes hands. Your wallet feels lighter. Your conscience too, somehow.';return afterRows();
@@ -650,10 +687,10 @@ function useAction(c,tgt){
 }
 // Copies you made this office stay in your hand until you use them; everything else is discarded at end of turn.
 function ownedDocs(){return [...S.deck].map(C).filter(c=>c.kind==='doc')}
-// End of turn: with more than KEEP_MAX cards in hand you pick which to keep; the rest are discarded.
+// End of turn: you always pick which cards to keep (0 to KEEP_MAX); the rest are discarded. Keeping none redraws a fresh hand.
 function requestEndTurn(){
   const o=S.office;S.target=null;S.confirm=null;
-  if(o.hand.length<=KEEP_MAX)return endTurn(o.hand.slice());
+  if(!o.hand.length)return endTurn([]);
   S.keeping=[];
 }
 function toggleKeep(uid){const k=S.keeping,i=k.indexOf(uid);if(i>=0)k.splice(i,1);else if(k.length<KEEP_MAX)k.push(uid)}
@@ -739,7 +776,7 @@ function backToWindow(){const o=S.office,d=cur();o.intent=rollIntent();startTurn
 function pickReward(uid){if(uid)addToDeck(C(uid));S.officeIdx++;S.screen='stop';S.choices=shuffle(Object.keys(STOPS)).slice(0,3)}
 function pickStop(k){
   if(k==='drawer'){const pool=STRANGE.filter(x=>!ownedDocs().some(c=>c.doc===x)&&OFFICES.slice(S.officeIdx).some(o=>o.ft1p===x));const x=pool.length?rnd(pool):rnd(STRANGE);
-    addToDeck(mkDoc(x));S.overlays.push({head:"Your aunt's drawer",stamp:'Found',violet:true,text:`Between old phone bills and a 1987 calendar: your ${DOCS[x].name}. It goes into your folder.`});enterOffice();return}
+    addToDeck(mkDoc(x));S.overlays.push({head:"Your aunt's drawer",stamp:'Found',violet:true,text:`Between old phone bills and a 1987 calendar: your ${DOCS[x].name}. It joins your cards.`});enterOffice();return}
   if(k==='cafe'){S.patience=Math.min(S.maxP,S.patience+10);enterOffice()}
   else if(k==='kiosk'){STAMPS.forEach(x=>addToDeck(mkDoc(x)));addToDeck(mkDoc('photo'));enterOffice()}
   else if(k==='copyshop')S.screen='copyshop';
@@ -870,10 +907,10 @@ function endBtnHTML(o,d){
   const playable=o.hand.some(u=>canPlay(C(u)));
   const cls=[left<=1?'low':'',S.keeping?'keepmode':'',!S.keeping&&!S.target&&!S.confirm&&!playable?'ready':''].join(' ');
   const lbl=left<=1?'Last turn today':`${left} turns left`;
-  return `<button class="endbtn ${cls}" data-act="end" aria-label="${S.keeping?`Keep ${S.keeping.length} cards and end turn`:'End turn'}. ${left} of ${n} turns left before the window closes.">
+  return `<button class="endbtn ${cls}" data-act="end" aria-label="${S.keeping?`Keep ${S.keeping.length} cards, discard the rest and end turn`:'End turn'}. ${left} of ${n} turns left before the window closes.">
     <svg viewBox="0 0 160 160" aria-hidden="true"><circle class="bezel" cx="80" cy="80" r="69.5"/>${segs}
       <path id="arcp" d="${arc(-62,62,63.5)}" fill="none"/><text class="arcl" dy="3.3"><textPath href="#arcp" startOffset="50%" text-anchor="middle">${lbl}</textPath></text></svg>
-    <span class="face"><span class="et">${S.keeping?`Keep ${S.keeping.length}`:'End turn'}</span></span></button>`;
+    <span class="face"><span class="et">${S.keeping?(S.keeping.length?`Keep ${S.keeping.length}`:'Keep none'):'End turn'}</span></span></button>`;
 }
 function officeView(){
   const o=S.office,d=cur(),tg=S.target,st=OFFICE_STYLE[d.name];
@@ -884,7 +921,8 @@ function officeView(){
     const have=!r.done&&inFolder(r);
     const isFee=isFeeRow(r),n=r.done?0:pileCards().filter(c=>accepts(r,c)).length;
     const sub=isFee?`<em>${DOCS[DOCS[r.doc].fee].name}, or pay at a bank (costs your turn)</em>`:DOCS[r.doc].single?'':`<em>${FORM[r.form]}${r.form==='alt'?' · an original is kept':''}</em>`;
-    const own=r.done?`<span class="ok">${r.bribed?'✓ Done (envelope)':r.paid?'✓ Done (paid at bank)':'✓ Done'}</span>`:`<span class="have ${have?'':'no'}">${have?(isFee?`${DOCS[DOCS[r.doc].fee].name}s in your folder: ${n}`:`In your folder${n>1?` (${n})`:''}`):(isFee?`No ${DOCS[DOCS[r.doc].fee].name.toLowerCase()}s in your folder`:(r.form!=='original'&&pileCards().some(c=>c.kind==='doc'&&c.doc===r.doc&&c.form==='original'))?'Not in your folder · you can photocopy your original':'Not in your folder')}</span>`;
+    const fn=isFee?DOCS[DOCS[r.doc].fee].name.toLowerCase():'';
+    const own=r.done?`<span class="ok">${r.bribed?'✓ Done (envelope)':r.paid?'✓ Done (paid at bank)':'✓ Done'}</span>`:`<span class="have ${have?'':'no'}">${have?(isFee?`You have ${n} ${fn}${n>1?'s':''}`:n>1?`You have ${n} in your cards`:'You have it in your cards'):(isFee?`You have no ${fn}s`:(r.form!=='original'&&pileCards().some(c=>c.kind==='doc'&&c.doc===r.doc&&c.form==='original'))?"You don't have it · photocopy your original":"You don't have it")}</span>`;
     const fetch=r.done||tg?'':isFee?`<button class="fetch" data-act="pay" data-i="${i}">Pay at bank</button>`:!have?`<button class="fetch urgent" data-act="fetch" data-i="${i}">Go get it</button>`:'';
     return `<li class="${r.done?'done':''} ${o.fresh===i?'fresh':''}"><button class="row ${r.done?'done':''} ${pick?'pick':''}" data-act="row" data-i="${i}" ${pick?'':'tabindex="-1"'}>
       <span class="box">${r.done?ICON.check:''}</span>${rowThumb(r)}<span class="row-label"><span class="nm">${esc(DOCS[r.doc].name)}</span>${sub}${own}</span>${mark}</button>${fetch}</li>`;
@@ -892,7 +930,6 @@ function officeView(){
   const segs=Array.from({length:total},(_,i)=>`<span class="seg ${i<done?'on':''}"></span>`).join('');
   const ftLabel=!o.ft1pFired&&left===2?'One more and…':`Missing ${left}`;
   const tgtMsg=tg?{original:'Pick an original in your hand',copy:'Pick a copy to notarize',row:'Pick a line on the checklist to tick off'}[tg.type]:'';
-  const g=o.gossip||[];
   return `<main class="withdock">
     <section class="stage" aria-label="${esc(d.full)}">
       <img class="bg" src="${ART['office_'+d.name]}" alt="">
@@ -903,8 +940,6 @@ function officeView(){
         ${o.skipIntent?ICON.blocked:ICON[o.intent.type]}
       </div>
     </section>
-    <section class="gossip" aria-label="Overheard at the counter"><span class="k">Overheard at the counter</span>
-      ${g.map(([w,l])=>`<p><b>${esc(w==='C'?d.clerk:d.pal)}</b>${esc(l)}</p>`).join('')}</section>
     <section class="check">
       <div class="check-head"><span class="logo" style="background:#fff;border:1.5px solid var(--line)">${LOGO[st.logo]}</span><b style="color:${st.color}">${esc(d.name)}</b><span>${esc(d.goal)}</span><span class="count">✓ ${done}/${total}</span></div>
       <ul class="rows">${rows}</ul>
@@ -914,7 +949,7 @@ function officeView(){
   </main>
   <footer class="dock">
     ${tg?`<div class="banner"><span>${tgtMsg}</span><button data-act="cancel">Cancel</button></div>`:''}
-    ${S.keeping?`<div class="banner keepbar"><span>End of day: tap up to ${KEEP_MAX} cards to keep for tomorrow. The rest are discarded. (${S.keeping.length}/${KEEP_MAX})</span><button data-act="keepCancel">Back</button></div>`:''}
+    ${S.keeping?`<div class="banner keepbar"><span>End of turn: tap up to ${KEEP_MAX} cards to keep (${S.keeping.length}/${KEEP_MAX}). The rest are discarded and you draw back up to ${HAND_SIZE}. Keep none to redraw all.</span><button data-act="keepCancel">Back</button></div>`:''}
     ${S.confirm?`<div class="banner warn"><span>This line takes an original or a certified copy. If you hand over the original, the clerk keeps it.</span><span class="bb"><button class="solid" data-act="confirmYes">Hand it over</button><button data-act="cancel">Keep it</button></span></div>`:''}
     <div class="fanwrap">
       <div class="lane fan">${fanHTML(o.hand)}</div>
@@ -926,39 +961,55 @@ function officeView(){
 }
 function screen(){
   switch(S.screen){
-  case 'intro':return `<main><div class="sheet">
-      <div class="poster"><h1 class="title"><span class="t1">Fali ti</span><span class="t2">jedan</span><span class="t3">papir</span></h1><span class="sun" aria-hidden="true"></span></div>
-      <span class="kicker">A bureaucratic roguelike · prototype v16</span>
+  case 'intro':{const P=[['doc_birth',-30,-62],['doc_id',-11,-22],['doc_rental',9,20]];
+    return `<div class="ts-bg" aria-hidden="true"><img src="${ART['office_Registry']}" alt=""></div>
+    <main class="ts"><div class="ts-logo">
+      <div class="ts-papers" aria-hidden="true">${P.map(([k,r,x])=>`<span class="ts-p" style="transform:translateX(${x}px) rotate(${r}deg)"><img src="${ART[k]}" alt=""></span>`).join('')}<span class="ts-p miss" style="transform:translateX(62px) rotate(26deg)">?</span></div>
+      <h1 class="ts-title" aria-label="Fali ti jedan papir"><span class="l1">Fali ti</span><span class="l2">jedan papir</span></h1>
+      <span class="ts-stamp" aria-hidden="true">Prototip v17</span></div>
+      <nav class="ts-menu" aria-label="Main menu">
+        <button class="btn primary" data-act="start">Start game</button>
+        <button class="btn" data-act="rules">Rules</button>
+        <button class="btn quiet" data-act="quit">Quit</button>
+      </nav>
+      ${S.carried?`<p class="ts-carry">Carried over from your last run: ${esc(docName(S.carried.doc,S.carried.form))}</p>`:''}
+      <span class="ts-foot">A bureaucratic roguelike · "You're missing one paper"</span></main>`;}
+  case 'closed':return `<div class="ts-bg" aria-hidden="true"><img src="${ART['office_Registry']}" alt=""></div>
+    <main class="ts"><div class="ov-stamp violet" style="color:var(--paper);border-color:var(--paper)">Closed</div>
+      <p style="margin:18px 0 22px;max-width:30ch;font-size:16px;line-height:1.45">The window is closed. Come back tomorrow, between 8:00 and 15:00. You can close this tab now.</p>
+      <nav class="ts-menu"><button class="btn" data-act="title">Back to the title</button></nav></main>`;
+  case 'rules':return `<main><div class="sheet">
+      <span class="kicker">How it works</span><h2>Rules</h2>
       <p>You got the job. Your employer pays salaries only into a local bank account, and your first payday is soon. The bank wants your Employment Registration. The employment bureau wants a Tax Number. The tax office wants a Certificate of Residence. The police want a Citizenship Certificate. The registry wants your birth certificate. You have 80 patience.</p>
       <div class="route">${OFFICES.map((x,i)=>`<figure><img src="${ART['ext_'+x.name]}" alt=""><figcaption>${i+1}. ${esc(x.short)}<small>${esc(x.goal)}</small></figcaption></figure>`).join('')}</div>
       ${S.carried?`<div class="carry">Carried over from your last run: ${esc(docName(S.carried.doc,S.carried.form))}</div>`:''}
       <ul class="rules">
-        <li>Your deck (your folder) holds <b>documents</b> and <b>actions</b>. Each turn you draw back up to 5 cards. At the end of a turn you may keep up to 3 cards for tomorrow; the rest are discarded.</li>
+        <li>Your cards (your deck) are <b>documents</b> and <b>actions</b>. Each turn you draw back up to 5. At the end of every turn you choose up to 3 cards to keep; the rest are discarded. Keep none to redraw a fresh 5.</li>
         <li>Handing in a <b>document</b> is free. <b>Actions</b> show their time cost in the dark circle. You get 3 time a turn.</li>
         <li>Shady actions (dashed border) also cost <b>patience</b>, shown with a red heart. Patience is your health. At zero you give up.</li>
         <li>Copies, stamps and photos are kept by the clerk. Originals come back, unless the line says "original or certified copy" and you hand over the original.</li>
-        <li>Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. You might already have it: strange papers turn up in your starting folder, as rewards, and in your aunt's drawer. If not, tap <b>Go get it</b> or bribe it.</li>
+        <li>Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. You might already have it: strange papers turn up in your starting cards, as rewards, and in your aunt's drawer. If not, tap <b>Go get it</b> or bribe it.</li>
         <li>Fees take a fee stamp. No stamp? Pay at the bank instead, but it costs the rest of your turn.</li>
         <li><b>Controls.</b> Touch: tap a card to play, hold to look, slide up to play what you're looking at. Mouse: hover to look, click to play. Keys: 1–9 play a card, Space ends the turn, Esc cancels, M map, C cards.</li>
         <li>When the run ends, keep one paper for the next run.</li>
       </ul>
-      <button class="btn primary" data-act="start">Take a number</button></div></main>`;
+      <div class="btnrow"><button class="btn primary" data-act="start">Take a number</button><button class="btn quiet" data-act="title">Back</button></div></div></main>`;
   case 'office':return officeView();
   case 'errand':{const r=S.office.rows[S.pending],e=errandFor(r),d=cur();
     return `<main><div class="sheet"><span class="kicker">Leave the window</span><h2>Go get: ${esc(e.get)}</h2>
       <p>${esc(e.place)}.</p>
       <div class="costlist">
         <div><b>Costs</b><span>The rest of your turn. ${esc(clerkName(d))} still takes ${d.title==='Mr.'?'his':'her'} turn while you are away, and the clock ticks.</span></div>
-        <div><b>You get</b><span>${esc(e.get)}, added to your folder for good. It will be in your hand next turn.</span></div>
+        <div><b>You get</b><span>${esc(e.get)}, added to your cards for good. It will be in your hand next turn.</span></div>
         <div><b>Before</b><span>You choose up to 3 cards to keep, as at the end of any turn.</span></div>
       </div>
       <div class="btnrow"><button class="btn primary" data-act="errandGo">Go (lose your turn)</button><button class="btn quiet" data-act="stay">Stay in line</button></div></div></main>`;}
   case 'errandDone':return `<main><div class="sheet"><span class="kicker">Errand</span><h2>${esc(S.errand.place)}</h2><p>${esc(S.errand.text)}</p>
-      <span class="big-stamp">Obtained</span><p>${esc(S.errand.get)} is in your folder.</p>
+      <span class="big-stamp">Obtained</span><p>${esc(S.errand.get)} is in your cards.</p>
       <button class="btn primary" data-act="back">Back to the window</button></div></main>`;
   case 'reward':{const d=OFFICES[S.officeIdx],nx=OFFICES[S.officeIdx+1];
     return `<main><div class="sheet"><span class="big-stamp">Approved</span><h2>${esc(d.goal)}</h2>
-      <p>${esc(clerkName(d))} hands over your ${esc(DOCS[d.reward].name)} (original). It goes into your folder. Next stop: ${esc(nx.full)}.</p>
+      <p>${esc(clerkName(d))} hands over your ${esc(DOCS[d.reward].name)} (original). It joins your cards. Next stop: ${esc(nx.full)}.</p>
       <span class="kicker">You learned something. Pick one action:</span>
       <div class="card-row">${S.choices.map(u=>cardHTML(C(u),{act:'reward'})).join('')}</div>
       <button class="btn quiet" data-act="reward" data-uid="0">Skip</button></div></main>`;}
@@ -970,7 +1021,7 @@ function screen(){
     return `<main><div class="sheet"><span class="kicker">Copy shop</span><h2>Copy which original?</h2><p>You get 2 copies. The clerk keeps a copy each time you hand one in.</p>
       <div class="card-row">${os.map(c=>cardHTML(c,{act:'copy'})).join('')}</div>
       <button class="btn quiet" data-act="copy" data-uid="0">Skip</button></div></main>`;}
-  case 'shred':return `<main><div class="sheet"><span class="kicker">Clean out your folder</span><h2>Throw away one card</h2>
+  case 'shred':return `<main><div class="sheet"><span class="kicker">Clean out your cards</span><h2>Throw away one card</h2>
       <div class="card-row">${S.deck.map(u=>cardHTML(C(u),{act:'shred'})).join('')}</div>
       <button class="btn quiet" data-act="shred" data-uid="0">Keep everything</button></div></main>`;
   case 'end':{const win=S.result==='win',d=cur();
@@ -1002,7 +1053,7 @@ function panelHTML(){
       ${S.relics.length?`<h3>Connections</h3><ul class="rel">${S.relics.map(r=>`<li><b>${esc(RELICS[r].name)}</b> · ${esc(RELICS[r].text)}</li>`).join('')}</ul>`:''}`;
   } else {
     const o=S.office&&(S.screen==='office'||S.screen==='errand')?S.office:null;
-    body=`<h2>Your cards</h2><p class="lead">Your folder: every document and action you own. ${o?'This office splits them into your hand, the draw pile and the used pile.':''}</p>`+
+    body=`<h2>Your cards</h2><p class="lead">Every document and action you own. ${o?'This office splits them into your hand, the draw pile and the used pile.':''}</p>`+
       (o?section('In your hand',o.hand)+section('Draw pile',o.draw)+section('Used',[...o.discard,...o.exhaust]):section('All cards',S.deck));
   }
   return `<div class="panel" role="dialog" aria-modal="true"><div class="panel-in"><button class="pclose" data-act="view" data-v="">Close</button>${body}</div></div>`;
@@ -1016,12 +1067,58 @@ function overlay(){
 let lastScreen=null;
 function render(){
   const m=$app.querySelector('main'),lane=$app.querySelector('.lane');
-  const keep=lastScreen===S.screen+'|'+S.officeIdx,SC=['main','main>.check','main>.gossip'],tops=SC.map(q=>{const el=$app.querySelector(q);return el?el.scrollTop:0});
-  $app.innerHTML=(S.screen==='intro'?'':status())+screen()+panelHTML()+overlay();
+  const keep=lastScreen===S.screen+'|'+S.officeIdx,SC=['main','main>.check'],tops=SC.map(q=>{const el=$app.querySelector(q);return el?el.scrollTop:0});
+  $app.innerHTML=(['intro','rules','closed'].includes(S.screen)?'':status())+screen()+panelHTML()+overlay();
   if(keep)SC.forEach((q,i)=>{const el=$app.querySelector(q);if(el)el.scrollTop=tops[i]});
   lastScreen=S.screen+'|'+S.officeIdx;
+  gossipTick();fitTitle();
   if(S.office&&S.office.fresh!=null){S.office.fresh=null;const li=$app.querySelector('.rows li.fresh');if(li&&li.scrollIntoView)li.scrollIntoView({block:'nearest',behavior:'smooth'})}
 }
+
+// Title logo: shrink the type until both lines fit the screen (fallback fonts are wider than Barlow Condensed).
+function fitTitle(){const t=$app.querySelector('.ts-title');if(!t)return;t.style.fontSize='';
+  const max=Math.min(innerWidth,$app.clientWidth||innerWidth)*0.9;let f=parseFloat(getComputedStyle(t).fontSize),n=0;
+  while(t.scrollWidth>max&&f>30&&n++<40){f-=2;t.style.fontSize=f+'px'}}
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(S)fitTitle()});
+/* ============ gossip bubbles ============
+   Runs outside render(): one line at a time, popping up after the turn starts and fading out on its own.
+   Tap a bubble to skip to the next line. render() rebuilds the stage, so the current line is re-attached without animating again. */
+const GB={key:null,i:-1,t:null};
+function gossipLine(){const o=S.office;return o&&o.gossip&&GB.i>=0?o.gossip[GB.i]:null}
+function drawBubble(anim){
+  const stage=$app.querySelector('.stage');if(!stage)return;
+  const old=stage.querySelector('.bubble');if(old)old.remove();
+  const ln=gossipLine();if(!ln)return;
+  const d=cur(),[w,l]=ln,clerk=w==='C';
+  const el=document.createElement('div');
+  el.className=`bubble ${clerk?'c':'k'} ${anim?'pop':''}`;el.setAttribute('role','status');el.dataset.gb='1';
+  el.innerHTML=`<b>${esc(clerk?d.clerk:d.pal+', next window')}</b>${esc(l)}`;
+  stage.appendChild(el);
+}
+function gossipStep(){
+  clearTimeout(GB.t);const o=S.office;
+  if(!o||S.screen!=='office'||!o.gossip){GB.i=-1;return}
+  if(S.overlays.length||S.view){GB.t=setTimeout(gossipStep,600);return} // wait until announcements are closed
+  const old=$app.querySelector('.stage .bubble');
+  const next=GB.i+1;
+  if(old&&GB.i>=0){old.classList.remove('pop');old.classList.add('out');GB.i=-2;setTimeout(()=>{GB.i=next;showOrEnd()},230)}
+  else{GB.i=next;showOrEnd()}
+}
+function showOrEnd(){
+  const o=S.office;if(!o||!o.gossip)return;
+  if(GB.i>=o.gossip.length){GB.i=-1;drawBubble(false);return}
+  drawBubble(true);
+  const len=o.gossip[GB.i][1].length;
+  GB.t=setTimeout(gossipStep,2400+len*55);
+}
+function gossipTick(){
+  const o=S.office;
+  if(S.screen!=='office'||!o){clearTimeout(GB.t);GB.key=null;GB.i=-1;return}
+  const key=S.officeIdx+':'+o.gossipId;
+  if(key!==GB.key){GB.key=key;GB.i=-1;clearTimeout(GB.t);if(o.gossip)GB.t=setTimeout(gossipStep,900+Math.random()*1800);return}
+  if(GB.i>=0)drawBubble(false);
+}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-gb]')){e.stopPropagation();if(GB.i>=0)gossipStep()}},true);
 
 /* ============ input ============ */
 // Layout switches between portrait and landscape: redraw (fan geometry depends on the width).
@@ -1060,6 +1157,10 @@ document.addEventListener('click',e=>{
     case 'dismiss':S.overlays.shift();break;
     case 'view':S.view=b.dataset.v||null;break;
     case 'start':enterOffice();break;
+    case 'rules':S.screen='rules';break;
+    case 'title':S.screen='intro';break;
+    // Quit: a web page can only close itself if a script opened it, so fall back to a "closed" screen.
+    case 'quit':S.screen='closed';render();try{window.close()}catch(_){}return;
     case 'card':tapCard(uid);break;
     case 'confirmYes':{const cf=S.confirm;S.confirm=null;handIn(C(cf.uid),S.office.rows[cf.row]);break}
     case 'row':{const tg=S.target;if(tg&&tg.type==='row'){const r=S.office.rows[+b.dataset.i];if(!r.done){S.target=null;useAction(C(tg.src),r)}}break}
@@ -1196,7 +1297,7 @@ if(typeof document.createElement==='function'){
     const k=e.key;
     if(S.overlays.length){if(k==='Enter'||k===' '||k==='Escape'){e.preventDefault();S.overlays.shift();render()}return}
     if(k==='Escape'){if(S.view)S.view=null;else if(S.target||S.confirm){S.target=null;S.confirm=null}else if(S.keeping)S.keeping=null;else return;render();return}
-    if(k==='m'||k==='M'||k==='c'||k==='C'){const v=/m/i.test(k)?'map':'deck';if(S.screen==='intro')return;S.view=S.view===v?null:v;render();return}
+    if(k==='m'||k==='M'||k==='c'||k==='C'){const v=/m/i.test(k)?'map':'deck';if(['intro','rules','closed'].includes(S.screen))return;S.view=S.view===v?null:v;render();return}
     if(S.view||S.screen!=='office')return;
     if(k===' '||k==='e'||k==='E'){e.preventDefault();if(S.keeping)endTurn(S.keeping);else requestEndTurn();render();return}
     if(/^[1-9]$/.test(k)){const el=document.querySelectorAll('.lane.fan .card[data-uid]')[+k-1];if(el){if(g)clear();hoverOff();el.dispatchEvent(new MouseEvent('click',{bubbles:true}))}}
