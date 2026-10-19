@@ -1110,7 +1110,7 @@ function pauseHTML(){
     <p class="lead">The clerk puts up a little sign. Nothing happens until you come back.</p>
     <div class="pm-btns"><button class="btn primary" data-act="resume">Resume</button>
       <button class="btn" data-act="pauseRules">Rules</button>
-      <button class="btn" data-act="music">Menu music: ${musicOn?'on':'off'}</button>
+      <button class="btn" data-act="music">Music: ${musicOn?'on':'off'}</button>
       <button class="btn quiet danger" data-act="endRun">End run</button></div>`;
   const drop=!pauseDropped;pauseDropped=true; // drop only when the menu opens, not on every redraw
   return `<div class="panel pause ${drop?'enter':''}" role="dialog" aria-modal="true" aria-label="Paused"><div class="pause-sign ${drop?'drop':''}" aria-hidden="true"><div class="ps-swing"><b>Pauza</b><small>Game paused</small></div></div><div class="panel-in pm-in">${body}</div></div>`;
@@ -1154,22 +1154,29 @@ function render(){
   if(S.office&&S.office.fresh!=null){S.office.fresh=null;const li=$app.querySelector('.rows li.fresh');if(li&&li.scrollIntoView)li.scrollIntoView({block:'nearest',behavior:'smooth'})}
 }
 
-/* ============ menu music ============
-   "Waiting Room Shuffle" loops on the title and rules screens and fades out when a run starts.
-   Browsers only allow sound after the player has touched or clicked the page, so the first tap anywhere starts it.
-   The speaker button turns it off; that choice is remembered on this device. */
-const MUSIC_SCREENS=['intro','rules'];
-const MUSIC=typeof Audio==='function'?new Audio('waiting-room-shuffle.mp3'):null;
-if(MUSIC){MUSIC.loop=true;MUSIC.preload='auto';MUSIC.volume=0}
-let musicOn=true,musicFade=null;
+/* ============ music ============
+   Two looping tracks: the menu theme on the title and rules screens, and the in-game track during a run
+   (office, errands, rewards, stops). Switching crossfades between them; pausing turns the in-game track down
+   to a murmur; the end-of-run screen is quiet. Browsers only allow sound after the player has touched or
+   clicked the page, so the first tap anywhere starts it. One on/off setting covers both, remembered per device. */
+const TRACKS={menu:{src:'waiting-room-shuffle.mp3',vol:.55},game:{src:'ingame-music.mp3',vol:.38}};
+const MENU_SCREENS=['intro','rules'],QUIET_SCREENS=['closed','end'];
+for(const t of Object.values(TRACKS)){t.a=typeof Audio==='function'?new Audio(t.src):null;if(t.a){t.a.loop=true;t.a.preload='auto';t.a.volume=0}t.fade=null;t.target=-1}
+let musicOn=true;
 try{musicOn=localStorage.getItem('ft1p.music')!=='off'}catch(e){}
-function fadeTo(v,ms,done){if(!MUSIC)return;clearInterval(musicFade);const from=MUSIC.volume,t0=Date.now();
-  musicFade=setInterval(()=>{const k=Math.min(1,(Date.now()-t0)/ms);MUSIC.volume=from+(v-from)*k;if(k>=1){clearInterval(musicFade);done&&done()}},40)}
+function fadeTrack(t,v,ms){const a=t.a;if(!a||t.target===v)return;t.target=v;clearInterval(t.fade);
+  if(v>0&&a.paused){const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{t.target=-1})}
+  const from=a.volume,t0=Date.now();
+  t.fade=setInterval(()=>{const k=Math.min(1,(Date.now()-t0)/ms);a.volume=Math.max(0,Math.min(1,from+(v-from)*k));
+    if(k>=1){clearInterval(t.fade);if(v===0)a.pause()}},40)}
 function musicSync(){
-  if(!MUSIC||!S)return;
-  const want=musicOn&&MUSIC_SCREENS.includes(S.screen);
-  if(want){if(MUSIC.paused){const pr=MUSIC.play();if(pr&&pr.catch)pr.catch(()=>{})}fadeTo(.55,700)}
-  else if(!MUSIC.paused)fadeTo(0,S.screen==='office'?1200:400,()=>MUSIC.pause());
+  if(!S)return;
+  const want=!musicOn||QUIET_SCREENS.includes(S.screen)?null:MENU_SCREENS.includes(S.screen)?'menu':'game';
+  const m=TRACKS.menu,g=TRACKS.game;
+  // a play() refused before the first tap leaves the track paused: try again on the next sync
+  for(const t of [m,g])if(t.a&&t.a.paused&&t.target>0)t.target=-1;
+  fadeTrack(m,want==='menu'?m.vol:0,want==='menu'?900:1000);
+  fadeTrack(g,want==='game'?(S.paused?g.vol*.3:g.vol):0,want==='game'?(S.paused?350:1400):700);
 }
 function soundBtn(light){return `<button class="ts-sound ${light?'light':''}" data-act="music" aria-label="${musicOn?'Turn music off':'Turn music on'}" aria-pressed="${musicOn}">
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>${musicOn?'<path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>':'<path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}</svg></button>`}
