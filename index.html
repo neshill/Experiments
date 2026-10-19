@@ -591,6 +591,70 @@ const GOSSIP_LIFE={
     [['C','The system is slow today.'],['K','It\'s slow every day.'],['C','Today I can feel it.']]
   ]
 };
+/* ============ the story behind the counters ============
+   One thread runs through all five offices: Vesna (Registry) and Zoran (Employment Bureau) are, it seems,
+   more than colleagues. Nobody says it. Each office's pair of clerks picks it up from their own angle, so the
+   player pieces it together across the run: the green umbrella, the Thursday "inventory", Makarska in July.
+   Lines play continuously while you are at the window; null = a short pause between scenes.
+   C = the clerk at your window, K = the colleague at the next window. */
+const STORY={
+  'Registry':[
+    ['K',"That's a new scarf."],['C',"It's not new. I just never wore it."],['K','Green suits you. Like the umbrella.'],['C','What umbrella?'],
+    ['K','The green one on your coat rack. Yours is red.'],['C','Someone lent it to me. It was raining.'],null,
+    ['K','The Employment Bureau called again. Third time this week.'],['C','They had a question about a form.'],['K','Which form?'],
+    ['C','A complicated one.'],['K','You were on the phone for forty minutes.'],['C','It is a very complicated form.'],null,
+    ['K',"Are you coming to Biljana's name day on Thursday?"],['C',"I can't. Thursday is inventory."],['K',"We don't do inventory."],
+    ['C','Then somebody has to start.'],null,
+    ['K','You are humming.'],['C',"I'm not humming."],['K',"You've been humming since Tuesday."],
+    ['C','That is the radiator.'],['K','Then tell the radiator Zlata says hello.']
+  ],
+  'Police':[
+    ['K','Anything on the parking report?'],['C','Grey Zastava outside the Employment Bureau. Lunch hour. Again.'],['K','Whose?'],
+    ['C','Registry permit. And fuzzy dice on the mirror.'],['K',"Vesna's car has fuzzy dice."],['C',"I didn't say Vesna. I said dice."],null,
+    ['K',"You're not writing it up?"],['C',"Parking for ninety minutes isn't a crime."],['K','In a forty-five minute zone it is.'],
+    ['C','Then the meter must be broken.'],null,
+    ['C','Saw Zoran from the Bureau on Saturday. In the rain.'],['K','So?'],['C','No umbrella. Soaked through. Smiling like he won the lottery.'],
+    ['K','Maybe he lent his umbrella to someone.'],['C',"That's what I'm afraid of."],null,
+    ['K','My wife says the Registry choir rehearses on Thursdays now.'],['C','Vesna sings in a choir?'],
+    ['K','Since spring. Funny thing. The choir has never heard of her.'],['C','Mirsad. Some things are not police business.'],
+    ['K',"Everything is police business, Dragan. That's the job."],['C',"Then I'm on my break."]
+  ],
+  'Tax Office':[
+    ['K','Holiday requests from the other offices came in.'],['C','And?'],['K','Bureau, Zoran: second week of July.'],
+    ['K','Registry, Vesna: second week of July.'],['C','Lots of people like July.'],['K','Both wrote "Makarska". Same nervous handwriting.'],null,
+    ['C',"We don't comment on other people's forms, Biljana."],["K","I'm not commenting. I'm cross-referencing."],['C','...Same hotel?'],
+    ['K','Different hotels. Next door to each other.'],['C',"Well. That's practically a different city."],null,
+    ['K','Zoran claimed a deduction for "flowers, office decoration".'],['C','The Bureau has no flowers. I was there in May.'],
+    ['K','It has one vase now. On the counter where the Registry drops off the mail.'],['C','On Thursdays?'],['K','Only on Thursdays.'],null,
+    ['K','Vesna skipped my name day. "Inventory," she said.'],["C","The Registry doesn't do inventory."],['K','It does now. Thursdays.'],null,
+    ['C','Do you think anyone knows?'],['K',"Everyone knows. Nobody says. It's the most efficient system in this city."],
+    ['C','If only the paperwork worked like that.']
+  ],
+  'Bureau':[
+    ['K','Who are the flowers for?'],['C','The office. Morale.'],['K','Our morale has been fine for nineteen years.'],['C','Then it deserves flowers.'],null,
+    ['C','Nedim, do people... talk? About me?'],['K','People talk about the weather, the prices, and you. In that order.'],['C','What do they say?'],
+    ['K','That you walk differently. Like a man whose X-ray came back clean.'],null,
+    ['K','Coffee at ten again?'],["C","It's just coffee."],['K','Every day at ten for four months is not a coffee. It is a schedule.'],
+    ['C',"Then I'll put it in the schedule."],['K','Under what?'],['C','"Inter-office coordination."'],null,
+    ['C','Have you seen my green umbrella? I lent it out.'],['K','To whom?'],['C','To someone who needed it more.'],
+    ['K','It was raining on everyone, Zoran.'],['C','Not in the same way.'],['K','That is either very romantic or very bad meteorology.'],null,
+    ['K','The Tax Office asked about your July request.'],['C','What did you tell them?'],['K','That you love the sea.'],
+    ['C','I do love the sea.'],['K','You get seasick in the bathtub.']
+  ],
+  'Bank':[
+    ['K','Did you see who came in this morning?'],['C','Mrs. Vesna from the Registry. Opening a savings account.'],['K','What for?'],
+    ['C','The form says "travel".'],['K','For one?'],["C","The form doesn't ask. I checked twice."],null,
+    ['K','And at noon, Zoran from the Bureau. Same counter.'],['C','He asked for the exchange rate. Dinars to "whatever they use at the seaside".'],
+    ['K','We use dinars at the seaside, Ana.'],['C','I told him. He said, "Good. Then nothing has to change."'],null,
+    ['K','Then a transfer. From her to him. A small amount.'],['C','What did the memo say?'],['K','"For the umbrella."'],
+    ['C',"That's either a debt or a love letter."],['K','At this bank it is both. We charge a fee for each.'],null,
+    ['C','Her husband came by after lunch. Asked if his wife had been in.'],['K','What did you say?'],['C','"Bank secrecy."'],
+    ['K',"You've never said bank secrecy in your life."],['C','I was saving it for something worth it.'],null,
+    ['K','So. Do you think they will?'],['C','Go to Makarska?'],['K','Go anywhere.'],
+    ['C','Love in this city is like a building permit. Everyone talks about it, nobody sees it, and somehow it still happens.'],
+    ['K','You should work at the Registry.'],['C','One clerk in love over there is enough.']
+  ]
+};
 const GOSSIP_TELL={
   sigh:[[['C','How many more of them today?'],['K','You don\'t want to know.']],[['C','My back is killing me.'],['K','It\'s the chairs.']]],
   rule:[[['K','There was a new instruction this morning.'],['C','Oh? Let me see that.']],[['C','Wasn\'t there something about an extra form?'],['K','There\'s always an extra form.']]],
@@ -637,7 +701,7 @@ function enterOffice(){
   const d=cur();
   S.office={rows:d.rows.map(([doc,form])=>({doc,form,done:false})),rulesLeft:d.rules.slice(),ft1pFired:false,
     turnsLeft:d.turns,turn:0,draw:shuffle(S.deck),hand:[],discard:[],exhaust:[],time:3,bonusTime:0,timePenalty:0,
-    intent:null,skipIntent:false,gossip:null,usedGossip:[]};
+    intent:null,skipIntent:false,story:0,usedGossip:[]};
   S.screen='office';S.target=null;S.confirm=null;
   S.log=`${clerkName(d)} looks up from her screen. Then back down.`.replace('her',d.title==='Mr.'?'his':'her');
   S.office.intent=rollIntent();
@@ -656,17 +720,10 @@ function drawN(n){
     o.hand.push(o.draw.pop());
   }
 }
-// Gossip: not every turn. When it comes, the clerk and the colleague at the next window talk in speech bubbles over the stage.
-const GOSSIP_CHANCE=0.6;
+// Each turn, sometimes the clerks drop a hint about what the clerk does next (queued between story scenes).
 function rollGossip(){
-  const o=S.office,d=cur();
-  o.gossipId=(o.gossipId||0)+1;
-  if(o.turn>1&&Math.random()>GOSSIP_CHANCE){o.gossip=null;return}
-  let ex;
-  if(Math.random()<.45&&GOSSIP_TELL[o.intent.type])ex=rnd(GOSSIP_TELL[o.intent.type]);
-  else{const pool=GOSSIP_LIFE[d.clerk].map((x,i)=>i).filter(i=>!o.usedGossip.includes(i));
-    const i=pool.length?rnd(pool):Math.floor(Math.random()*GOSSIP_LIFE[d.clerk].length);o.usedGossip.push(i);ex=GOSSIP_LIFE[d.clerk][i]}
-  o.gossip=ex;
+  const o=S.office;
+  GB.tell=Math.random()<.45&&GOSSIP_TELL[o.intent.type]?rnd(GOSSIP_TELL[o.intent.type]).slice():null;
 }
 function rollIntent(){
   const o=S.office,dmg=cur().dmg+Math.floor(o.turn/2);
@@ -1188,44 +1245,55 @@ function fitTitle(){const t=$app.querySelector('.ts-title');if(!t)return;t.style
   while(t.scrollWidth>max&&f>30&&n++<40){f-=2;t.style.fontSize=f+'px'}}
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(S)fitTitle()});
 /* ============ gossip bubbles ============
-   Runs outside render(): one line at a time, popping up after the turn starts and fading out on its own.
-   Tap a bubble to skip to the next line. render() rebuilds the stage, so the current line is re-attached without animating again. */
-const GB={key:null,i:-1,t:null};
-function gossipLine(){const o=S.office;return o&&o.gossip&&GB.i>=0?o.gossip[GB.i]:null}
+   The clerks talk continuously while you are at the window: one line at a time, a short gap between lines,
+   a longer one between scenes. The office's STORY plays in order (progress is saved in the run); a hint about
+   the clerk's next move can slip in between scenes; once the story is told, they fall back to small talk.
+   Everything waits while an announcement, a side page or the pause menu is open. Tap a bubble to skip it.
+   This runs on timers outside render(); render() only re-attaches the current bubble. */
+const GB={line:null,t:null,on:false,tell:null,small:[],office:-1};
 function drawBubble(anim){
   const stage=$app.querySelector('.stage');if(!stage)return;
   const old=stage.querySelector('.bubble');if(old)old.remove();
-  const ln=gossipLine();if(!ln)return;
+  const ln=GB.line;if(!ln)return;
   const d=cur(),[w,l]=ln,clerk=w==='C';
   const el=document.createElement('div');
   el.className=`bubble ${clerk?'c':'k'} ${anim?'pop':''}`;el.setAttribute('role','status');el.dataset.gb='1';
   el.innerHTML=`<b>${esc(clerk?d.clerk:d.pal+', next window')}</b>${esc(l)}`;
   stage.appendChild(el);
 }
-function gossipStep(){
-  clearTimeout(GB.t);const o=S.office;
-  if(!o||S.screen!=='office'||!o.gossip){GB.i=-1;return}
-  if(S.overlays.length||S.view||S.paused){GB.t=setTimeout(gossipStep,600);return} // wait until announcements are closed
-  const old=$app.querySelector('.stage .bubble');
-  const next=GB.i+1;
-  if(old&&GB.i>=0){old.classList.remove('pop');old.classList.add('out');GB.i=-2;setTimeout(()=>{GB.i=next;showOrEnd()},230)}
-  else{GB.i=next;showOrEnd()}
+function gbLater(fn,ms){clearTimeout(GB.t);GB.t=setTimeout(fn,ms)}
+function nextLine(){
+  const o=S.office,sc=STORY[cur().name]||[];
+  const atBreak=o.story===0||sc[o.story-1]===null||o.story>=sc.length;
+  if(GB.tell&&GB.tell.length&&atBreak&&!GB.inTell){GB.small=GB.tell;GB.tell=null;GB.inTell=true}
+  if(GB.small.length)return {line:GB.small.shift()};
+  GB.inTell=false;
+  if(o.story<sc.length){const ln=sc[o.story++];return ln?{line:ln}:{gap:4200+Math.random()*2500}}
+  // story told: small talk now and then
+  const pool=GOSSIP_LIFE[cur().clerk],idx=pool.map((x,i)=>i).filter(i=>!o.usedGossip.includes(i)),k=idx.length?rnd(idx):Math.floor(Math.random()*pool.length);
+  o.usedGossip.push(k);GB.small=pool[k].slice();
+  return {gap:9000+Math.random()*7000};
 }
-function showOrEnd(){
-  const o=S.office;if(!o||!o.gossip)return;
-  if(GB.i>=o.gossip.length){GB.i=-1;drawBubble(false);return}
-  drawBubble(true);
-  const len=o.gossip[GB.i][1].length;
-  GB.t=setTimeout(gossipStep,2400+len*55);
+function gossipStep(){
+  if(!S||S.screen!=='office'||!S.office){GB.on=false;GB.line=null;return}
+  if(S.overlays.length||S.view||S.paused){gbLater(gossipStep,700);return}
+  const old=$app.querySelector('.stage .bubble');
+  if(GB.line){GB.line=null;if(old){old.classList.remove('pop');old.classList.add('out')}gbLater(gossipStep,650+Math.random()*500);return}
+  if(old)old.remove();
+  const n=nextLine();
+  if(n.gap){gbLater(gossipStep,n.gap);return}
+  GB.line=n.line;drawBubble(true);
+  gbLater(gossipStep,2300+n.line[1].length*55);
 }
 function gossipTick(){
   const o=S.office;
-  if(S.screen!=='office'||!o){clearTimeout(GB.t);GB.key=null;GB.i=-1;return}
-  const key=S.officeIdx+':'+o.gossipId;
-  if(key!==GB.key){GB.key=key;GB.i=-1;clearTimeout(GB.t);if(o.gossip)GB.t=setTimeout(gossipStep,900+Math.random()*1800);return}
-  if(GB.i>=0)drawBubble(false);
+  if(S.screen!=='office'||!o){if(GB.on){clearTimeout(GB.t);GB.on=false;GB.line=null}return}
+  if(GB.office!==S.officeIdx){GB.office=S.officeIdx;GB.small=[];GB.inTell=false;GB.line=null;GB.on=false}
+  if(o.story==null)o.story=0;
+  if(!GB.on){GB.on=true;gbLater(gossipStep,1400)}
+  else if(GB.line)drawBubble(false);
 }
-document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-gb]')){e.stopPropagation();if(GB.i>=0)gossipStep()}},true);
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[data-gb]')){e.stopPropagation();if(GB.line)gossipStep()}},true);
 
 /* ============ input ============ */
 // Layout switches between portrait and landscape: redraw (fan geometry depends on the width).
