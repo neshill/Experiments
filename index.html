@@ -141,6 +141,16 @@ main>*{flex-shrink:0}
 .tag{font-family:var(--f-display);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:3px;white-space:nowrap}
 .tag.new{border:1.5px solid var(--muted);color:var(--muted)}
 .tag.ft{background:var(--red);color:#fff}
+.tag.heard{border:1.5px dashed var(--navy);color:var(--navy)}
+.rows li.heard{background:repeating-linear-gradient(-45deg,rgba(21,60,98,.05) 0 6px,transparent 6px 12px)}
+.row.ghost{cursor:default}
+.row.ghost .box{border-style:dashed;border-color:rgba(24,40,58,.45);background:transparent}
+.row.ghost .thumb{opacity:.55;filter:grayscale(.6)}
+.row.ghost .row-label .nm{font-style:italic;color:#3b4a5c}
+.rows li.heard.none .row-label .nm{font-weight:500}
+.card .heardmark{position:absolute;top:38%;left:-7px;transform:rotate(-10deg);background:var(--navy);color:#fffbe8;border:2px solid #fffbe8;font-family:var(--f-display);font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border-radius:4px;pointer-events:none;z-index:3;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.card.heard.tossing{opacity:.8}
+.heardnote{display:block;color:var(--navy);font-style:italic}
 .mini-stamp{font-family:var(--f-display);font-weight:800;font-size:12.5px;letter-spacing:.08em;color:var(--stamp);border:2px solid var(--stamp);border-radius:3px;padding:0 5px;transform:rotate(-6deg);text-transform:uppercase;white-space:nowrap;opacity:.85}
 .mini-stamp.bribe{color:var(--red);border-color:var(--red)}
 .row.pick{background:rgba(76,158,155,.14);outline:2px dashed var(--turquoise);outline-offset:-3px}
@@ -492,9 +502,10 @@ const ACTIONS={
   coffee:{name:'Coffee for the Clerk',time:1,pat:2,text:'The clerk skips their next action.'},
   envelope:{name:'Small Envelope',time:1,pat:6,burn:true,target:'row',text:'Tick off any one item. Used up: removed from your deck.'},
   cousin:{name:'Call Your Cousin',time:1,pat:2,once:true,text:'Cancel the next action and draw 2. Once per office.'},
-  backdoor:{name:'Notary Owes You',time:1,pat:2,target:'original',text:'An original in your hand gets a certified copy, no copy needed.'}
+  backdoor:{name:'Notary Owes You',time:1,pat:2,target:'original',text:'An original in your hand gets a certified copy, no copy needed.'},
+  friend:{name:'My Friend Went Last Week',time:1,text:'Draw 1. Hear one thing this clerk will ask for later. Nothing left? Hear about the next office.'}
 };
-const REWARD_POOL=['smile','photocopy','notary','rulebook','argue','number','coffee','envelope','cousin','backdoor','breath'];
+const REWARD_POOL=['smile','photocopy','notary','rulebook','argue','number','coffee','envelope','cousin','backdoor','breath','friend','friend'];
 // The run: you got a job. Your employer pays salaries only into a local bank account. Four offices stand in the way.
 const OFFICES=[
   {name:'Registry',short:'Registry',full:'Municipal Registry',window:'Window 3',clerk:'Vesna',title:'Mrs.',pal:'Zlata',goal:'Citizenship Certificate',turns:5,dmg:3,
@@ -513,7 +524,8 @@ const OFFICES=[
    rows:[['id','original'],['residence','copy'],['taxno','alt'],['workreg','copy'],['joboffer','original']],
    rules:[['citizenship','copy'],['fee_fed','original']],ft1p:'salary',reward:null}
 ];
-// FT1P is an unforeseen complication: it may or may not happen when one line is left. If it never happened all run, the Bank always does it.
+// FT1P is an unforeseen complication: it happens when one line is left, at some offices. Which offices is decided at the start
+// of the run (S.ftPlan), so "My Friend Went Last Week" can tell you the truth about it. At least one office always does it.
 const FT1P_CHANCE=0.45;
 // Hand rules: at end of turn you keep at most KEEP_MAX cards; each turn you draw back up to HAND_SIZE.
 const KEEP_MAX=3, HAND_SIZE=5;
@@ -694,9 +706,11 @@ function keeps(c,r){return c.form!=='original'||!!DOCS[c.doc].single||r.form==='
 
 function newRun(){
   S={v:9,keeping:null,paused:null,screen:'intro',patience:80,maxP:80,relics:[],cards:{},deck:[],uid:1,officeIdx:0,office:null,
-     overlays:[],target:null,confirm:null,log:'',choices:null,result:null,pending:null,stats:{turns:0,detours:0,bribes:0,paid:0},carried:null};
+     overlays:[],target:null,confirm:null,log:'',choices:null,result:null,pending:null,stats:{turns:0,detours:0,bribes:0,paid:0},carried:null,
+     ftPlan:OFFICES.map(()=>Math.random()<FT1P_CHANCE),heard:OFFICES.map(()=>[])};
+  if(!S.ftPlan.some(Boolean))S.ftPlan[OFFICES.length-1]=true;
   [mkDoc('id'),mkDoc('birth'),mkDoc('birth'),mkDoc('rental'),mkDoc('utility'),mkDoc('joboffer'),mkDoc('stamp_mun'),mkDoc('stamp_fed'),mkDoc('stamp_fed'),mkDoc('stamp_adm'),mkDoc('photo'),mkDoc('photo'),
-   mkAct('wait'),mkAct('wait'),mkAct('breath'),mkAct('smile'),mkAct('photocopy'),mkAct('photocopy'),mkAct('notary'),mkAct('rulebook'),mkAct('envelope')
+   mkAct('wait'),mkAct('wait'),mkAct('breath'),mkAct('smile'),mkAct('photocopy'),mkAct('photocopy'),mkAct('notary'),mkAct('rulebook'),mkAct('envelope'),mkAct('friend')
   ].forEach(addToDeck);
   addToDeck(mkDoc(rnd(STRANGE)));
   if(META.carry&&DOCS[META.carry.doc]){addToDeck(mkDoc(META.carry.doc,META.carry.form));S.carried=META.carry}
@@ -740,7 +754,8 @@ function rollIntent(){
   for(const x of opts){t-=x.w;if(t<=0){pick=x;break}}
   const it={type:pick.type,dmg};
   if(it.type==='sigh'){it.name='Sighs loudly';it.effect=`−${dmg} patience`}
-  if(it.type==='rule'){it.name='Remembers a new rule';it.effect='+1 item on the form, −1 patience'}
+  if(it.type==='rule'){const i=cur().rules.length-o.rulesLeft.length,told=S.heard[S.officeIdx].includes('r'+i);
+    it.name='Remembers a new rule';it.effect=told?'+1 item on the form (you heard about it)':'+1 item on the form, −1 patience'}
   if(it.type==='reject'){it.name='"This one is not valid"';it.effect='Un-ticks one item'}
   if(it.type==='break'){it.dmg=Math.max(1,dmg-1);it.name='Coffee break';it.effect=`−${it.dmg} patience, −1 time next turn`}
   if(it.type==='phone'){it.name='Personal phone call';it.effect='Nothing happens'}
@@ -767,6 +782,7 @@ function canPlay(c){
     case 'notary':return handHas(isCopy);
     case 'envelope':return o.rows.some(r=>!r.done);
     case 'argue':return !!argueRow();
+    case 'friend':return !!nextTip();
   }
   return true;
 }
@@ -777,6 +793,7 @@ function whyNot(c){
   if(c.key==='photocopy'||c.key==='backdoor')return 'You need an original document in your hand first.';
   if(c.key==='notary')return 'You need a copy in your hand to notarize.';
   if(c.key==='argue')return 'There is no new rule to argue about.';
+  if(c.key==='friend')return 'Your friend has told you everything there is to know.';
   return 'Not now.';
 }
 function removeFromHand(uid){const o=S.office;o.hand.splice(o.hand.indexOf(uid),1)}
@@ -804,8 +821,48 @@ function useAction(c,tgt){
     case 'cousin':o.skipIntent=true;drawN(2);S.log='Your cousin knows a guy who knows her supervisor.';break;
     case 'argue':{const r=argueRow();o.rows.splice(o.rows.indexOf(r),1);loseP(4);S.log='You win the argument. It costs you.';if(S.screen==='end')return;return afterRows()}
     case 'number':o.bonusTime+=2;S.log='Ticket 247. Now serving: 231.';break;
+    case 'friend':drawN(1);hearTip();break;
   }
 }
+/* ============ tips: "My Friend Went Last Week" ============
+   Each office has hidden needs: its "Ah, I almost forgot" rules (in a fixed order) and maybe an FT1P paper.
+   S.heard[officeIndex] lists what you've been told: 'r0','r1' = rule 1/2, 'ft' = the FT1P paper (or that there is none). */
+const needLabel=(doc,form)=>DOCS[doc].fee?DOCS[DOCS[doc].fee].name:docName(doc,form);
+function rulesUsed(idx){return idx===S.officeIdx&&S.office?OFFICES[idx].rules.length-S.office.rulesLeft.length:0}
+// The next thing a friend can tell you: this office first, then the next one.
+function nextTip(){
+  for(const idx of [S.officeIdx,S.officeIdx+1]){
+    const d=OFFICES[idx];if(!d)continue;const h=S.heard[idx],here=idx===S.officeIdx&&S.office;
+    for(let i=rulesUsed(idx);i<d.rules.length;i++)if(!h.includes('r'+i))return {idx,key:'r'+i};
+    if(!h.includes('ft')&&!(here&&S.office.ft1pRolled))return {idx,key:'ft'};
+  }
+  return null;
+}
+// What you've heard about an office and that hasn't happened yet: [{doc,form,key}] (+{none:true} for "no strange paper").
+function heardPending(idx){
+  const d=OFFICES[idx],here=idx===S.officeIdx&&S.office;
+  return S.heard[idx].map(k=>{
+    if(k==='ft'){if(here&&S.office.ft1pRolled)return null;return S.ftPlan[idx]?{doc:d.ft1p,form:'original',key:k,ft1p:true}:{none:true,key:k}}
+    const i=+k.slice(1);if(i<rulesUsed(idx))return null;const [doc,form]=d.rules[i];return {doc,form,key:k};
+  }).filter(Boolean);
+}
+// A card in your hand is worth keeping if a friend said this clerk will ask for it.
+function isHeardCard(c){return c.kind==='doc'&&!!S.office&&heardPending(S.officeIdx).some(x=>!x.none&&accepts(x,c))}
+function hearTip(){
+  const t=nextTip();if(!t)return;
+  S.heard[t.idx].push(t.key);
+  const d=OFFICES[t.idx],here=t.idx===S.officeIdx,who=clerkName(d),she=d.title==='Mr.'?'he':'she';
+  let text;
+  if(t.key==='ft')text=S.ftPlan[t.idx]
+    ?`"Right at the end, when ${she} was nearly done, ${who} asked my friend for a ${DOCS[d.ft1p].name}. Nobody had ever heard of it. Get one before ${she} asks."`
+    :`"No strange papers at the ${d.full}. Just the usual. ${who} is strict, but normal."`;
+  else{const [doc,form]=d.rules[+t.key.slice(1)];
+    text=here?`"My friend was at ${d.window} last week. Suddenly ${who} 'remembered' ${she} also needs your ${needLabel(doc,form)}. Keep it on you."`
+             :`"Going to the ${d.full} next? ${who} will want your ${needLabel(doc,form)} as well. Don't use up your last one here."`}
+  S.overlays.push({head:here?'Heard in the queue':`Heard about the ${d.full}`,stamp:'Tip',violet:true,text});
+  S.log='A friend of a friend knows how it goes here.';
+}
+
 // Copies you made this office stay in your hand until you use them; everything else is discarded at end of turn.
 function ownedDocs(){return [...S.deck].map(C).filter(c=>c.kind==='doc')}
 // End of turn: you always pick which cards to keep (0 to KEEP_MAX); the rest are discarded. Keeping none redraws a fresh hand.
@@ -820,10 +877,10 @@ function afterRows(){
   if(left===0)return officeDone();
   if(left===1&&!o.ft1pRolled){
     o.ft1pRolled=true;
-    const last=S.officeIdx===OFFICES.length-1;
-    if(!(Math.random()<FT1P_CHANCE||(last&&!S.stats.ft1p)))return;
+    if(!S.ftPlan[S.officeIdx])return;
+    const told=S.heard[S.officeIdx].includes('ft');
     o.ft1pFired=true;S.stats.ft1p=(S.stats.ft1p||0)+1;o.rows.push({doc:d.ft1p,form:'original',ft1p:true});
-    S.overlays.push({stamp:'Fali ti jedan papir',text:`"You're missing one paper." ${clerkName(d)} also needs your ${DOCS[d.ft1p].name}. You have never heard of this document.`,
+    S.overlays.push({stamp:'Fali ti jedan papir',text:told?`"You're missing one paper." ${clerkName(d)} also needs your ${DOCS[d.ft1p].name}. Exactly like your friend said.`:`"You're missing one paper." ${clerkName(d)} also needs your ${DOCS[d.ft1p].name}. You have never heard of this document.`,
       hint:`Tap "Go get it" next to it on the form, or slip her a Small Envelope.`});
     if(hasRelic('insider')){drawN(2);o.time+=1;S.log='Your friend inside slips you a tip.'}
   }
@@ -841,7 +898,10 @@ function endTurn(keep){
   if(o.skipIntent){o.skipIntent=false;ann={head,stamp:'Blocked',violet:true,text:`${who} was about to act (${it.name.toLowerCase()}), but didn't.`}}
   else switch(it.type){
     case 'sigh':{const t=hit(it.dmg);ann={head,stamp:`−${t} patience`,text:`${who} sighs loudly, looks at the clock, and sighs again.`};break}
-    case 'rule':{const [doc,form]=o.rulesLeft.shift();o.rows.push({doc,form,added:true});loseP(1);ann={head,stamp:'New rule',violet:true,text:`"Ah, I almost forgot." You also need: ${docName(doc,form)}. It's on the form now. −1 patience.`};break}
+    case 'rule':{const i=d.rules.length-o.rulesLeft.length,told=S.heard[S.officeIdx].includes('r'+i);const [doc,form]=o.rulesLeft.shift();o.rows.push({doc,form,added:true,told});
+      if(told)ann={head,stamp:'New rule',violet:true,text:`"Ah, I almost forgot. You also need: ${docName(doc,form)}." "I know," you say. Your friend warned you, so it doesn't get to you. It's on the form now.`};
+      else{loseP(1);ann={head,stamp:'New rule',violet:true,text:`"Ah, I almost forgot." You also need: ${docName(doc,form)}. It's on the form now. −1 patience.`}}
+      break}
     case 'reject':{const rs=o.rows.filter(r=>r.done&&!r.ft1p&&!r.bribed&&!r.paid);if(rs.length){const r=rnd(rs);r.done=false;ann={head,stamp:'Un-ticked',violet:true,text:`"${isFeeRow(r)?'This fee stamp is from the old series':'This '+DOCS[r.doc].name+' is the old format'}." That item is no longer ticked. Hand in another one.`}}else ann={head,stamp:'Nothing',violet:true,text:`${who} looks for a problem and, for once, finds none.`};break}
     case 'break':{const t=hit(it.dmg);o.timePenalty=1;ann={head,stamp:`−${t} patience`,text:'"Back in fifteen minutes." It takes forty. You also get 1 less time next turn.'};break}
     case 'phone':ann={head,stamp:'Nothing',violet:true,text:'A long phone call about a cousin\'s wedding. You wait. Nothing else happens.'};break;
@@ -926,7 +986,7 @@ const CARD_BG={
   id:'#dcd7ea',birth:'#f3d3d0',rental:'#d6e3cc',utility:'#d1e0ec',joboffer:'#f7d8b3',stamp:'#f4b89d',stamp_mun:'#f3b5a6',stamp_fed:'#bfd0ea',stamp_adm:'#c7dcc4',photo:'#e4e0d7',
   citizenship:'#d3e6d4',residence:'#d1dfee',taxno:'#f6d5aa',salary:'#cddcef',alive:'#efe4cb',landlord:'#efe4cb',nodebt:'#efe4cb',
   wait:'#f2c69c',breath:'#c7e2ee',smile:'#f4e29f',photocopy:'#bfe0db',notary:'#f1c1c1',rulebook:'#c8d5ea',argue:'#ebc6b6',number:'#e8dfc4',
-  envelope:'#d8b679',coffee:'#e2c8a0',cousin:'#e8a493',backdoor:'#efb8a3'
+  envelope:'#d8b679',coffee:'#e2c8a0',cousin:'#e8a493',backdoor:'#efb8a3',friend:'#d6cde6'
 };
 const SHADY=new Set(['envelope','coffee','cousin','backdoor']);
 const ICON={
@@ -949,6 +1009,7 @@ const LOGO={
   waves:'<svg viewBox="0 0 20 20"><g fill="none" stroke="#1d5a96" stroke-width="2.6" stroke-linecap="round"><path d="M2 6c3-2 5 2 8 0s5-2 8 0"/><path d="M2 11c3-2 5 2 8 0s5-2 8 0"/><path d="M2 16c3-2 5 2 8 0s5-2 8 0"/></g></svg>'
 };
 const FALLBACK={
+  friend:'<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M3 5h22v13H12l-5 4v-4H3z" fill="#fff" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M7 10h14M7 14h9" stroke="currentColor" stroke-width="1.5"/><path d="M37 17H19v12h11l5 4v-4h2z" fill="#4c9e9b" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><text x="28" y="27" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="10" fill="#fff">psst</text></svg>',
   doc:'<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 4h16l7 7v25H9z" fill="#fff" stroke="currentColor" stroke-width="2"/><path d="M13 15h14M13 19h14M13 23h9" stroke="currentColor" stroke-width="1.5"/><circle cx="26" cy="29" r="4.5" fill="none" stroke="#4a3a8c" stroke-width="1.6"/></svg>',
   argue:'<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M3 6h20v12H11l-5 4v-4H3z" fill="#fff" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M37 16H17v12h12l5 4v-4h3z" fill="#e76a36" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 15.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   number:'<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 10h28v6a4 4 0 0 0 0 8v6H6v-6a4 4 0 0 0 0-8z" fill="#fff" stroke="currentColor" stroke-width="2"/><text x="20" y="25" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="11" fill="#c93f31">247</text></svg>'
@@ -992,7 +1053,7 @@ function cardHTML(c,{act='card',cls='',style=''}={}){
       <span class="sub ${c.form}">${single?'Document':FORM[c.form]}</span>
       ${artHTML(c)}
       <span class="costs"><span class="cost free">0</span></span>
-      <span class="foot">${foot}</span></button>`;
+      <span class="foot">${foot}</span>${/\bheard\b/.test(cls)?'<span class="heardmark">Heard</span>':''}</button>`;
   }
   const a=ACTIONS[c.key],pc=patCost(c),shady=SHADY.has(c.key);
   return `<button class="card act ${shady?'shady':''} ${cls}" style="--c:${CARD_BG[c.key]||'#efe3c6'};${style}" data-act="${act}" data-uid="${c.uid}" aria-label="${esc(a.name)}, ${shady?'shady action':'action'}, costs ${timeCost(c)} time${pc?` and ${pc} patience`:''}">
@@ -1003,7 +1064,11 @@ function cardHTML(c,{act='card',cls='',style=''}={}){
     <span class="tx">${esc(a.text)}</span></button>`;
 }
 function handCls(c){
-  if(S.keeping)return S.keeping.includes(c.uid)?'keep':'tossing';
+  const h=isHeardCard(c)?' heard':'';
+  if(S.keeping)return (S.keeping.includes(c.uid)?'keep':'tossing')+h;
+  return handCls0(c)+h;
+}
+function handCls0(c){
   const tg=S.target;
   if(tg){if(tg.src===c.uid)return 'armed';
     if(((tg.type==='original')&&isOriginalCopyable(c))||(tg.type==='copy'&&isCopy(c)))return 'targetable';return 'off'}
@@ -1040,7 +1105,7 @@ function officeView(){
   const total=o.rows.length,done=o.rows.filter(r=>r.done).length,left=total-done;
   const rows=o.rows.map((r,i)=>{
     const pick=tg&&tg.type==='row'&&!r.done;
-    const mark=r.done?(r.bribed?'<span class="mini-stamp bribe">Settled</span>':r.paid?'<span class="mini-stamp ok">Paid</span>':'<span class="mini-stamp ok">Received</span>'):r.ft1p?'<span class="tag ft">FT1P</span>':r.added?'<span class="tag new">New rule</span>':'';
+    const mark=r.done?(r.bribed?'<span class="mini-stamp bribe">Settled</span>':r.paid?'<span class="mini-stamp ok">Paid</span>':'<span class="mini-stamp ok">Received</span>'):r.ft1p?'<span class="tag ft">FT1P</span>':r.added?`<span class="tag new">${r.told?'Heard it':'New rule'}</span>`:'';
     const have=!r.done&&inFolder(r);
     const isFee=isFeeRow(r),n=r.done?0:pileCards().filter(c=>accepts(r,c)).length;
     const sub=isFee?`<em>${DOCS[DOCS[r.doc].fee].name}, or pay at a bank (costs your turn)</em>`:DOCS[r.doc].single?'':`<em>${FORM[r.form]}${r.form==='alt'?' · an original is kept':''}</em>`;
@@ -1053,6 +1118,9 @@ function officeView(){
     return `<li class="${r.done?'done':''} ${o.fresh===i?'fresh':''}"><button class="row ${r.done?'done':''} ${pick?'pick':''}" data-act="row" data-i="${i}" ${pick?'':'tabindex="-1"'}>
       <span class="box">${r.done?ICON.check:''}</span>${rowThumb(r)}<span class="row-label"><span class="nm">${esc(DOCS[r.doc].name)}</span>${sub}${own}</span>${mark}</button>${fetch}</li>`;
   }).join('');
+  const ghosts=heardPending(S.officeIdx).map(x=>x.none
+    ?`<li class="heard none"><div class="row ghost"><span class="box"></span><span class="row-label"><span class="nm">No strange papers here</span><em>Heard in the queue</em></span><span class="tag heard">Heard</span></div></li>`
+    :`<li class="heard"><div class="row ghost"><span class="box"></span>${rowThumb(x)}<span class="row-label"><span class="nm">${esc(DOCS[x.doc].fee?DOCS[DOCS[x.doc].fee].name:DOCS[x.doc].name)}?</span><em>${x.ft1p?'Heard: a strange paper, right at the end':'Heard: she may ask for it later'.replace('she',d.title==='Mr.'?'he':'she')}${!x.ft1p&&!DOCS[x.doc].single?` · ${FORM[x.form]}`:''}</em></span><span class="tag heard">Heard</span></div></li>`).join('');
   const segs=Array.from({length:total},(_,i)=>`<span class="seg ${i<done?'on':''}"></span>`).join('');
   const ftLabel=!o.ft1pFired&&left===2?'One more and…':`Missing ${left}`;
   const tgtMsg=tg?{original:'Pick an original in your hand',copy:'Pick a copy to notarize',row:'Pick a line on the checklist to tick off'}[tg.type]:'';
@@ -1068,14 +1136,14 @@ function officeView(){
     </section>
     <section class="check">
       <div class="check-head"><span class="logo" style="background:#fff;border:1.5px solid var(--line)">${LOGO[st.logo]}</span><b style="color:${st.color}">${esc(d.name)}</b><span>${esc(d.goal)}</span><span class="count">✓ ${done}/${total}</span></div>
-      <ul class="rows">${rows}</ul>
+      <ul class="rows">${rows}${ghosts}</ul>
       <div class="ftmeter"><span>Progress</span><span class="segs">${segs}</span><span>${done}/${total} ticked</span></div>
     </section>
     <p class="log" aria-live="polite">${esc(S.log)}</p>
   </main>
   <footer class="dock">
     ${tg?`<div class="banner"><span>${tgtMsg}</span><button data-act="cancel">Cancel</button></div>`:''}
-    ${S.keeping?`<div class="banner keepbar"><span>End of turn: tap up to ${KEEP_MAX} cards to keep (${S.keeping.length}/${KEEP_MAX}). The rest are discarded and you draw back up to ${HAND_SIZE}. Keep none to redraw all.</span><button data-act="keepCancel">Back</button></div>`:''}
+    ${S.keeping?`<div class="banner keepbar"><span>End of turn: tap up to ${KEEP_MAX} cards to keep (${S.keeping.length}/${KEEP_MAX}). The rest are discarded and you draw back up to ${HAND_SIZE}. Keep none to redraw all.${o.hand.some(u=>isHeardCard(C(u)))?' Cards marked HEARD will probably be asked for here.':''}</span><button data-act="keepCancel">Back</button></div>`:''}
     ${S.confirm?`<div class="banner warn"><span>This line takes an original or a certified copy. If you hand over the original, the clerk keeps it.</span><span class="bb"><button class="solid" data-act="confirmYes">Hand it over</button><button data-act="cancel">Keep it</button></span></div>`:''}
     <div class="fanwrap">
       <div class="lane fan">${fanHTML(o.hand)}</div>
@@ -1092,7 +1160,7 @@ function screen(){
     ${soundBtn()}<main class="ts"><div class="ts-logo">
       <div class="ts-papers" aria-hidden="true">${P.map(([k,r,x],i)=>`<span class="ts-p" style="--x:${x}px;--r:${r}deg;--d:${(-i*1.3).toFixed(1)}s;--t:${(4.6+i*.7).toFixed(1)}s"><img src="${ART[k]}" alt=""></span>`).join('')}<span class="ts-p miss" style="--x:62px;--r:26deg;--d:-2.2s;--t:3.8s">?</span></div>
       <h1 class="ts-title" aria-label="Fali ti jedan papir"><span class="l1">Fali ti</span><span class="l2">jedan papir</span></h1>
-      <span class="ts-stamp" aria-hidden="true">Prototip v18</span></div>
+      <span class="ts-stamp" aria-hidden="true">Prototip v19</span></div>
       <nav class="ts-menu" aria-label="Main menu">
         <button class="btn primary" data-act="start">Start new run</button>
         <button class="btn" data-act="rules">Rules</button>
@@ -1159,6 +1227,7 @@ function rulesBody(){return `      <p>You got the job. Your employer pays salari
         <li>Shady actions (dashed border) also cost <b>patience</b>, shown with a red heart. Patience is your health. At zero you give up.</li>
         <li>Copies, stamps and photos are kept by the clerk. Originals come back, unless the line says "original or certified copy" and you hand over the original.</li>
         <li>Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. You might already have it: strange papers turn up in your starting cards, as rewards, and in your aunt's drawer. If not, tap <b>Go get it</b> or bribe it.</li>
+        <li><b>My Friend Went Last Week</b> tells you something the clerk will ask for later: a rule she will suddenly remember, or her strange paper. Tips show up on the form in pencil and mark matching cards in your hand <b>Heard</b>, so you know what to keep. If she asks for something you heard about, it costs you no patience. When an office has no secrets left, you hear about the next one.</li>
         <li>Fees take a fee stamp. No stamp? Pay at the bank instead, but it costs the rest of your turn.</li>
         <li><b>Controls.</b> Touch: tap a card to play, hold to look, slide up to play what you're looking at. Mouse: hover to look, click to play. Keys: 1–9 play a card, Space ends the turn, Esc cancels or pauses, P pause, M map, C cards. The ☰ Menu button pauses the game.</li>
         <li>When the run ends, keep one paper for the next run.</li>
@@ -1195,7 +1264,7 @@ function panelHTML(){
   if(S.view==='map'){
     body=`<h2>Your route</h2><p class="lead">Five offices, each one hands you the paper the next one asks for.</p><ol class="route-list">${OFFICES.map((x,i)=>{
       const st=i<S.officeIdx||(S.result==='win')?'done':i===S.officeIdx?'now':'ahead';
-      return `<li class="${st}"><img src="${ART['ext_'+x.name]}" alt=""><span class="rn"><b>${i+1}. ${esc(x.full)}</b><small>${esc(clerkName(x))} · You get: ${esc(x.goal)}</small></span><span class="rs">${st==='done'?'Approved':st==='now'?'You are here':'Ahead'}</span></li>`}).join('')}</ol>
+      return `<li class="${st}"><img src="${ART['ext_'+x.name]}" alt=""><span class="rn"><b>${i+1}. ${esc(x.full)}</b><small>${esc(clerkName(x))} · You get: ${esc(x.goal)}</small>${(()=>{const hp=i>=S.officeIdx?heardPending(i):[];return hp.length?`<small class="heardnote">Heard: ${hp.map(h=>h.none?'no strange papers':esc(needLabel(h.doc,h.form))).join(', ')}</small>`:''})()}</span><span class="rs">${st==='done'?'Approved':st==='now'?'You are here':'Ahead'}</span></li>`}).join('')}</ol>
       ${S.relics.length?`<h3>Connections</h3><ul class="rel">${S.relics.map(r=>`<li><b>${esc(RELICS[r].name)}</b> · ${esc(RELICS[r].text)}</li>`).join('')}</ul>`:''}`;
   } else {
     const o=S.office&&(S.screen==='office'||S.screen==='errand')?S.office:null;
