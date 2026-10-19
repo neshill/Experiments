@@ -295,31 +295,29 @@ main.ts{position:relative;z-index:1;justify-content:center;align-items:center;ga
 .pm-btns .btn{font-size:19px;padding:11px 16px}
 .btn.danger{color:var(--red);border-color:rgba(201,63,49,.55)}
 .btn.primary.danger{background:var(--red);color:#fff;border-color:var(--ink)}
-/* PAUZA sign: hangs from the top edge of the screen on two strings. It drops in, bounces on the strings, swings out
-   like a pendulum (pivot = the ceiling) and keeps a lazy sway while paused. */
+/* PAUZA sign, in three beats when the menu opens: the shade fades in, then the sign drops straight down from the top
+   edge (gravity: slow start, fast finish), then it swings a little on its strings, pivoting at the ceiling, and settles.
+   Two layers so the moves don't fight: .pause-sign falls (up/down only), .ps-swing rotates. */
 .panel.pause{flex-direction:column;align-items:center;padding-top:clamp(132px,19vh,200px)}
-.pause-sign{position:absolute;top:0;left:0;right:0;margin:0 auto;width:max-content;z-index:2;pointer-events:none;transform-origin:50% 0;
-  padding-top:var(--str,clamp(30px,6vh,64px));display:flex;flex-direction:column;align-items:center}
-.pause-sign::before,.pause-sign::after{content:"";position:absolute;top:0;height:calc(var(--str,clamp(30px,6vh,64px)) + 10px);width:3px;background:var(--ink);border-radius:2px}
-.pause-sign::before{left:22%}.pause-sign::after{right:22%}
+.pause-sign{position:absolute;top:0;left:0;right:0;margin:0 auto;width:max-content;z-index:2;pointer-events:none}
+.ps-swing{position:relative;transform-origin:50% 0;padding-top:clamp(30px,6vh,64px);display:flex;flex-direction:column;align-items:center}
+.ps-swing::before,.ps-swing::after{content:"";position:absolute;top:0;height:calc(clamp(30px,6vh,64px) + 10px);width:3px;background:var(--ink);border-radius:2px}
+.ps-swing::before{left:22%}.ps-swing::after{right:22%}
 .pause-sign b{position:relative;display:block;background:var(--paper);border:4px solid var(--ink);border-radius:8px;padding:.05em .5em .02em;
   font-family:var(--f-display);font-weight:800;font-size:clamp(46px,11vw,96px);line-height:1;letter-spacing:.14em;text-transform:uppercase;color:var(--red);
   box-shadow:0 6px 0 var(--ink),0 18px 34px rgba(0,0,0,.35);background-image:repeating-linear-gradient(90deg,rgba(24,40,58,.03) 0 3px,transparent 3px 7px)}
 .pause-sign b::before,.pause-sign b::after{content:"";position:absolute;top:8px;width:9px;height:9px;border-radius:50%;background:var(--ink)}
 .pause-sign b::before{left:calc(22% - 3px)}.pause-sign b::after{right:calc(22% - 3px)}
 .pause-sign small{margin-top:10px;font-family:var(--f-display);font-weight:800;font-size:clamp(13px,2.4vw,17px);letter-spacing:.2em;text-transform:uppercase;color:var(--paper);text-shadow:0 1px 0 var(--ink)}
-@keyframes hangdrop{
-  0%{transform:translateY(-120%) rotate(0)}
-  38%{transform:translateY(7%) rotate(0)}
-  50%{transform:translateY(-3%) rotate(-5deg)}
-  63%{transform:translateY(1.5%) rotate(3.5deg)}
-  76%{transform:translateY(0) rotate(-2deg)}
-  88%{transform:translateY(0) rotate(1deg)}
-  100%{transform:translateY(0) rotate(0)}}
-@keyframes hangsway{0%,100%{transform:rotate(0)}50%{transform:rotate(.9deg)}}
-.pause-sign{animation:hangsway 4.5s ease-in-out infinite}
-.pause-sign.drop{animation:hangdrop 1.25s cubic-bezier(.3,.6,.35,1) both,hangsway 4.5s ease-in-out 1.25s infinite}
-@media (prefers-reduced-motion:reduce){.pause-sign,.pause-sign.drop{animation:none}}
+@keyframes shadein{from{background-color:rgba(24,40,58,0)}}
+@keyframes boxin{from{opacity:0;transform:translateY(10px)}}
+@keyframes signfall{from{transform:translateY(-140%)}to{transform:translateY(0)}}
+@keyframes signswing{0%{transform:rotate(0)}18%{transform:rotate(3.2deg)}42%{transform:rotate(-2.2deg)}64%{transform:rotate(1.2deg)}84%{transform:rotate(-.5deg)}100%{transform:rotate(0)}}
+.panel.pause.enter{animation:shadein .28s ease-out both}
+.panel.pause.enter .pm-in{animation:boxin .28s ease-out .08s both}
+.pause-sign.drop{animation:signfall .34s cubic-bezier(.55,0,.95,.45) .32s both}
+.pause-sign.drop .ps-swing{animation:signswing 1.5s ease-in-out .66s both}
+@media (prefers-reduced-motion:reduce){.panel.pause.enter,.panel.pause.enter .pm-in,.pause-sign.drop,.pause-sign.drop .ps-swing{animation:none}}
 .ts-sound{position:fixed;z-index:3;top:max(14px,env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));width:44px;height:44px;border-radius:50%;
   display:grid;place-items:center;background:rgba(24,40,58,.55);border:2px solid rgba(242,229,200,.6);color:var(--paper);padding:0}
 .ts-sound svg{width:22px;height:22px}
@@ -1115,7 +1113,7 @@ function pauseHTML(){
       <button class="btn" data-act="music">Menu music: ${musicOn?'on':'off'}</button>
       <button class="btn quiet danger" data-act="endRun">End run</button></div>`;
   const drop=!pauseDropped;pauseDropped=true; // drop only when the menu opens, not on every redraw
-  return `<div class="panel pause" role="dialog" aria-modal="true" aria-label="Paused"><div class="pause-sign ${drop?'drop':''}" aria-hidden="true"><b>Pauza</b><small>Game paused</small></div><div class="panel-in pm-in">${body}</div></div>`;
+  return `<div class="panel pause ${drop?'enter':''}" role="dialog" aria-modal="true" aria-label="Paused"><div class="pause-sign ${drop?'drop':''}" aria-hidden="true"><div class="ps-swing"><b>Pauza</b><small>Game paused</small></div></div><div class="panel-in pm-in">${body}</div></div>`;
 }
 // ---------- side pages: run map and your cards ----------
 function groupCards(uids){const m=new Map();uids.map(C).forEach(c=>{const k=c.kind==='doc'?c.doc+'|'+c.form:'a|'+c.key;if(!m.has(k))m.set(k,{c,n:0});m.get(k).n++});
