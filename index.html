@@ -275,6 +275,20 @@ main.ts{position:relative;z-index:1;justify-content:center;align-items:center;ga
 .ts-menu .btn{font-size:21px;padding:13px 16px;background:var(--paper-2);color:var(--ink)}
 .ts-menu .btn.primary{background:var(--orange);color:#fff}
 .ts-menu .btn.quiet{background:transparent;color:var(--paper);border-color:rgba(242,229,200,.55);box-shadow:none}
+/* Menu hover: a springy grow + tilt. The overshooting curve on the way in makes it "boing" into place; release eases back a little slower. Each button tilts its own way. */
+.ts-menu .btn{transition:transform .32s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease,background-color .2s,border-color .2s;will-change:transform}
+.ts-menu .btn:nth-child(1){--tilt:-2.5deg}.ts-menu .btn:nth-child(2){--tilt:2deg}.ts-menu .btn:nth-child(3){--tilt:-1.5deg}
+@media (hover:hover){
+  .ts-menu .btn:hover{transform:scale(1.07) rotate(var(--tilt));box-shadow:0 7px 0 var(--ink),0 12px 22px rgba(0,0,0,.28);transition:transform .38s cubic-bezier(.34,1.8,.5,1),box-shadow .25s ease}
+  .ts-menu .btn.quiet:hover{border-color:var(--paper);background:rgba(242,229,200,.08);box-shadow:none}
+}
+.ts-menu .btn:active{transform:scale(.96) rotate(calc(var(--tilt) * -.5));box-shadow:0 1px 0 var(--ink);transition-duration:.08s}
+.ts-menu .btn:focus-visible{transform:scale(1.05) rotate(var(--tilt))}
+@media (prefers-reduced-motion:reduce){.ts-menu .btn,.ts-menu .btn:hover,.ts-menu .btn:active{transform:none;transition:none}}
+.ts-sound{position:fixed;z-index:3;top:max(14px,env(safe-area-inset-top,0px));right:max(14px,env(safe-area-inset-right,0px));width:44px;height:44px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(24,40,58,.55);border:2px solid rgba(242,229,200,.6);color:var(--paper);padding:0}
+.ts-sound svg{width:22px;height:22px}
+.ts-sound.light{background:var(--paper-2);border-color:var(--ink);color:var(--ink);box-shadow:0 2px 0 var(--ink)}
 .ts-carry{margin-top:16px;font-size:13.5px;color:var(--gold);max-width:300px}
 .ts-foot{margin-top:auto;padding-top:22px;font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,229,200,.7)}
 @media (max-height:640px){.ts-papers{height:84px;transform:scale(.8)}.ts-logo{margin-bottom:24px}.ts-title{font-size:clamp(52px,15vw,80px)}}
@@ -967,7 +981,7 @@ function screen(){
   switch(S.screen){
   case 'intro':{const P=[['doc_birth',-30,-62],['doc_id',-11,-22],['doc_rental',9,20]];
     return `<div class="ts-bg" aria-hidden="true"><img src="${ART['office_Registry']}" alt=""></div>
-    <main class="ts"><div class="ts-logo">
+    ${soundBtn()}<main class="ts"><div class="ts-logo">
       <div class="ts-papers" aria-hidden="true">${P.map(([k,r,x],i)=>`<span class="ts-p" style="--x:${x}px;--r:${r}deg;--d:${(-i*1.3).toFixed(1)}s;--t:${(4.6+i*.7).toFixed(1)}s"><img src="${ART[k]}" alt=""></span>`).join('')}<span class="ts-p miss" style="--x:62px;--r:26deg;--d:-2.2s;--t:3.8s">?</span></div>
       <h1 class="ts-title" aria-label="Fali ti jedan papir"><span class="l1">Fali ti</span><span class="l2">jedan papir</span></h1>
       <span class="ts-stamp" aria-hidden="true">Prototip v17</span></div>
@@ -982,7 +996,7 @@ function screen(){
     <main class="ts"><div class="ov-stamp violet" style="color:var(--paper);border-color:var(--paper)">Closed</div>
       <p style="margin:18px 0 22px;max-width:30ch;font-size:16px;line-height:1.45">The window is closed. Come back tomorrow, between 8:00 and 15:00. You can close this tab now.</p>
       <nav class="ts-menu"><button class="btn" data-act="title">Back to the title</button></nav></main>`;
-  case 'rules':return `<main><div class="sheet">
+  case 'rules':return `${soundBtn(true)}<main><div class="sheet">
       <span class="kicker">How it works</span><h2>Rules</h2>
       <p>You got the job. Your employer pays salaries only into a local bank account, and your first payday is soon. The bank wants your Employment Registration. The employment bureau wants a Tax Number. The tax office wants a Certificate of Residence. The police want a Citizenship Certificate. The registry wants your birth certificate. You have 80 patience.</p>
       <div class="route">${OFFICES.map((x,i)=>`<figure><img src="${ART['ext_'+x.name]}" alt=""><figcaption>${i+1}. ${esc(x.short)}<small>${esc(x.goal)}</small></figcaption></figure>`).join('')}</div>
@@ -1075,10 +1089,31 @@ function render(){
   $app.innerHTML=(['intro','rules','closed'].includes(S.screen)?'':status())+screen()+panelHTML()+overlay();
   if(keep)SC.forEach((q,i)=>{const el=$app.querySelector(q);if(el)el.scrollTop=tops[i]});
   lastScreen=S.screen+'|'+S.officeIdx;
-  gossipTick();fitTitle();
+  gossipTick();fitTitle();musicSync();
   if(S.office&&S.office.fresh!=null){S.office.fresh=null;const li=$app.querySelector('.rows li.fresh');if(li&&li.scrollIntoView)li.scrollIntoView({block:'nearest',behavior:'smooth'})}
 }
 
+/* ============ menu music ============
+   "Waiting Room Shuffle" loops on the title and rules screens and fades out when a run starts.
+   Browsers only allow sound after the player has touched or clicked the page, so the first tap anywhere starts it.
+   The speaker button turns it off; that choice is remembered on this device. */
+const MUSIC_SCREENS=['intro','rules'];
+const MUSIC=typeof Audio==='function'?new Audio('waiting-room-shuffle.mp3'):null;
+if(MUSIC){MUSIC.loop=true;MUSIC.preload='auto';MUSIC.volume=0}
+let musicOn=true,musicFade=null;
+try{musicOn=localStorage.getItem('ft1p.music')!=='off'}catch(e){}
+function fadeTo(v,ms,done){if(!MUSIC)return;clearInterval(musicFade);const from=MUSIC.volume,t0=Date.now();
+  musicFade=setInterval(()=>{const k=Math.min(1,(Date.now()-t0)/ms);MUSIC.volume=from+(v-from)*k;if(k>=1){clearInterval(musicFade);done&&done()}},40)}
+function musicSync(){
+  if(!MUSIC||!S)return;
+  const want=musicOn&&MUSIC_SCREENS.includes(S.screen);
+  if(want){if(MUSIC.paused){const pr=MUSIC.play();if(pr&&pr.catch)pr.catch(()=>{})}fadeTo(.55,700)}
+  else if(!MUSIC.paused)fadeTo(0,S.screen==='office'?1200:400,()=>MUSIC.pause());
+}
+function soundBtn(light){return `<button class="ts-sound ${light?'light':''}" data-act="music" aria-label="${musicOn?'Turn music off':'Turn music on'}" aria-pressed="${musicOn}">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>${musicOn?'<path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>':'<path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}</svg></button>`}
+// First touch / click / key anywhere unlocks audio (browser autoplay rule).
+['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev,()=>musicSync(),{capture:true,passive:true}));
 // Title logo: shrink the type until both lines fit the screen (fallback fonts are wider than Barlow Condensed).
 function fitTitle(){const t=$app.querySelector('.ts-title');if(!t)return;t.style.fontSize='';
   const max=Math.min(innerWidth,$app.clientWidth||innerWidth)*0.9;let f=parseFloat(getComputedStyle(t).fontSize),n=0;
@@ -1163,6 +1198,7 @@ document.addEventListener('click',e=>{
     case 'start':enterOffice();break;
     case 'rules':S.screen='rules';break;
     case 'title':S.screen='intro';break;
+    case 'music':musicOn=!musicOn;try{localStorage.setItem('ft1p.music',musicOn?'on':'off')}catch(_){}break;
     // Quit: a web page can only close itself if a script opened it, so fall back to a "closed" screen.
     case 'quit':S.screen='closed';render();try{window.close()}catch(_){}return;
     case 'card':tapCard(uid);break;
