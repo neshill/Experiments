@@ -268,6 +268,9 @@ button.piles{background:none;border:0;padding:4px 0;text-decoration:underline;te
 .btn.quiet{background:transparent;box-shadow:none;border-color:rgba(24,40,58,.35);color:var(--muted)}
 
 /* ---------- other screens ---------- */
+.sheet-x{position:sticky;top:0;z-index:2;align-self:flex-end;margin:-6px -5px -46px 0;width:40px;height:40px;padding:0;border-radius:50%;border:2px solid var(--ink);background:#fff;color:var(--ink);box-shadow:0 2px 0 var(--ink);display:grid;place-items:center}
+.sheet-x svg{width:18px;height:18px}
+.sheet-x:active{transform:translateY(2px);box-shadow:none}
 .sheet{background:var(--paper-2);border:1.5px solid rgba(24,40,58,.3);border-radius:8px;box-shadow:var(--shadow);padding:16px 15px;display:flex;flex-direction:column;gap:12px}
 .sheet h2{margin:0;font-family:var(--f-display);font-weight:800;font-size:28px;line-height:1;text-transform:uppercase;letter-spacing:.01em;text-wrap:balance}
 .sheet p{margin:0;font-size:15px;line-height:1.5;max-width:62ch}
@@ -1172,10 +1175,10 @@ function screen(){
     <main class="ts"><div class="ov-stamp violet" style="color:var(--paper);border-color:var(--paper)">Closed</div>
       <p style="margin:18px 0 22px;max-width:30ch;font-size:16px;line-height:1.45">The window is closed. Come back tomorrow, between 8:00 and 15:00. You can close this tab now.</p>
       <nav class="ts-menu"><button class="btn" data-act="title">Back to the title</button></nav></main>`;
-  case 'rules':return `${soundBtn(true)}<main><div class="sheet">
+  case 'rules':return `<main><div class="sheet">
+      <button class="sheet-x" data-act="title" aria-label="Close rules" title="Close (Esc)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button>
       <span class="kicker">How it works</span><h2>Rules</h2>
-      ${rulesBody()}
-      <div class="btnrow"><button class="btn primary" data-act="start">Take a number</button><button class="btn quiet" data-act="title">Back</button></div></div></main>`;
+      ${rulesBody()}</div></main>`;
   case 'office':return officeView();
   case 'errand':{const r=S.office.rows[S.pending],e=errandFor(r),d=cur();
     return `<main><div class="sheet"><span class="kicker">Leave the window</span><h2>Go get: ${esc(e.get)}</h2>
@@ -1722,7 +1725,7 @@ if(typeof document.createElement==='function'){
     if(S.paused){if(k==='Escape'||k==='p'||k==='P'){e.preventDefault();S.paused=S.paused==='menu'?null:'menu';render()}return}
     if(S.overlays.length){if(k==='Enter'||k===' '||k==='Escape'){e.preventDefault();S.overlays.shift();render()}return}
     if((k==='p'||k==='P')&&inRun){S.paused='menu';render();return}
-    if(k==='Escape'){if(S.view)S.view=null;else if(S.target||S.confirm){S.target=null;S.confirm=null}else if(S.keeping)S.keeping=null;else if(inRun)S.paused='menu';else return;render();return}
+    if(k==='Escape'){if(S.view)S.view=null;else if(S.target||S.confirm){S.target=null;S.confirm=null}else if(S.keeping)S.keeping=null;else if(inRun)S.paused='menu';else if(S.screen==='rules')S.screen='intro';else return;render();return}
     if(k==='m'||k==='M'||k==='c'||k==='C'){const v=/m/i.test(k)?'map':'deck';if(['intro','rules','closed'].includes(S.screen))return;S.view=S.view===v?null:v;render();return}
     if(S.view||S.screen!=='office')return;
     if(k===' '||k==='e'||k==='E'){e.preventDefault();if(S.keeping)endTurn(S.keeping);else requestEndTurn();render();return}
