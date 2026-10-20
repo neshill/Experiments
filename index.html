@@ -33,11 +33,13 @@ main>*{flex-shrink:0}
 
 /* ---------- HUD ---------- */
 .hud{display:flex;flex-direction:column;gap:7px;padding-block:8px 8px;border-bottom:2px solid var(--ink)}
-.tiles{display:grid;grid-template-columns:25% minmax(0,1fr) auto auto auto;gap:6px}
+/* patience gets twice the room of time; neither shrinks below its contents */
+.tiles{display:grid;grid-template-columns:minmax(max-content,2fr) minmax(max-content,1fr) auto auto auto;gap:6px}
 .menubtn{display:grid;place-items:center;padding:4px 8px;min-width:0}
 /* narrow phones: the dots already show the time left, so the number goes */
 @media (max-width:430px){.tnum{display:none}}
 .menubtn svg{width:24px;height:24px}
+.tile.menubtn{display:grid;place-items:center}
 .hbtn{text-align:left;cursor:pointer;border-color:rgba(24,40,58,.35);box-shadow:0 2px 0 rgba(24,40,58,.35)}
 .hbtn:active{transform:translateY(2px);box-shadow:none}
 .mapic{width:16px;height:16px;flex:0 0 auto}
@@ -435,7 +437,7 @@ textarea.fb-in{min-height:120px;resize:vertical}
 .ov-box small{color:var(--muted);text-align:center;font-family:var(--f-display);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 @keyframes thump{from{transform:rotate(-5deg) scale(2.2);opacity:0}to{transform:rotate(-5deg) scale(1);opacity:1}}
 @media (prefers-reduced-motion:reduce){.ov-stamp,.rows li.fresh,.rows li.fresh .mini-stamp,.rows li.fresh .box{animation:none}.card,.card.armed,#peek{transition:none}}
-@media (max-width:360px){.tiles{grid-template-columns:26% minmax(0,1fr) auto auto auto}.tile .val{font-size:17px}.title{font-size:48px}}
+@media (max-width:360px){.tiles{grid-template-columns:minmax(max-content,2fr) minmax(max-content,1fr) auto auto auto}.tile .val{font-size:17px}.title{font-size:48px}}
 
 /* ================= landscape / desktop / handheld (Steam Deck-class 1280×800) =================
    Three columns: the office on the left, the hand in the middle, the checklist on the right.
