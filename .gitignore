@@ -3,3 +3,6 @@ Claude outputs/
 *.png
 # macOS folder settings
 .DS_Store
+
+# ...except the home-screen icon, which the game needs next to index.html
+!apple-touch-icon.png
