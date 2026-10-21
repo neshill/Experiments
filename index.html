@@ -365,7 +365,7 @@ textarea.fb-in{min-height:120px;resize:vertical}
 .ts-sound svg{width:22px;height:22px}
 .ts-sound.light{background:var(--paper-2);border-color:var(--ink);color:var(--ink);box-shadow:0 2px 0 var(--ink)}
 .ts-carry{margin-top:16px;font-size:13.5px;color:var(--gold);max-width:300px}
-.ts-foot{margin-top:auto;padding-top:22px;font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,229,200,.7)}
+.ts-foot{margin-top:auto;padding-top:22px;font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(242,229,200,.7);margin-bottom:16px}
 @media (max-height:640px){.ts-papers{height:84px;transform:scale(.8)}.ts-logo{margin-bottom:24px}.ts-title{font-size:clamp(52px,15vw,80px)}}
 /* Whimsy: each paper bobs and sways on its own slow loop (different lengths and offsets, so they never move in sync); the missing one wobbles more. */
 @keyframes tsfloat{0%,100%{transform:translateX(var(--x)) translateY(0) rotate(var(--r))}30%{transform:translateX(calc(var(--x) + 2px)) translateY(-7px) rotate(calc(var(--r) + 3deg))}65%{transform:translateX(calc(var(--x) - 2px)) translateY(-3px) rotate(calc(var(--r) - 2.5deg))}}
@@ -1399,7 +1399,7 @@ const FEEDBACK_URL='https://script.google.com/macros/s/AKfycbwBAsc8Gc7MfPPNxapbW
 const GAME_VERSION='v21';
 // GAME_BUILD is rewritten automatically on every commit by .githooks/pre-commit (don't edit by hand):
 // n = the commit's number in the repo history, date = when it was committed.
-const GAME_BUILD={n:32,date:'2026-10-21 14:32'};
+const GAME_BUILD={n:33,date:'2026-10-21 14:32'};
 const versionLabel=()=>`${GAME_VERSION} · build ${GAME_BUILD.n}`;
 const FB={type:'Bug',text:'',name:'',sending:false,err:''};
 try{FB.name=localStorage.getItem('ft1p.fbname')||''}catch(_){}
