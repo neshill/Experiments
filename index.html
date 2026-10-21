@@ -313,6 +313,12 @@ main.ts{position:relative;z-index:1;justify-content:center;align-items:center;ga
 .panel.pause{z-index:40;align-items:center;background:rgba(24,40,58,.62)}
 .pm-in{max-width:420px;height:auto;max-height:100%;display:flex;flex-direction:column;gap:10px;position:relative;padding-top:22px}
 .panel.pause .panel-in>.pclose{position:sticky;align-self:flex-end;float:none}
+/* card list, map and the option sub-pages: a round X pinned in the top-right corner, like the rules page */
+.panel:not(.pause) .panel-in{display:flex;flex-direction:column}
+.panel-in>*{flex-shrink:0}
+.panel-in>.sheet-x{margin:-4px -2px -46px 0}
+.pm-in>.sheet-x{margin:-10px -2px -40px 0}
+.panel-in>.sheet-x+.kicker,.panel-in>.sheet-x+h2{padding-right:46px}
 .pm-in .rules{margin-top:4px}
 .pm-btns{display:flex;flex-direction:column;gap:10px;margin-top:6px}
 .pm-btns .btn{font-size:19px;padding:11px 16px}
@@ -442,6 +448,60 @@ textarea.fb-in{min-height:120px;resize:vertical}
 @media (prefers-reduced-motion:reduce){.ov-stamp,.rows li.fresh,.rows li.fresh .mini-stamp,.rows li.fresh .box{animation:none}.card,.card.armed,#peek{transition:none}}
 @media (max-width:360px){.tiles{grid-template-columns:minmax(max-content,2fr) minmax(max-content,1fr) auto auto auto}.tile .val{font-size:17px}.title{font-size:48px}}
 
+
+/* ================= v21 experiment: full-bleed location header, floating HUD, sliding hand =================
+   The office stage runs edge to edge across the top, with the location band along its bottom and the clerk's
+   next action as a dark tab on the right. Patience and time float in the top-right corner. The hand is a
+   straight row of tilted cards you slide sideways; the End-turn button sits between the pile counters and
+   the map / settings buttons along the bottom edge. Cost sits on each card's top-left corner. */
+.dock{background:linear-gradient(to bottom,rgba(0,0,0,0) 0.0%,rgba(29,27,22,0.125) 6.6%,rgba(58,54,45,0.25) 13.1%,rgba(87,81,68,0.375) 19.7%,rgba(116,108,90,0.5) 26.2%,rgba(144,134,112,0.625) 32.8%,rgba(173,161,135,0.75) 39.3%,rgba(202,188,158,0.875) 45.9%,#e7d7b4 52.4%,#e7d7b4 64.9%,rgba(231,215,180,.839) 79.8%,rgba(231,215,180,.922) 100%)}
+main.withdock{--gl:max(12px,env(safe-area-inset-left,0px));--gr:max(12px,env(safe-area-inset-right,0px));margin:0 calc(-1*var(--gr)) 0 calc(-1*var(--gl));padding-left:var(--gl);padding-right:var(--gr);padding-top:0;padding-bottom:calc(342px + env(safe-area-inset-bottom,0px)*.5);scroll-padding-bottom:calc(342px + env(safe-area-inset-bottom,0px)*.5)}
+.stage.hero{--st:env(safe-area-inset-top,0px);height:calc(237px + var(--st));border:0;border-radius:0;flex-shrink:0;
+  margin:0 calc(-1*var(--gr)) 6px calc(-1*var(--gl))}
+.stage.hero .bg{position:absolute;inset:0;width:100%;height:100%;object-position:50% 55%}
+.stage.hero .portrait{left:0;top:0;bottom:auto;max-width:none;object-fit:fill} /* size + position set by framePortrait() */
+/* the counter: rises from the bottom edge to just above where the clerk's bust ends, so she reads as standing behind it */
+.stage.hero::after{top:calc(var(--cb,100%) - 34px);bottom:0;height:auto;background:linear-gradient(to bottom,rgba(24,40,58,0),rgba(24,40,58,.82) 34px,rgba(24,40,58,.92))}
+.stage.hero .band{top:auto;bottom:0;left:0;right:0;height:45px;padding:5px 10px 0;border-radius:0;box-shadow:0 -1px 4px rgba(0,0,0,.2)}
+.stage.hero .band{padding-right:calc(min(181px,48%) + 8px)}
+.stage.hero .band b,.stage.hero .band span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stage.hero .band span{margin-top:2px}
+.stage.hero .intent{left:auto;right:0;bottom:9px;width:min(181px,48%);min-height:81px;z-index:3;background:var(--ink);border:0;border-radius:7px 0 0 7px;padding:8px 4px 8px 9px;gap:4px;box-shadow:0 3px 5px rgba(0,0,0,.25)}
+.stage.hero .intent .ic{order:-1;color:var(--red)}
+.stage.hero .intent .k,.stage.hero .intent .eff{color:var(--paper-2)}
+.stage.hero .intent.blocked .act,.stage.hero .intent.blocked .eff{color:rgba(251,244,226,.55)}
+.stage.hero .intent.blocked .k{color:#7fd0cb}
+.stage.hero .bubble{bottom:calc(var(--ib,81px) + 20px)}
+@media (orientation:portrait) and (max-height:700px){.stage.hero{height:calc(204px + var(--st))}.stage.hero .intent{min-height:0}}
+@media (orientation:portrait) and (min-width:566px){.stage.hero{border-radius:0 0 10px 10px}.stage.hero .band{border-radius:0 0 10px 10px}}
+/* patience + time, pinned to the top-right corner over the stage */
+.hud.float{position:absolute;z-index:8;top:calc(8px + env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));border:0;padding:0;pointer-events:none}
+.hud.float .tiles{display:flex;gap:6px;width:auto;margin:0}
+.hud.float .tile{pointer-events:auto;height:52px;border-width:1px}
+.hud.float .tile.pat{width:92px}
+.hud.float .tile.time{width:64px;align-items:center}
+.hud.float .tile.time .dots{margin-top:8px}
+/* the hand: a row of tilted cards that slides sideways */
+.fanwrap{--pb:calc(12px + env(safe-area-inset-bottom,0px)*.5);height:calc(var(--pb) + 300px);
+  margin:0 calc(-1*max(12px,env(safe-area-inset-right,0px))) 0 calc(-1*max(12px,env(safe-area-inset-left,0px)))}
+/* clip the row at the screen edges only (not above, where cards lift), and keep it from widening the page */
+.lane.fan{clip-path:inset(-400px 0 -200px 0);overflow-x:hidden;overflow-x:clip;overflow-y:visible}
+.lane.fan .track{position:absolute;left:0;top:0;bottom:0;width:0;will-change:transform}
+.lane.fan .card{--rot:15deg;left:0;bottom:calc(var(--pb) + 77px);margin-left:0;transform-origin:50% 50%;transform:translateY(var(--lift,0px)) rotate(var(--rot))}
+.lane.fan .empty{bottom:calc(var(--pb) + 130px)}
+.endbtn{bottom:calc(var(--pb) - 37px)}
+.pilebtn{bottom:var(--pb);width:42px;height:43px;min-width:0;padding:4px 0 3px;justify-content:center}
+.pilebtn.draw{left:max(12px,env(safe-area-inset-left,0px));right:auto}
+.pilebtn.used{left:calc(max(12px,env(safe-area-inset-left,0px)) + 46px);right:auto}
+.pilebtn.map{right:calc(max(12px,env(safe-area-inset-right,0px)) + 47px);left:auto;width:43px}
+.pilebtn.gear{right:max(12px,env(safe-area-inset-right,0px));left:auto;width:43px}
+.pilebtn.map .mapic{width:16px;height:16px;margin:1px 0 2px}
+.pilebtn.gear svg{width:24px;height:24px}
+.pilebtn:active{transform:translateY(2px);box-shadow:none}
+/* cost badge on every card's top-left corner */
+.card .costs{position:absolute;left:-9px;top:-9px;margin:0;height:26px;justify-content:flex-start;z-index:3}
+.card .tx{margin-top:16px}
+
 /* ================= landscape / desktop / handheld (Steam Deck-class 1280×800) =================
    Three columns: the office on the left, the hand in the middle, the checklist on the right.
    Everything is visible at once, so nothing hides behind the fan. */
@@ -475,6 +535,29 @@ textarea.fb-in{min-height:120px;resize:vertical}
   .fanwrap{transform:scale(.84);transform-origin:50% 100%}
   main.withdock{padding-bottom:calc(var(--fanh,306px)*.84 + 4px)}
   .bubble{font-size:14px}
+}
+
+/* v21 landscape: the stage becomes a full-height column on the left (still edge to edge), the checklist sits on
+   the right under the patience/time tiles, and the hand slides along the bottom of the right side. */
+@media (orientation:landscape) and (min-width:900px) and (min-height:540px){
+  #app:has(main.withdock){padding-left:0}
+  #app{--sw:clamp(380px,40%,560px)}
+  main.withdock{grid-template-columns:var(--sw) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"stage check" "stage log";
+    justify-content:stretch;gap:8px 24px;padding:0;margin:0;scroll-padding-bottom:0}
+  main.withdock>.stage.hero{margin:0;height:auto;border-radius:0 0 12px 0}
+  .stage.hero .band{border-radius:0 0 12px 0;height:52px;padding-top:7px}
+  .stage.hero .band b{font-size:22px}
+  .stage.hero .intent{bottom:64px;width:min(240px,58%)}
+  .stage.hero .band{padding-right:16px}
+  .stage.hero .bubble{bottom:calc(var(--ib,81px) + 82px)}
+  main.withdock>.check{margin-top:74px;max-height:calc(100% - 74px);margin-right:16px;max-width:620px;width:100%;justify-self:center}
+  main.withdock>.log{margin-bottom:calc(322px + 4px);justify-self:center}
+  .hud.float{top:12px;right:16px}
+  .dock{left:calc(var(--sw) + 12px);right:0}
+}
+@media (orientation:landscape) and (min-width:900px) and (min-height:540px) and (max-height:689px){
+  main.withdock{padding-bottom:0}
+  main.withdock>.log{margin-bottom:calc(322px*.84 + 4px)}
 }
 /* Phones turned sideways are too short for the hand: ask to rotate. */
 @media (orientation:landscape) and (max-height:500px) and (pointer:coarse){
@@ -1037,6 +1120,10 @@ function artHTML(c){
 function status(){
   const o=S.screen==='office'||S.screen==='errand'?S.office:null,p=Math.max(0,S.patience/S.maxP*100);
   const dots=o?Array.from({length:Math.max(3,o.time)},(_,i)=>`<span class="dot ${i<o.time?'on':''}"></span>`).join(''):'';
+  if(S.screen==='office'&&o)return `<header class="hud float"><div class="tiles">
+      <div class="tile pat" style="color:var(--red)"><span class="lbl">Patience</span><span class="val" style="color:var(--ink)">${ICON.heart.replace('class="heart"','class="heart" style="color:#c93f31"')}${S.patience}/${S.maxP}</span><span class="pbar"><i style="width:${p}%"></i></span></div>
+      <div class="tile time" role="img" aria-label="Time: ${o.time} of 3"><span class="lbl">Time</span><span class="dots">${dots}</span></div>
+    </div></header>`;
   return `<header class="hud">
     <div class="tiles">
       <div class="tile" style="color:var(--red)"><span class="lbl">Patience</span><span class="val" style="color:var(--ink)">${ICON.heart.replace('class="heart"','class="heart" style="color:#c93f31"')}${S.patience}/${S.maxP}</span><span class="pbar"><i style="width:${p}%"></i></span></div>
@@ -1079,14 +1166,30 @@ function handCls0(c){
   return canPlay(c)?'':'off';
 }
 function rowThumb(r){const k=isFeeRow(r)?'doc_'+DOCS[r.doc].fee:'doc_'+r.doc;return ART[k]?`<img class="thumb" src="${ART[k]}" alt="">`:`<span class="thumb" style="display:grid;place-items:center;color:var(--ink)">${FALLBACK.doc.replace('<svg','<svg style="width:20px;height:20px"')}</span>`}
-// Hand as a slight fan: cards overlap more as the hand grows, outer cards tilt and dip.
+// Hand: a straight row of tilted cards. When it is wider than the screen it slides sideways (see laneLayout).
+const HAND_STEP=84,HAND_TILT=15;
 function fanHTML(hand){
   const n=hand.length;if(!n)return '<span class="empty">No cards in hand.</span>';
-  // Radial fan around the End-turn button: a fixed angle between cards, squeezed when the hand gets big.
-  const vw=Math.min(window.innerWidth||390,540),spread=vw<370?70:78,step=n<=1?0:Math.min(19.5,spread/(n-1));
-  return hand.map((u,i)=>{const c=C(u),k=i-(n-1)/2,rot=(k*step).toFixed(2);
-    return cardHTML(c,{cls:handCls(c),style:`--rot:${rot}deg;z-index:${10+i}`}).replace('class="card','data-ang="'+rot+'" class="card')}).join('');
+  return '<div class="track">'+hand.map((u,i)=>{const c=C(u);return cardHTML(c,{cls:handCls(c),style:`left:${i*HAND_STEP}px;z-index:${10+i}`})}).join('')+'</div>';
 }
+// Sideways scroll of the hand. A short hand is centred; a long one starts centred too (both ends peek out) and slides.
+const HAND={sx:0,max:0,off:0,sig:''};let handRaf=0;
+function laneApply(){const tr=$app.querySelector('.lane.fan .track');if(tr)tr.style.transform=`translateX(${(HAND.off-HAND.sx).toFixed(1)}px)`}
+function laneLayout(){
+  const lane=$app.querySelector('.lane.fan'),tr=lane&&lane.querySelector('.track');if(!tr)return;
+  const n=tr.children.length,W=lane.clientWidth,OV=24,PAD=12,box=(n-1)*HAND_STEP+122+2*OV;
+  const hand=S.office?S.office.hand.map(String):[],prev=HAND.sig.split(','),fresh=!hand.some(u=>prev.includes(u));
+  HAND.sig=hand.join(',');
+  if(box<=W-2*PAD){HAND.max=0;HAND.off=(W-box)/2+OV;HAND.sx=0}
+  else{HAND.off=PAD+OV;HAND.max=box+2*PAD-W;if(fresh)HAND.sx=HAND.max/2;HAND.sx=Math.max(0,Math.min(HAND.max,HAND.sx))}
+  laneApply();
+}
+function laneStop(){cancelAnimationFrame(handRaf)}
+function laneScrollTo(v){HAND.sx=Math.max(0,Math.min(HAND.max,v));laneApply()}
+function laneFling(v){laneStop();let last=performance.now();
+  const step=t=>{const dt=Math.min(40,t-last);last=t;v*=Math.pow(.94,dt/16);const b=HAND.sx;laneScrollTo(HAND.sx+v*dt);
+    if(Math.abs(v)>.03&&HAND.sx!==b)handRaf=requestAnimationFrame(step)};
+  handRaf=requestAnimationFrame(step)}
 // End turn: round button, half below the screen edge. Turns left = red LED segments on the black ring around it
 // (one per turn the window is open today); the ring's label switches to LAST TURN on the final one.
 function endBtnHTML(o,d){
@@ -1128,7 +1231,7 @@ function officeView(){
   const ftLabel=!o.ft1pFired&&left===2?'One more and…':`Missing ${left}`;
   const tgtMsg=tg?{original:'Pick an original in your hand',copy:'Pick a copy to notarize',row:'Pick a line on the checklist to tick off'}[tg.type]:'';
   return `<main class="withdock">
-    <section class="stage" aria-label="${esc(d.full)}">
+    <section class="stage hero" aria-label="${esc(d.full)}">
       <img class="bg" src="${ART['office_'+d.name]}" alt="">
       <div class="band" style="background:${st.color}"><b>${S.officeIdx+1}. ${esc(d.full)}</b><span>${esc(d.window)} · ${esc(clerkName(d))}</span></div>
       <canvas class="portrait" data-office="${esc(d.name)}" width="${pupW(d.name)}" height="${PUP_H}" role="img" aria-label="${esc(clerkName(d))}"></canvas>
@@ -1150,8 +1253,10 @@ function officeView(){
     ${S.confirm?`<div class="banner warn"><span>This line takes an original or a certified copy. If you hand over the original, the clerk keeps it.</span><span class="bb"><button class="solid" data-act="confirmYes">Hand it over</button><button data-act="cancel">Keep it</button></span></div>`:''}
     <div class="fanwrap">
       <div class="lane fan">${fanHTML(o.hand)}</div>
-      <button class="pilebtn l" data-act="view" data-v="deck" aria-label="Draw pile, ${o.draw.length} cards"><b>${o.draw.length}</b><span>Draw</span></button>
-      <button class="pilebtn r" data-act="view" data-v="deck" aria-label="Used pile, ${o.discard.length+o.exhaust.length} cards"><b>${o.discard.length+o.exhaust.length}</b><span>Used</span></button>
+      <button class="pilebtn draw" data-act="view" data-v="deck" aria-label="Draw pile, ${o.draw.length} cards"><b>${o.draw.length}</b><span>Draw</span></button>
+      <button class="pilebtn used" data-act="view" data-v="deck" aria-label="Used pile, ${o.discard.length+o.exhaust.length} cards"><b>${o.discard.length+o.exhaust.length}</b><span>Used</span></button>
+      <button class="pilebtn map" data-act="view" data-v="map" aria-label="Run map, office ${S.officeIdx+1} of ${OFFICES.length}">${ICON.map}<span>Map</span></button>
+      <button class="pilebtn gear" data-act="pause" aria-label="Settings and pause: rules, music, your cards, end run" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#18283a" fill-rule="evenodd" d="M10.3 1.5h3.4l.5 2.9a8 8 0 0 1 2 .9l2.4-1.7 2.4 2.4-1.7 2.4c.4.6.7 1.3.9 2l2.9.5v3.4l-2.9.5a8 8 0 0 1-.9 2l1.7 2.4-2.4 2.4-2.4-1.7a8 8 0 0 1-2 .9l-.5 2.9h-3.4l-.5-2.9a8 8 0 0 1-2-.9l-2.4 1.7-2.4-2.4 1.7-2.4a8 8 0 0 1-.9-2l-2.9-.5v-3.4l2.9-.5c.2-.7.5-1.4.9-2L3.4 6.4l2.4-2.4 2.4 1.7c.6-.4 1.3-.7 2-.9zM12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2z"/></svg></button>
       ${endBtnHTML(o,d)}
     </div>
   </footer>`;
@@ -1241,7 +1346,8 @@ let pauseDropped=false;
 function pauseHTML(){
   if(!S.paused){pauseDropped=false;return ''}
   let body;
-  if(S.paused==='rules')body=`<button class="pclose" data-act="pauseMenu">Back</button><h2>Rules</h2>${rulesBody()}`;
+  if(S.paused==='rules')body=`${closeX('pauseMenu','Back to the menu')}<span class="kicker">How it works</span><h2>Rules</h2>${rulesBody()}`;
+  else if(S.paused==='cards')body=closeX('pauseMenu','Back to the menu')+deckBody();
   else if(S.paused==='confirm')body=`<span class="kicker">End run</span><h2>Give up this run?</h2>
     <p class="lead">You walk out of the ${esc(cur().full)}. Everything from this run is lost, and you don't get to keep a paper for the next one.</p>
     <div class="pm-btns"><button class="btn primary danger" data-act="endRunYes">Yes, end the run</button><button class="btn" data-act="pauseMenu">Keep queuing</button></div>`;
@@ -1252,6 +1358,7 @@ function pauseHTML(){
   else body=`<span class="kicker">Paused · ${esc(cur().full)}, office ${S.officeIdx+1} of ${OFFICES.length}</span><h2>Back in a minute</h2>
     <p class="lead">The clerk puts up a little sign. Nothing happens until you come back.</p>
     <div class="pm-btns"><button class="btn primary" data-act="resume">Resume</button>
+      <button class="btn" data-act="pauseCards">Your cards (${S.deck.length})</button>
       <button class="btn" data-act="pauseRules">Rules</button>
       <button class="btn" data-act="music">Music: ${musicOn?'on':'off'}</button>
       <button class="btn" data-act="pauseFeedback">Send feedback</button>
@@ -1263,12 +1370,12 @@ function pauseHTML(){
 // Sends one row to a Google Sheet through a small Google Apps Script web app (see feedback-apps-script.gs).
 // Paste the web app URL (ends in /exec) below. Empty = the form explains that feedback isn't set up yet.
 const FEEDBACK_URL='https://script.google.com/macros/s/AKfycbwBAsc8Gc7MfPPNxapbWeuUjqVaIxRsbG0MS5LpWdepPP2ktRaDieTRA0ErXAOhInsbzg/exec';
-const GAME_VERSION='v20';
+const GAME_VERSION='v21';
 const FB={type:'Bug',text:'',name:'',sending:false,err:''};
 try{FB.name=localStorage.getItem('ft1p.fbname')||''}catch(_){}
 function feedbackHTML(){
   const types=['Bug','Idea','Other'].map(t=>`<button class="btn" data-act="fbType" data-t="${t}" aria-pressed="${FB.type===t}">${t}</button>`).join('');
-  return `<button class="pclose" data-act="pauseMenu">Back</button><span class="kicker">Feedback</span><h2>Fill in the form</h2>
+  return `${closeX('pauseMenu','Back to the menu')}<span class="kicker">Feedback</span><h2>Fill in the form</h2>
     <p class="lead">Something broke, felt unfair, or made you laugh? Tell us. We'll also note which office you're in.</p>
     <div class="fb-types" role="group" aria-label="What kind of feedback">${types}</div>
     <textarea id="fbText" class="fb-in" maxlength="3000" placeholder="What happened? What did you expect?" aria-label="Your feedback">${esc(FB.text)}</textarea>
@@ -1313,12 +1420,14 @@ function panelHTML(){
       const st=i<S.officeIdx||(S.result==='win')?'done':i===S.officeIdx?'now':'ahead';
       return `<li class="${st}"><img src="${ART['ext_'+x.name]}" alt=""><span class="rn"><b>${i+1}. ${esc(x.full)}</b><small>${esc(clerkName(x))} · You get: ${esc(x.goal)}</small>${(()=>{const hp=i>=S.officeIdx?heardPending(i):[];return hp.length?`<small class="heardnote">Heard: ${hp.map(h=>h.none?'no strange papers':esc(needLabel(h.doc,h.form))).join(', ')}</small>`:''})()}</span><span class="rs">${st==='done'?'Approved':st==='now'?'You are here':'Ahead'}</span></li>`}).join('')}</ol>
       ${S.relics.length?`<h3>Connections</h3><ul class="rel">${S.relics.map(r=>`<li><b>${esc(RELICS[r].name)}</b> · ${esc(RELICS[r].text)}</li>`).join('')}</ul>`:''}`;
-  } else {
+  } else body=deckBody();
+  return `<div class="panel" role="dialog" aria-modal="true"><div class="panel-in">${closeX('view','Close')}${body}</div></div>`;
+}
+function closeX(act,label){return `<button class="sheet-x" data-act="${act}" ${act==='view'?'data-v=""':''} aria-label="${label}" title="${label} (Esc)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button>`}
+function deckBody(){
     const o=S.office&&(S.screen==='office'||S.screen==='errand')?S.office:null;
-    body=`<h2>Your cards</h2><p class="lead">Every document and action you own. ${o?'This office splits them into your hand, the draw pile and the used pile.':''}</p>`+
+    return `<span class="kicker">Your deck · ${S.deck.length} cards</span><h2>Your cards</h2><p class="lead">Every document and action you own. ${o?'This office splits them into your hand, the draw pile and the used pile.':''}</p>`+
       (o?section('In your hand',o.hand)+section('Draw pile',o.draw)+section('Used',[...o.discard,...o.exhaust]):section('All cards',S.deck));
-  }
-  return `<div class="panel" role="dialog" aria-modal="true"><div class="panel-in"><button class="pclose" data-act="view" data-v="">Close</button>${body}</div></div>`;
 }
 function overlay(){
   const ov=S.overlays[0];if(!ov)return '';
@@ -1333,6 +1442,7 @@ function render(){
   $app.innerHTML=(['intro','rules','closed'].includes(S.screen)?'':status())+screen()+panelHTML()+overlay()+pauseHTML();
   if(keep)SC.forEach((q,i)=>{const el=$app.querySelector(q);if(el)el.scrollTop=tops[i]});
   lastScreen=S.screen+'|'+S.officeIdx;
+  laneLayout();framePortrait();
   gossipTick();fitTitle();musicSync();
   if(S.office&&S.office.fresh!=null){S.office.fresh=null;const li=$app.querySelector('.rows li.fresh');if(li&&li.scrollIntoView)li.scrollIntoView({block:'nearest',behavior:'smooth'})}
 }
@@ -1388,6 +1498,24 @@ function drawBubble(anim){
   stage.appendChild(el);
   aimBubble(stage,el,d.name);
 }
+
+// Frame the clerk by the rule of thirds: her eyes on the upper third line, her face centred on the left third line.
+// The head is scaled to a share of the stage height; on phones she is made just big enough that the bust ends
+// behind the location band. Where the bust ends, the counter (stage::after) takes over.
+const EYE_Y=.46; // eyes sit about this far down the head picture (hair included)
+function framePortrait(){
+  const st=$app.querySelector('.stage.hero'),cv=st&&st.querySelector('.portrait');if(!cv)return;
+  const P=PUPPETS[cv.dataset.office];if(!P)return;
+  const [bw]=P.bust,[top,bot]=P.crop,hh=P.head[1]*P.hs,hw=P.head[0]*P.hs,eye=P.hy+EYE_Y*hh,fx=P.hx+hw/2;
+  const W=st.clientWidth,H=st.clientHeight,band=st.querySelector('.band'),B=band?band.offsetHeight:45;
+  const safe=parseFloat(getComputedStyle(st).getPropertyValue('--st'))||0,vis=H-safe,tall=H>W;
+  const ey=safe+vis/3;
+  let s=(tall?.5:.74)*vis/hh;
+  if(!tall)s=Math.max(s,(H-B+6-ey)/(bot-eye));
+  const h=(bot-top)*s,w=bw*s,y=ey-(eye-top)*s,x=W/3-fx*s;
+  Object.assign(cv.style,{width:w.toFixed(1)+'px',height:h.toFixed(1)+'px',left:x.toFixed(1)+'px',top:y.toFixed(1)+'px'});
+  st.style.setProperty('--cb',(y+h).toFixed(1)+'px');
+}
 // Where each clerk's face ends on the right, as a fraction of the portrait's width (the bubble starts just past it).
 const FACE_RIGHT={'Registry':0.663,'Police':0.658,'Tax Office':0.698,'Bureau':0.681,'Bank':0.71};
 // The bubble sits just above the next-action box, beside the clerk's face, with a short tail toward her.
@@ -1399,7 +1527,7 @@ function aimBubble(stage,el,office){
   if(!nw){img.addEventListener('load',()=>{if(el.isConnected)aimBubble(stage,el,office)},{once:true});return}
   const W=stage.clientWidth,iw=img.clientWidth,ih=img.clientHeight,k=Math.min(iw/nw,ih/nh);
   const face=img.offsetLeft+fr*nw*k;
-  el.style.left=Math.round(Math.max(W*.34,Math.min(W*.5,face+14)))+'px';
+  el.style.left=Math.round(Math.max(W*.34,Math.min(W*.6,face+14)))+'px';
 }
 function gbLater(fn,ms){clearTimeout(GB.t);GB.t=setTimeout(fn,ms)}
 function nextLine(){
@@ -1565,7 +1693,7 @@ function tapCard(uid){
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,uid=+b.dataset.uid;
-  if(S.paused){if(!['resume','pauseMenu','pauseRules','pauseFeedback','fbType','fbSend','music','endRun','endRunYes'].includes(a))return}
+  if(S.paused){if(!['resume','pauseMenu','pauseRules','pauseFeedback','fbType','fbSend','music','endRun','endRunYes','pauseCards'].includes(a))return}
   else{if(S.overlays.length&&a!=='dismiss')return;
   if(S.view&&a!=='view')return;}
   switch(a){
@@ -1577,6 +1705,7 @@ document.addEventListener('click',e=>{
     case 'resume':S.paused=null;break;
     case 'pauseMenu':S.paused='menu';break;
     case 'pauseRules':S.paused='rules';break;
+    case 'pauseCards':S.paused='cards';break;
     case 'pauseFeedback':S.paused='feedback';FB.err='';break;
     case 'fbType':FB.type=b.dataset.t;break;
     case 'fbSend':sendFeedback();return;
@@ -1610,18 +1739,22 @@ document.addEventListener('click',e=>{
 /* ============ hand gestures ============
    Tap a card            -> play it (lifts slightly the moment you touch it, plays on release).
    Hold ~0.28 s          -> big preview above the fan. Release to close, nothing is played.
-   Slide sideways        -> preview follows your finger through the hand (with a little "stickiness" so it doesn't flicker).
+   Slide sideways        -> the hand slides (it's a row of cards that can be wider than the screen); a flick keeps it gliding.
+   While previewing, slide sideways -> preview follows your finger through the hand (a little "sticky" so it doesn't flicker).
    While previewing, slide UP out of the fan -> "Release to play", let go to play it.
    Other screens: hold a card to enlarge it. */
 if(typeof document.createElement==='function'){
-  const HOLD_MS=280,OTHER_MS=240,SLIDE_PX=14,STICKY_DEG=2.5;
+  const HOLD_MS=280,OTHER_MS=240,SLIDE_PX=14;
   const pk=document.createElement('div');pk.id='peek';pk.hidden=true;document.body.appendChild(pk);
   let g=null,swallow=false;
   const fanCards=()=>[...document.querySelectorAll('.lane.fan .card[data-uid]')];
-  function fingerAngle(x,y){const b=document.querySelector('.endbtn');if(!b)return 0;const r=b.getBoundingClientRect();return Math.atan2(x-(r.left+r.width/2),(r.top+r.height/2)-y)*180/Math.PI}
-  // Cards share one pivot (the End-turn button centre): the card under the finger is the one whose angle is closest.
-  function cardAt(x,y,cur){const a=fingerAngle(x,y);let best=null,bd=1e9;for(const el of fanCards()){const d=Math.abs(+el.dataset.ang-a);if(d<bd){bd=d;best=el}}
-    if(cur&&best&&best!==cur&&Math.abs(+cur.dataset.ang-a)-bd<STICKY_DEG)return cur;return best}
+  // Cards overlap left to right (each covers the right edge of the one before), so what you see of a card is its
+  // left strip. The card under the finger is the one whose visible strip, along its tilted axis, is nearest.
+  const TAN=Math.tan(HAND_TILT*Math.PI/180),STICKY_PX=10;
+  function cardAt(x,y,cur){const cs=fanCards();let best=null,bd=1e9,cd=1e9;
+    cs.forEach((el,i)=>{const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,
+      ax=cx+(cy-y)*TAN-(i<cs.length-1?(122-HAND_STEP)/2:0),d=Math.abs(x-ax);if(d<bd){bd=d;best=el}if(el===cur)cd=d});
+    if(cur&&best&&best!==cur&&cd-bd<STICKY_PX)return cur;return best}
   const verb=c=>S.keeping?(S.keeping.includes(c.uid)?'drop':'keep'):c.kind==='doc'?'hand in':'play';
   let ptr='touch',hv=null;
   function label(c,launch){
@@ -1681,10 +1814,10 @@ if(typeof document.createElement==='function'){
     if(g)clear();
     const hit=e.target.closest('.card[data-uid]');if(!hit||hit.closest('#peek'))return;
     const fan=!!hit.closest('.lane.fan');
-    const el=fan?(cardAt(e.clientX,e.clientY)||hit):hit;
-    g={el,fan,sx:e.clientX,sy:e.clientY,mode:'press',launch:false,id:e.pointerId};
-    if(fan)el.classList.add('press');
-    // With a mouse, hover already previews, so a press is always a click (no hold timer); dragging still works.
+    if(fan)laneStop();
+    g={el:hit,fan,sx:e.clientX,sy:e.clientY,mode:'press',launch:false,id:e.pointerId,sx0:HAND.sx,lx:e.clientX,lt:e.timeStamp,v:0};
+    if(fan)hit.classList.add('press');
+    // With a mouse, hover already previews, so a press is always a click (no hold timer); dragging still slides the hand.
     if(!(fan&&ptr==='mouse'))g.t=setTimeout(startPeek,fan?HOLD_MS:OTHER_MS);
   });
   document.addEventListener('pointermove',e=>{
@@ -1692,23 +1825,32 @@ if(typeof document.createElement==='function'){
     const dx=e.clientX-g.sx,dy=e.clientY-g.sy;
     if(!g.fan){if(g.mode==='press'&&Math.hypot(dx,dy)>10){clearTimeout(g.t);g=null}return}
     if(g.mode==='press'){
-      if(Math.abs(dx)>SLIDE_PX){startPeek();focus(cardAt(e.clientX,e.clientY,g.el)||g.el)}
+      // sideways before the hold kicks in: slide the hand. Up: preview, then the launch zone.
+      if(Math.abs(dx)>SLIDE_PX&&Math.abs(dx)>Math.abs(dy)){clearTimeout(g.t);g.el.classList.remove('press');g.mode='scroll'}
       else if(dy<-SLIDE_PX)startPeek();
       else return;
     }
-    // Peeking: above the fan = launch zone for the focused card; inside the fan = scrub.
+    if(g.mode==='scroll'){const dt=Math.max(1,e.timeStamp-g.lt);g.v=.6*g.v+.4*(-(e.clientX-g.lx)/dt);g.lx=e.clientX;g.lt=e.timeStamp;
+      laneScrollTo(g.sx0-dx);return}
+    // Previewing: above the hand = launch zone for the focused card; inside the hand = scrub through the cards.
     const top=g.el.closest('.fanwrap').getBoundingClientRect().top+40,inZone=e.clientY<top;
     if(inZone!==g.launch){g.launch=inZone;g.el.classList.toggle('launch',inZone);preview(g.el,true,inZone)}
     if(!inZone){const el=cardAt(e.clientX,e.clientY,g.el);if(el&&el!==g.el)focus(el)}
   });
   document.addEventListener('pointerup',e=>{
     if(!g||e.pointerId!==g.id)return;
-    const {el,fan,mode,launch}=g;
+    const {el,fan,mode,launch}=g,v=e.timeStamp-g.lt>90?0:g.v;
     clear();
+    if(mode==='scroll'){if(Math.abs(v)>.15)laneFling(v);return}
     if(mode==='peek'&&!fan){swallow=true;setTimeout(()=>swallow=false,350);return}
     if(!fan)return; // a plain tap on a non-fan card goes through the normal click
     if(mode==='press'||launch)el.dispatchEvent(new MouseEvent('click',{bubbles:true}));
   });
+  // Mouse wheel / trackpad over the hand slides it.
+  document.addEventListener('wheel',e=>{
+    if(!HAND.max||!e.target.closest||!e.target.closest('.fanwrap')||S.view||S.paused||S.overlays.length)return;
+    e.preventDefault();laneStop();laneScrollTo(HAND.sx+(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY));
+  },{passive:false});
   document.addEventListener('pointercancel',()=>{if(g)clear()});
   // Native clicks on fan cards are ignored: pointerup above decides (so tap vs hold is never guessed twice).
   document.addEventListener('click',e=>{
