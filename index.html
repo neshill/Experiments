@@ -463,7 +463,7 @@ textarea.fb-in{min-height:120px;resize:vertical}
 .dock{background:none}
 .dock::before{content:"";position:absolute;top:0;bottom:0;left:calc(50% - 50vw);right:calc(50% - 50vw);z-index:-1;pointer-events:none;background:linear-gradient(to bottom,rgba(231,215,180,0),rgba(231,215,180,.92))}
 main.withdock{--gl:max(12px,env(safe-area-inset-left,0px));--gr:max(12px,env(safe-area-inset-right,0px));margin:0 calc(-1*var(--gr)) 0 calc(-1*var(--gl));padding-left:var(--gl);padding-right:var(--gr);padding-top:0;padding-bottom:calc(342px + env(safe-area-inset-bottom,0px)*.5);scroll-padding-bottom:calc(342px + env(safe-area-inset-bottom,0px)*.5)}
-.stage.hero{--st:env(safe-area-inset-top,0px);height:calc(237px + var(--st));border:0;border-radius:0;flex-shrink:0;
+.stage.hero{--st:env(safe-area-inset-top,0px);height:calc(277px + var(--st));border:0;border-radius:0;flex-shrink:0;
   margin:0 calc(-1*var(--gr)) 6px calc(-1*var(--gl))}
 .stage.hero .bg{position:absolute;inset:0;width:100%;height:100%;object-position:50% 55%}
 .stage.hero .portrait{left:0;top:0;bottom:auto;max-width:none;object-fit:fill} /* size + position set by framePortrait() */
@@ -479,7 +479,7 @@ main.withdock{--gl:max(12px,env(safe-area-inset-left,0px));--gr:max(12px,env(saf
 .stage.hero .intent.blocked .act,.stage.hero .intent.blocked .eff{color:rgba(251,244,226,.55)}
 .stage.hero .intent.blocked .k{color:#7fd0cb}
 .stage.hero .bubble{bottom:calc(var(--ib,81px) + 20px)}
-@media (orientation:portrait) and (max-height:700px){.stage.hero{height:calc(204px + var(--st))}.stage.hero .intent{min-height:0}}
+@media (orientation:portrait) and (max-height:700px){.stage.hero{height:calc(254px + var(--st))}.stage.hero .intent{min-height:0}}
 @media (orientation:portrait) and (min-width:566px){.stage.hero{border-radius:0 0 10px 10px}.stage.hero .band{border-radius:0 0 10px 10px}}
 /* patience + time, pinned to the top-right corner over the stage */
 .hud.float{position:absolute;z-index:8;top:calc(8px + env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));border:0;padding:0;pointer-events:none}
@@ -1548,12 +1548,23 @@ const FACE_RIGHT={'Registry':0.663,'Police':0.658,'Tax Office':0.698,'Bureau':0.
 // The portrait canvas is scaled to fit its box (object-fit: contain, anchored bottom-left), so the drawn picture's width is worked out first.
 function aimBubble(stage,el,office){
   const it=stage.querySelector('.intent');if(it)stage.style.setProperty('--ib',it.offsetHeight+'px');
-  const img=stage.querySelector('.portrait'),fr=FACE_RIGHT[office];if(!img||!fr||!el.classList.contains('c'))return;
+  const img=stage.querySelector('.portrait'),fr=FACE_RIGHT[office];if(!img||!fr||!el.classList.contains('c'))return fitBubble(stage,el);
   const nw=img.naturalWidth||img.width,nh=img.naturalHeight||img.height;
   if(!nw){img.addEventListener('load',()=>{if(el.isConnected)aimBubble(stage,el,office)},{once:true});return}
   const W=stage.clientWidth,iw=img.clientWidth,ih=img.clientHeight,k=Math.min(iw/nw,ih/nh);
   const face=img.offsetLeft+fr*nw*k;
   el.style.left=Math.round(Math.max(W*.34,Math.min(W*.6,face+14)))+'px';
+  fitBubble(stage,el);
+}
+// A long line can still reach up under the Patience/Time tiles: then its text gets a little smaller until it clears them.
+// (Positions are read from offsetTop/offsetLeft, which ignore the pop-in animation's scaling.)
+function fitBubble(stage,el){
+  const hud=$app.querySelector('.hud.float');if(!hud||!el.isConnected)return;
+  el.style.fontSize='';
+  const h=hud.getBoundingClientRect(),s=stage.getBoundingClientRect(),lim=h.bottom+6;
+  const hits=()=>{const t=s.top+el.offsetTop,l=s.left+el.offsetLeft;return t<lim&&l<h.right&&l+el.offsetWidth>h.left};
+  let f=parseFloat(getComputedStyle(el).fontSize),n=0;
+  while(hits()&&f>11.5&&n++<12){f-=.5;el.style.fontSize=f+'px'}
 }
 function gbLater(fn,ms){clearTimeout(GB.t);GB.t=setTimeout(fn,ms)}
 function nextLine(){
