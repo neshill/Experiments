@@ -184,7 +184,7 @@ main.withdock{padding-bottom:342px;scroll-padding-bottom:342px}
   background:linear-gradient(to bottom,rgba(231,215,180,0) 0,var(--wall) 24px,var(--wall) 66px,rgba(231,215,180,.84) 104px,rgba(231,215,180,.92) 100%);
   padding:22px max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:4px}
 .dock>*{pointer-events:auto}
-.dock>.lane{pointer-events:none}
+.dock>.lane,.dock>.fanwrap{pointer-events:none} /* only the cards and buttons inside catch touches; swipes in the gaps scroll the page */
 .dock .card{pointer-events:auto}
 .ledmini{display:flex;align-items:center;gap:6px;background:#1b1512;color:#ff3b28;border-radius:6px;padding:4px 8px;border:1.5px solid #000}
 .ledmini b{font-family:var(--f-led);font-size:22px;line-height:1;text-shadow:0 0 6px rgba(255,59,40,.65);font-weight:400}
