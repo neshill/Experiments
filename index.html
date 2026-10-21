@@ -493,7 +493,7 @@ main.withdock{--gl:max(12px,env(safe-area-inset-left,0px));--gr:max(12px,env(saf
   margin:0 calc(-1*max(12px,env(safe-area-inset-right,0px))) 0 calc(-1*max(12px,env(safe-area-inset-left,0px)))}
 /* clip the row at the screen edges only (not above, where cards lift), and keep it from widening the page */
 .lane.fan{clip-path:inset(-400px 0 -200px 0);overflow-x:hidden;overflow-x:clip;overflow-y:visible}
-.lane.fan .track{position:absolute;left:0;top:0;bottom:0;width:0}
+.lane.fan .track{position:absolute;left:0;top:0;bottom:0;width:0;will-change:transform} /* own layer: keeps iOS from misplacing the cards' no-scroll touch area onto the office/checklist */
 .lane.fan .card{--rot:15deg;left:0;bottom:calc(var(--pb) + 77px);margin-left:0;transform-origin:50% 50%;transform:translateY(var(--lift,0px)) rotate(var(--rot))}
 .lane.fan .empty{bottom:calc(var(--pb) + 130px)}
 .endbtn{bottom:calc(var(--pb) - 53px)}
