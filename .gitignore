@@ -1,0 +1,5 @@
+# Previews and other files Claude saves here: kept in the Archive folder instead, never committed
+Claude outputs/
+*.png
+# macOS folder settings
+.DS_Store
