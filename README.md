@@ -3,6 +3,8 @@
 A bureaucratic roguelike deck-builder about paperwork, patience and "you're missing one paper".
 Web prototype (v20): phone portrait plus a landscape layout for desktop and handheld screens (designed at 1100×690, scales up). Open `index.html` in any browser; on a phone, Share → Add to Home Screen plays it full-screen.
 
+**Version:** the bottom-right of the title screen shows `v21 · build N`. N is the commit number, stamped into `index.html` automatically by `.githooks/pre-commit` on every commit (run `git config core.hooksPath .githooks` once per clone to turn it on). Compare it with the commit count on GitHub to see whether the live page is the latest. Bump `GAME_VERSION` by hand for a new prototype version.
+
 **Feedback:** pause menu → Send feedback posts a row (type, message, optional name, version, office, device) to a Google Sheet. Setup steps are at the top of `feedback-apps-script.gs`; paste the deployed web app URL into `FEEDBACK_URL` in `index.html`.
 
 **v20:** the five clerks are animated puppets: they breathe, blink, glance around, move their mouths while they talk, look over at the next window when your neighbour speaks, and pull faces that match their next action and react to what you play (a small envelope gets a raised eyebrow, then a smirk).

@@ -298,7 +298,7 @@ main.ts{position:relative;z-index:1;justify-content:center;align-items:center;ga
 .ts-title span{display:block;white-space:nowrap;width:max-content}
 .ts-title .l1{color:var(--paper);text-shadow:4px 4px 0 var(--red)}
 .ts-title .l2{color:var(--orange);margin-left:.55em;text-shadow:4px 4px 0 var(--ink)}
-.ts-stamp{position:absolute;right:0;bottom:-30px;transform:rotate(-8deg);font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#cfc4f5;border:3px solid #cfc4f5;border-radius:5px;padding:1px 9px;opacity:.9;mix-blend-mode:screen}
+.ts-ver{position:fixed;z-index:2;right:max(12px,env(safe-area-inset-right,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));font-family:var(--f-display);font-weight:700;font-size:11px;letter-spacing:.08em;color:rgba(242,229,200,.55);pointer-events:none;user-select:none}
 .ts-menu{display:flex;flex-direction:column;gap:12px;width:min(300px,82%)}
 .ts-menu .btn{font-size:21px;padding:13px 16px;background:var(--paper-2);color:var(--ink)}
 .ts-menu .btn.primary{background:var(--orange);color:#fff}
@@ -1293,14 +1293,15 @@ function screen(){
     ${soundBtn()}<main class="ts"><div class="ts-logo">
       <div class="ts-papers" aria-hidden="true">${P.map(([k,r,x],i)=>`<span class="ts-p" style="--x:${x}px;--r:${r}deg;--d:${(-i*1.3).toFixed(1)}s;--t:${(4.6+i*.7).toFixed(1)}s"><img src="${ART[k]}" alt=""></span>`).join('')}<span class="ts-p miss" style="--x:62px;--r:26deg;--d:-2.2s;--t:3.8s">?</span></div>
       <h1 class="ts-title" aria-label="Fali ti jedan papir"><span class="l1">Fali ti</span><span class="l2">jedan papir</span></h1>
-      <span class="ts-stamp" aria-hidden="true">Prototip v21</span></div>
+</div>
       <nav class="ts-menu" aria-label="Main menu">
         <button class="btn primary" data-act="start">Start new run</button>
         <button class="btn" data-act="rules">Rules</button>
         <button class="btn quiet" data-act="quit">Quit</button>
       </nav>
       ${S.carried?`<p class="ts-carry">Carried over from your last run: ${esc(docName(S.carried.doc,S.carried.form))}</p>`:''}
-      <span class="ts-foot">Vibe created while putting H to sleep in 2026</span></main>`;}
+      <span class="ts-foot">Vibe created while putting H to sleep in 2026</span></main>
+    <span class="ts-ver" title="Build ${GAME_BUILD.n}, committed ${GAME_BUILD.date}">${versionLabel()}</span>`;}
   case 'closed':return `<div class="ts-bg" aria-hidden="true"><img src="${ART['office_Registry']}" alt=""></div>
     <main class="ts"><div class="ov-stamp violet" style="color:var(--paper);border-color:var(--paper)">Closed</div>
       <p style="margin:18px 0 22px;max-width:30ch;font-size:16px;line-height:1.45">The window is closed. Come back tomorrow, between 8:00 and 15:00. You can close this tab now.</p>
@@ -1396,6 +1397,10 @@ function pauseHTML(){
 // Paste the web app URL (ends in /exec) below. Empty = the form explains that feedback isn't set up yet.
 const FEEDBACK_URL='https://script.google.com/macros/s/AKfycbwBAsc8Gc7MfPPNxapbWeuUjqVaIxRsbG0MS5LpWdepPP2ktRaDieTRA0ErXAOhInsbzg/exec';
 const GAME_VERSION='v21';
+// GAME_BUILD is rewritten automatically on every commit by .githooks/pre-commit (don't edit by hand):
+// n = the commit's number in the repo history, date = when it was committed.
+const GAME_BUILD={n:32,date:'2026-10-21 14:32'};
+const versionLabel=()=>`${GAME_VERSION} · build ${GAME_BUILD.n}`;
 const FB={type:'Bug',text:'',name:'',sending:false,err:''};
 try{FB.name=localStorage.getItem('ft1p.fbname')||''}catch(_){}
 function feedbackHTML(){
@@ -1421,7 +1426,7 @@ function sendFeedback(){
   if(!FEEDBACK_URL){FB.err="Feedback isn't connected yet in this build.";render();return}
   FB.sending=true;FB.err='';render();
   const o=['intro','rules','closed','end'].includes(S.screen)?null:cur();
-  const payload={type:FB.type,message:msg,name:FB.name.trim(),version:GAME_VERSION,
+  const payload={type:FB.type,message:msg,name:FB.name.trim(),version:versionLabel(),
     where:o?`${o.full} (office ${S.officeIdx+1} of ${OFFICES.length})`:S.screen,
     patience:`${S.patience}/${S.maxP}`,screen:S.screen,ua:navigator.userAgent};
   // text/plain + no-cors: Google's script server doesn't send CORS headers, so we can't read the reply.
