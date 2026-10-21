@@ -508,6 +508,13 @@ main.withdock{--gl:max(12px,env(safe-area-inset-left,0px));--gr:max(12px,env(saf
 /* visually hidden, still read out by screen readers */
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;max-height:none!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
 
+/* End turn, as redesigned in Figma: ink bezel, flat red turn segments sitting in the middle of it, a big two-line label */
+.endbtn .bezel{stroke:var(--ink)}
+.endbtn .seg{stroke-width:9;stroke:#4c3240}
+.endbtn .seg.on{stroke:var(--red);filter:none}
+.endbtn .face{padding-top:25px}
+.endbtn .et{font-size:23.5px;line-height:1;letter-spacing:.047em;text-align:center;white-space:normal}
+
 /* ================= landscape / desktop / handheld (Steam Deck-class 1280×800) =================
    Three columns: the office on the left, the hand in the middle, the checklist on the right.
    Everything is visible at once, so nothing hides behind the fan. */
@@ -1201,7 +1208,7 @@ function laneFling(v){laneStop();let last=performance.now();
 // End turn: round button, half below the screen edge. Turns left = red LED segments on the black ring around it
 // (one per turn the window is open today); the ring's label switches to LAST TURN on the final one.
 function endBtnHTML(o,d){
-  const n=d.turns,left=o.turnsLeft,cx=80,cy=80,rs=74.5,span=168,gap=n>5?4:5,seg=(span-gap*(n-1))/n;
+  const n=d.turns,left=o.turnsLeft,cx=80,cy=80,rs=69.5,span=168,gap=n>5?4:5,seg=(span-gap*(n-1))/n;
   const pt=(a,r)=>[(cx+r*Math.sin(a*Math.PI/180)).toFixed(2),(cy-r*Math.cos(a*Math.PI/180)).toFixed(2)];
   const arc=(a0,a1,r)=>{const [x0,y0]=pt(a0,r),[x1,y1]=pt(a1,r);return `M${x0} ${y0}A${r} ${r} 0 0 1 ${x1} ${y1}`};
   // Segments fill from the left: the rightmost lit one goes out each turn.
@@ -1211,8 +1218,8 @@ function endBtnHTML(o,d){
   const lbl=left<=1?'Last turn today':`${left} turns left`;
   return `<button class="endbtn ${cls}" data-act="end" aria-label="${S.keeping?`Keep ${S.keeping.length} cards, discard the rest and end turn`:'End turn'}. ${left} of ${n} turns left before the window closes.">
     <svg viewBox="0 0 160 160" aria-hidden="true"><circle class="bezel" cx="80" cy="80" r="69.5"/>${segs}
-      <path id="arcp" d="${arc(-62,62,63.5)}" fill="none"/><text class="arcl" dy="3.3"><textPath href="#arcp" startOffset="50%" text-anchor="middle">${lbl}</textPath></text></svg>
-    <span class="face"><span class="et">${S.keeping?(S.keeping.length?`Keep ${S.keeping.length}`:'Keep none'):'End turn'}</span></span></button>`;
+</svg>
+    <span class="face"><span class="et">${S.keeping?(S.keeping.length?`Keep<br>${S.keeping.length}`:'Keep<br>none'):'End<br>turn'}</span></span></button>`;
 }
 function officeView(){
   const o=S.office,d=cur(),tg=S.target,st=OFFICE_STYLE[d.name];
