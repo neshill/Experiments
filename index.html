@@ -456,7 +456,7 @@ textarea.fb-in{min-height:120px;resize:vertical}
 /* ================= v21 experiment: full-bleed location header, floating HUD, sliding hand =================
    The office stage runs edge to edge across the top, with the location band along its bottom and the clerk's
    next action as a dark tab on the right. Patience and time float in the top-right corner. The hand is a
-   straight row of tilted cards you slide sideways; the End-turn button sits between the pile counters and
+   wide arc of tilted cards you rotate sideways; the End-turn button sits between the pile counters and
    the map / settings buttons along the bottom edge. Cost sits on each card's top-left corner. */
 /* The dock's fade (Figma: wall colour, 0% → 92% opacity top to bottom) is drawn on a layer as wide as the window
    (the column itself stops at 540px on wide screens). */
@@ -488,15 +488,15 @@ main.withdock{--gl:max(12px,env(safe-area-inset-left,0px));--gr:max(12px,env(saf
 .hud.float .tile.pat{width:92px}
 .hud.float .tile.time{width:64px;align-items:center}
 .hud.float .tile.time .dots{margin-top:8px}
-/* the hand: a row of tilted cards that slides sideways */
+/* the hand: tilted cards along a wide arc that rotates sideways (positions set in laneApply) */
 .fanwrap{--pb:calc(12px + env(safe-area-inset-bottom,0px)*.5);height:calc(var(--pb) + 300px);
   margin:0 calc(-1*max(12px,env(safe-area-inset-right,0px))) 0 calc(-1*max(12px,env(safe-area-inset-left,0px)))}
 /* clip the row at the screen edges only (not above, where cards lift), and keep it from widening the page */
 .lane.fan{clip-path:inset(-400px 0 -200px 0);overflow-x:hidden;overflow-x:clip;overflow-y:visible}
-.lane.fan .track{position:absolute;left:0;top:0;bottom:0;width:0;will-change:transform}
+.lane.fan .track{position:absolute;left:0;top:0;bottom:0;width:0}
 .lane.fan .card{--rot:15deg;left:0;bottom:calc(var(--pb) + 77px);margin-left:0;transform-origin:50% 50%;transform:translateY(var(--lift,0px)) rotate(var(--rot))}
 .lane.fan .empty{bottom:calc(var(--pb) + 130px)}
-.endbtn{bottom:calc(var(--pb) - 37px)}
+.endbtn{bottom:calc(var(--pb) - 53px)}
 .pilebtn{bottom:var(--pb);width:42px;height:43px;min-width:0;padding:4px 0 3px;justify-content:center}
 .pilebtn.draw{left:max(12px,env(safe-area-inset-left,0px));right:auto}
 .pilebtn.used{left:calc(max(12px,env(safe-area-inset-left,0px)) + 46px);right:auto}
@@ -1185,15 +1185,21 @@ function handCls0(c){
   return canPlay(c)?'':'off';
 }
 function rowThumb(r){const k=isFeeRow(r)?'doc_'+DOCS[r.doc].fee:'doc_'+r.doc;return ART[k]?`<img class="thumb" src="${ART[k]}" alt="">`:`<span class="thumb" style="display:grid;place-items:center;color:var(--ink)">${FALLBACK.doc.replace('<svg','<svg style="width:20px;height:20px"')}</span>`}
-// Hand: a straight row of tilted cards. When it is wider than the screen it slides sideways (see laneLayout).
-const HAND_STEP=84,HAND_TILT=15;
+// Hand: tilted cards spaced evenly along a big arc (a wheel whose hub sits far below the screen). Every card keeps the
+// same 15° tilt; more cards never squeeze the spacing, the wheel just gets longer and you rotate it sideways (see laneLayout).
+const HAND_STEP=84,HAND_TILT=15,HAND_R=480;
 function fanHTML(hand){
   const n=hand.length;if(!n)return '<span class="empty">No cards in hand.</span>';
-  return '<div class="track">'+hand.map((u,i)=>{const c=C(u);return cardHTML(c,{cls:handCls(c),style:`left:${i*HAND_STEP}px;z-index:${10+i}`})}).join('')+'</div>';
+  return '<div class="track">'+hand.map((u,i)=>{const c=C(u);return cardHTML(c,{cls:handCls(c),style:`z-index:${10+i}`})}).join('')+'</div>';
 }
 // Sideways scroll of the hand. A short hand is centred; a long one starts centred too (both ends peek out) and slides.
 const HAND={sx:0,max:0,off:0,sig:''};let handRaf=0;
-function laneApply(){const tr=$app.querySelector('.lane.fan .track');if(tr)tr.style.transform=`translateX(${(HAND.off-HAND.sx).toFixed(1)}px)`}
+// Each card's place along the arc = its place in a flat row (scroll offset included), wrapped onto the circle:
+// sideways distance from the screen centre becomes an angle, cards further out sit lower.
+function laneApply(){const lane=$app.querySelector('.lane.fan'),tr=lane&&lane.querySelector('.track');if(!tr)return;
+  const W=lane.clientWidth,base=HAND.off-HAND.sx+61-W/2,lim=Math.PI*.6;
+  [...tr.children].forEach((el,i)=>{const a=Math.max(-lim,Math.min(lim,(base+i*HAND_STEP)/HAND_R));
+    el.style.left=(W/2+HAND_R*Math.sin(a)-61).toFixed(1)+'px';el.style.translate=`0 ${(HAND_R*(1-Math.cos(a))).toFixed(1)}px`})}
 function laneLayout(){
   const lane=$app.querySelector('.lane.fan'),tr=lane&&lane.querySelector('.track');if(!tr)return;
   const n=tr.children.length,W=lane.clientWidth,OV=24,PAD=12,box=(n-1)*HAND_STEP+122+2*OV;
