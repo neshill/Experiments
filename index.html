@@ -179,6 +179,9 @@ main>*{flex-shrink:0}
 
 /* ---------- dock + cards ---------- */
 #app{position:relative}
+/* nothing inside the game (e.g. hand cards sticking out past the edges) may widen the page: on iOS a page wider than
+   the screen steals vertical swipes from the office/checklist scroller */
+@media (max-width:540px){#app{overflow:hidden;overflow:clip}}
 main.withdock{padding-bottom:342px;scroll-padding-bottom:342px}
 .dock{position:absolute;left:0;right:0;bottom:0;z-index:5;pointer-events:none;
   background:linear-gradient(to bottom,rgba(231,215,180,0) 0,var(--wall) 24px,var(--wall) 66px,rgba(231,215,180,.84) 104px,rgba(231,215,180,.92) 100%);
@@ -1199,7 +1202,10 @@ const HAND={sx:0,max:0,off:0,sig:''};let handRaf=0;
 function laneApply(){const lane=$app.querySelector('.lane.fan'),tr=lane&&lane.querySelector('.track');if(!tr)return;
   const W=lane.clientWidth,base=HAND.off-HAND.sx+61-W/2,lim=Math.PI*.6;
   [...tr.children].forEach((el,i)=>{const a=Math.max(-lim,Math.min(lim,(base+i*HAND_STEP)/HAND_R));
-    el.style.left=(W/2+HAND_R*Math.sin(a)-61).toFixed(1)+'px';el.style.translate=`0 ${(HAND_R*(1-Math.cos(a))).toFixed(1)}px`})}
+    const L=W/2+HAND_R*Math.sin(a)-61,T=HAND_R*(1-Math.cos(a));
+    // cards that have rotated fully off screen are taken out, so they can't make the page wider than the screen
+    el.style.display=(L>W+30||L<-152||T>260)?'none':'';
+    el.style.left=L.toFixed(1)+'px';el.style.translate=`0 ${T.toFixed(1)}px`})}
 function laneLayout(){
   const lane=$app.querySelector('.lane.fan'),tr=lane&&lane.querySelector('.track');if(!tr)return;
   const n=tr.children.length,W=lane.clientWidth,OV=24,PAD=12,box=(n-1)*HAND_STEP+122+2*OV;
@@ -1399,7 +1405,7 @@ const FEEDBACK_URL='https://script.google.com/macros/s/AKfycbwBAsc8Gc7MfPPNxapbW
 const GAME_VERSION='v21';
 // GAME_BUILD is rewritten automatically on every commit by .githooks/pre-commit (don't edit by hand):
 // n = the commit's number in the repo history, date = when it was committed.
-const GAME_BUILD={n:33,date:'2026-10-21 14:32'};
+const GAME_BUILD={n:34,date:'2026-10-22 14:10'};
 const versionLabel=()=>`${GAME_VERSION} · build ${GAME_BUILD.n}`;
 const FB={type:'Bug',text:'',name:'',sending:false,err:''};
 try{FB.name=localStorage.getItem('ft1p.fbname')||''}catch(_){}
