@@ -504,6 +504,8 @@ main.withdock{--gl:max(12px,env(safe-area-inset-left,0px));--gr:max(12px,env(saf
 .lane.fan{clip-path:inset(-400px 0 -200px 0);overflow-x:hidden;overflow-x:clip;overflow-y:visible}
 .lane.fan .track{position:absolute;left:0;top:0;bottom:0;width:0;will-change:transform} /* own layer: keeps iOS from misplacing the cards' no-scroll touch area onto the office/checklist */
 .lane.fan .card{--rot:5deg;left:0;bottom:calc(var(--pb) + 77px);margin-left:0;transform-origin:50% 50%;transform:translateY(var(--lift,0px)) rotate(var(--rot))}
+/* hand cards are moved by the spring loop in laneApply/laneTick, so no CSS transition on transform (it would fight the springs) */
+.lane.fan .card{transition:opacity .12s,filter .12s,box-shadow .12s;will-change:transform}
 .lane.fan .empty{bottom:calc(var(--pb) + 130px)}
 .endbtn{bottom:calc(var(--pb) - 53px)}
 .pilebtn{bottom:var(--pb);width:42px;height:43px;min-width:0;padding:4px 0 3px;justify-content:center}
@@ -1615,14 +1617,69 @@ function fanHTML(hand){
 }
 // Sideways scroll of the hand. A short hand is centred; a long one starts centred too (both ends peek out) and slides.
 const HAND={sx:0,max:0,off:0,sig:''};let handRaf=0;
-// Each card's place = its place in the row minus the scroll offset. Even cards tilt right, odd cards tilt left and sit higher.
-function laneApply(){const lane=$app.querySelector('.lane.fan'),tr=lane&&lane.querySelector('.track');if(!tr)return;
-  const W=lane.clientWidth,base=HAND.off-HAND.sx;
-  [...tr.children].forEach((el,i)=>{const L=base+i*HAND_STEP,odd=i%2===1;
-    // cards that have slid fully off screen are taken out, so they can't make the page wider than the screen
-    el.style.display=(L>W+30||L<-152)?'none':'';
-    el.style.setProperty('--rot',(odd?-HAND_TILT:HAND_TILT)+'deg');
-    el.style.left=L.toFixed(1)+'px';el.style.translate=odd?`0 ${-HAND_RAISE}px`:''})}
+// Hand physics. Each card chases its spot in the row on its own spring instead of snapping to it:
+// - sliding the row: the card under your finger leads and the others trail behind a little, leaning into the motion;
+// - lifting a card out (hold, slide up) pops it up with a small overshoot and straightens it; letting go drops it back with a bounce;
+// - when a card leaves, the rest close the gap on springs; a played card floats up and fades, an end-of-turn discard sweeps to Used;
+// - new cards are dealt from the Draw pile one after another.
+// Positions are written as one transform per card per frame (no layout work), and the loop stops once every card is at rest.
+const HP={m:new Map(),raf:0,last:0,px:null,calm:matchMedia('(prefers-reduced-motion: reduce)')};
+const liftOf=el=>{const c=el.classList;return c.contains('launch')?-56:c.contains('peek')?-28:(c.contains('keep')||c.contains('armed'))?-14:c.contains('press')?-12:0};
+function hpWrite(p,W){const el=p.el;
+  // cards that have slid fully off screen are taken out, so they can't make the page wider than the screen
+  el.style.display=(p.x>W+30||p.x<-152)?'none':'';
+  el.style.opacity=p.d>0?'0':'';
+  el.style.transform=`translate3d(${p.x.toFixed(2)}px,${p.y.toFixed(2)}px,0) rotate(${p.r.toFixed(2)}deg) scale(${p.s.toFixed(3)})`}
+function laneApply(){const lane=$app.querySelector('.lane.fan'),tr=lane&&lane.querySelector('.track');
+  if(!tr){HP.m.clear();return}
+  const W=lane.clientWidth,base=HAND.off-HAND.sx,els=[...tr.querySelectorAll('.card[data-uid]')],seen=new Set();
+  let lr=null,born=0;const calm=HP.calm.matches,first=!HP.m.size;
+  els.forEach((el,i)=>{const u=el.dataset.uid,odd=i%2===1;seen.add(u);
+    const tx=base+i*HAND_STEP,ty=odd?-HAND_RAISE:0,tr0=odd?-HAND_TILT:HAND_TILT;let p=HP.m.get(u);
+    if(!p){p={x:tx,y:ty,r:tr0,s:1,vx:0,vy:0,vr:0,vs:0,d:0};HP.m.set(u,p);
+      const pile=!calm&&$app.querySelector('.pilebtn.draw');
+      if(pile){lr=lr||lane.getBoundingClientRect();const pr=pile.getBoundingClientRect();   // dealt from the Draw pile
+        p.x=pr.left+pr.width/2-lr.left-61;p.y=pr.top+pr.height/2-lr.top-(el.offsetTop+100);p.r=-22;p.s=.3;p.d=(first?i:born)*75;born++}}
+    p.el=el;p.i=i;p.tx=tx;p.ty=ty;p.tr=tr0;el.style.left='0';el.style.translate='';el.style.setProperty('--rot',tr0+'deg');hpWrite(p,W)});
+  // cards that just left the hand: keep their old element for a moment and send it off
+  const gone=[...HP.m].filter(([u])=>!seen.has(u));
+  gone.forEach(([u,p],k)=>{HP.m.delete(u);const g=p.el;if(calm||!g||!g.animate||g.isConnected)return;
+    g.removeAttribute('data-uid');g.classList.remove('press','peek','launch','armed','keep');g.style.pointerEvents='none';g.style.display='';
+    tr.appendChild(g);const from=g.style.transform;let to,dur,delay=0;
+    if(gone.length===1){g.style.zIndex=90;to=`translate3d(${p.x}px,${p.y-190}px,0) rotate(${-p.r*1.6}deg) scale(.8)`;dur=340}
+    else{const used=$app.querySelector('.pilebtn.used');lr=lr||lane.getBoundingClientRect();
+      const ur=used?used.getBoundingClientRect():{left:lr.left,top:lr.bottom,width:0,height:0};
+      to=`translate3d(${ur.left+ur.width/2-lr.left-61}px,${ur.top+ur.height/2-lr.top-(g.offsetTop+100)}px,0) rotate(-30deg) scale(.25)`;dur=380;delay=k*45}
+    const a=g.animate([{transform:from,opacity:1},{transform:to,opacity:0}],{duration:dur,delay,easing:'cubic-bezier(.45,0,.75,.4)',fill:'forwards'});
+    a.onfinish=()=>g.remove()});
+  laneKick()}
+function laneKick(){if(!HP.raf&&HP.m.size){HP.last=performance.now();HP.raf=requestAnimationFrame(laneTick)}}
+function laneTick(t){HP.raf=0;const lane=$app.querySelector('.lane.fan');if(!lane)return;
+  const W=lane.clientWidth,calm=HP.calm.matches;let dt=Math.min(.04,(t-HP.last)/1000);HP.last=t;
+  // the card nearest the finger (or the screen centre) leads; cards further away follow more loosely
+  const fx=HP.px==null?W/2:HP.px-lane.getBoundingClientRect().left,focus=(fx-61-(HAND.off-HAND.sx))/HAND_STEP;
+  let busy=false;const n=dt>.017?2:1;dt/=n;
+  HP.m.forEach(p=>{if(!p.el.isConnected)return;
+    if(p.d>0){p.d-=dt*n*1000;busy=true;hpWrite(p,W);return}
+    const lift=liftOf(p.el),out=lift<-20,ty=p.ty+lift;
+    if(calm){p.x=p.tx;p.y=ty;p.r=p.tr;p.s=1;p.vx=p.vy=p.vr=p.vs=0;hpWrite(p,W);return}
+    const kx=170/(1+.3*Math.abs(p.i-focus)),ky=ty<p.y?560:400,zy=ty<p.y?.5:.58,kr=320,ks=260;
+    for(let j=0;j<n;j++){
+      const lean=Math.max(-7,Math.min(7,-p.vx*.008)),tr=(out?p.tr*.2:p.tr)+lean;
+      p.vx+=(kx*(p.tx-p.x)-2*.8*Math.sqrt(kx)*p.vx)*dt;p.x+=p.vx*dt;
+      p.vy+=(ky*(ty-p.y)-2*zy*Math.sqrt(ky)*p.vy)*dt;p.y+=p.vy*dt;
+      p.vr+=(kr*(tr-p.r)-2*.45*Math.sqrt(kr)*p.vr)*dt;p.r+=p.vr*dt;
+      p.vs+=(ks*(1-p.s)-2*.62*Math.sqrt(ks)*p.vs)*dt;p.s+=p.vs*dt}
+    if(Math.abs(p.tx-p.x)+Math.abs(ty-p.y)>.15||Math.abs(p.vx)+Math.abs(p.vy)>2||Math.abs(p.tr-p.r)>.05&&!out||Math.abs(p.vr)>.5||Math.abs(1-p.s)>.002)busy=true;
+    else if(!out){p.x=p.tx;p.y=ty;p.r=p.tr;p.s=1;p.vx=p.vy=p.vr=p.vs=0}
+    hpWrite(p,W)});
+  if(busy)HP.raf=requestAnimationFrame(laneTick)}
+// class changes on hand cards (press / peek / launch / keep / armed) set a new lift, so wake the springs
+if(typeof MutationObserver==='function')new MutationObserver(ms=>{if(ms.some(m=>m.target.matches&&m.target.matches('.lane.fan .card')))laneKick()})
+  .observe($app,{subtree:true,attributes:true,attributeFilter:['class']});
+document.addEventListener('pointerdown',e=>{HP.px=e.clientX},{capture:true,passive:true});
+document.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType!=='mouse')HP.px=e.clientX},{capture:true,passive:true});
+document.addEventListener('pointerup',()=>{setTimeout(()=>{HP.px=null},400)},{capture:true,passive:true});
 function laneLayout(){
   const lane=$app.querySelector('.lane.fan'),tr=lane&&lane.querySelector('.track');if(!tr)return;
   const n=tr.children.length,W=lane.clientWidth,OV=24,PAD=12,box=(n-1)*HAND_STEP+122+2*OV;
@@ -1851,7 +1908,7 @@ const FEEDBACK_URL='https://script.google.com/macros/s/AKfycbwBAsc8Gc7MfPPNxapbW
 const GAME_VERSION='v24';
 // GAME_BUILD is rewritten automatically on every commit by .githooks/pre-commit (don't edit by hand):
 // n = the commit's number in the repo history, date = when it was committed.
-const GAME_BUILD={n:38,date:'2026-10-23 20:13'};
+const GAME_BUILD={n:39,date:'2026-10-23 20:18'};
 const versionLabel=()=>`${GAME_VERSION} · build ${GAME_BUILD.n}`;
 const FB={type:'Bug',text:'',name:'',sending:false,err:''};
 try{FB.name=localStorage.getItem('ft1p.fbname')||''}catch(_){}
