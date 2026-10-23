@@ -466,6 +466,12 @@ textarea.fb-in{min-height:120px;resize:vertical}
 .dock{background:none}
 .dock::before{content:"";position:absolute;top:0;bottom:0;left:calc(50% - 50vw);right:calc(50% - 50vw);z-index:-1;pointer-events:none;background:linear-gradient(to bottom,rgba(231,215,180,0),rgba(231,215,180,.92))}
 main.withdock{--gl:max(12px,env(safe-area-inset-left,0px));--gr:max(12px,env(safe-area-inset-right,0px));margin:0 calc(-1*var(--gr)) 0 calc(-1*var(--gl));padding-left:var(--gl);padding-right:var(--gr);padding-top:0;padding-bottom:calc(342px + env(safe-area-inset-bottom,0px)*.5);scroll-padding-bottom:calc(342px + env(safe-area-inset-bottom,0px)*.5)}
+/* scroll room under the checklist (so it can scroll clear of the hand) comes from a spacer, not padding: some iPhones (WebKit) don't count
+   a scroller's bottom padding as scrollable, so with a short checklist the office didn't scroll at all */
+@media not all and (orientation:landscape) and (min-width:900px) and (min-height:540px){
+  main.withdock{padding-bottom:0}
+  main.withdock::after{content:'';display:block;flex:0 0 auto;height:calc(332px + env(safe-area-inset-bottom,0px)*.5)}
+}
 .stage.hero{--st:env(safe-area-inset-top,0px);height:calc(277px + var(--st));border:0;border-radius:0;flex-shrink:0;
   margin:0 calc(-1*var(--gr)) 6px calc(-1*var(--gl))}
 .stage.hero .bg{position:absolute;inset:0;width:100%;height:100%;object-position:50% 55%}
@@ -1845,7 +1851,7 @@ const FEEDBACK_URL='https://script.google.com/macros/s/AKfycbwBAsc8Gc7MfPPNxapbW
 const GAME_VERSION='v24';
 // GAME_BUILD is rewritten automatically on every commit by .githooks/pre-commit (don't edit by hand):
 // n = the commit's number in the repo history, date = when it was committed.
-const GAME_BUILD={n:37,date:'2026-10-23 19:59'};
+const GAME_BUILD={n:38,date:'2026-10-23 20:13'};
 const versionLabel=()=>`${GAME_VERSION} · build ${GAME_BUILD.n}`;
 const FB={type:'Bug',text:'',name:'',sending:false,err:''};
 try{FB.name=localStorage.getItem('ft1p.fbname')||''}catch(_){}
