@@ -2,6 +2,14 @@
 
 Newest first. Each version is a git tag (`v24`, `v22`, …) on the last commit of that version, so `git checkout v22` gives you that build exactly. The build number is the commit count, shown on the title screen as `v24 · build N`. Full design notes for every version live in the game design doc's change log.
 
+## v25 — 2026-10-24 · build 40
+Includes the hand springs (build 39: cards trail and lean when you slide the hand, pop up and bounce back, deal in from the Draw pile).
+- **Tutorial:** *How to play* on the title screen opens a practice office, and the first time the game is opened on a device it offers it once (Show me / Not now). The clerk is on sick leave until 2031, so the window is run by Žućko, a temporary worker: a puppy in a hat folded from an old form. Fixed deck, 15 coached steps (a ring around the thing being explained, Žućko's speech bubble, only the next move can be tapped): the form, Patience, Time, handing in, photocopying, the next action, fees, End turn, keeping cards, a new rule, a fee stamp, the Small Envelope. Ends on a Certificate of Completed Training. Doesn't touch the Vitrina or run counts.
+- **Languages:** English, Bosnian/Croatian, Serbian (Cyrillic), German, Spanish, French. *Options* on the title screen, or *Language* in the pause menu. The first open follows the phone's language; after that the choice is remembered on the device. Serbian is written in Latin in the table and shown in Cyrillic.
+- Title menu: Start new run / How to play / Rules / Options / Quit.
+- Fixes: the route card's "On the way" line showed a dark dot and overlapping text when a stop had trouble on the way; a few clerk lines said "she" for male clerks.
+- Translations live in `i18n/*.json` (English sentence → translation) and are baked into `index.html`; `i18n/README.md` explains how to add or fix a line.
+
 ## v24 — 2026-10-23 · build 36
 Includes v23, which was never committed on its own.
 - **City map (v23):** the 3-lane route list is replaced by one sideways-scrolling top-down city for the whole run, offices as landmarks, one named district (fork of 2–3 stops) between each pair. Tap a stop to preview, Go to confirm. Your red Yugo parks illegally with its hazards blinking; the trail is drawn in ink; past and skipped stops fade. Fixes the v22 bug where first-row stops of every leg could be tapped. Save format v11 (v22 runs restart).

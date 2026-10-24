@@ -1,0 +1,3654 @@
+{
+ "ui": [
+  [
+   "\"A plain copy? No, no. {0}, certified.\" That line now needs a certified copy.",
+   "{0} = DOCS[r.doc].name"
+  ],
+  [
+   "\"Ah, I almost forgot!\" See? A new line on the form: a Photo 3×4. In a real run, the card My Friend Went Last Week can warn you before a clerk does this.",
+   "ui"
+  ],
+  [
+   "\"Ah, I almost forgot. You also need: {0}.\" \"I know,\" you say. Your friend warned you, so it doesn't get to you. It's on the form now.",
+   "{0} = docName(doc,form)"
+  ],
+  [
+   "\"Ah, I almost forgot.\" You also need: {0}. It's on the form now. −1 patience.",
+   "{0} = docName(doc,form)"
+  ],
+  [
+   "\"Almost,\" says the kiosk lady. It is never almost.",
+   "ui"
+  ],
+  [
+   "\"Back in fifteen minutes.\" It takes forty. You also get 1 less time next turn.",
+   "ui"
+  ],
+  [
+   "\"Going to the {0} next? {1} will want your {2} as well. Don't use up your last one here.\"",
+   "{0} = d.full; {1} = who; {2} = needLabel(doc,form)"
+  ],
+  [
+   "\"I know someone.\"",
+   "ui"
+  ],
+  [
+   "\"My friend was at {0} last week. Suddenly {1} 'remembered' [[he|she]] also needs your {2}. Keep it on you.\"",
+   "{0} = d.window; {1} = who; {2} = needLabel(doc,form)"
+  ],
+  [
+   "\"My husband is a notary. Tell him I sent you.\" A Notary Owes You card joins your deck.",
+   "ui"
+  ],
+  [
+   "\"No strange papers at the {0}. Just the usual. {1} is strict, but normal.\"",
+   "{0} = d.full; {1} = who"
+  ],
+  [
+   "\"Right at the end, when [[he|she]] was nearly done, {0} asked my friend for a {1}. Nobody had ever heard of it. Get one before [[he|she]] asks.\"",
+   "{0} = who; {1} = DOCS[d.ft1p].name"
+  ],
+  [
+   "\"The system is down\"",
+   "ui"
+  ],
+  [
+   "\"This fee stamp is from the old series.\"",
+   "ui"
+  ],
+  [
+   "\"This must be certified\"",
+   "ui"
+  ],
+  [
+   "\"This one is not valid\"",
+   "ui"
+  ],
+  [
+   "\"This one is too old\"",
+   "ui"
+  ],
+  [
+   "\"This {0} is the old format.\"",
+   "{0} = DOCS[r.doc].name"
+  ],
+  [
+   "\"This {0} is too old.\" That line now wants one {1}.",
+   "{0} = DOCS[r.doc].name; {1} = maxLabel(r.max)"
+  ],
+  [
+   "\"You're missing one paper.\" {0} also needs your {1}. Exactly like your friend said.",
+   "{0} = clerkName(d); {1} = DOCS[d.ft1p].name"
+  ],
+  [
+   "\"You're missing one paper.\" {0} also needs your {1}. You have never heard of this document.",
+   "{0} = clerkName(d); {1} = DOCS[d.ft1p].name"
+  ],
+  [
+   "+1 item on the form (you heard about it)",
+   "ui"
+  ],
+  [
+   "+1 item on the form, −1 patience",
+   "ui"
+  ],
+  [
+   "+10 patience",
+   "ui"
+  ],
+  [
+   "+20 patience",
+   "ui"
+  ],
+  [
+   "+5 patience",
+   "ui"
+  ],
+  [
+   "+8 patience",
+   "ui"
+  ],
+  [
+   "...",
+   "ui"
+  ],
+  [
+   "1 day. Then the window opens.",
+   "ui"
+  ],
+  [
+   "2 days to the office",
+   "ui"
+  ],
+  [
+   "<b>Controls.</b> Touch: tap a card to play, hold to look, slide up to play what you're looking at. Mouse: hover to look, click to play. Keys: 1–9 play a card, Space ends the turn, Esc cancels or pauses, P pause, M map, C cards. The ⚙ button pauses the game.",
+   "ui"
+  ],
+  [
+   "<b>Days.</b> Every paper shows how old it is. Some lines want a fresh one (\"max 4 days old\"). <b>Re-issue</b> dates a paper today, <b>Notarize</b> dates a certified copy today, and <b>Backdate</b> (shady) makes a paper never too old. Photocopies keep the date of their original and stay in your cards.",
+   "ui"
+  ],
+  [
+   "<b>Days.</b> Papers get older every day, and some lines want a fresh one.",
+   "ui"
+  ],
+  [
+   "<b>Fali ti jedan papir.</b> When you're one line from done, a clerk may ask for a strange paper nobody has heard of. Tap <b>Go get it</b> or slip them an envelope.",
+   "ui"
+  ],
+  [
+   "<b>Five offices</b>, one after another. Each one hands you the paper the next one wants.",
+   "ui"
+  ],
+  [
+   "<b>My Friend Went Last Week</b> tells you something the clerk will ask for later: a rule they will suddenly remember, or their strange paper. Tips show up on the form in pencil and mark matching cards in your hand <b>Heard</b>, so you know what to keep. If the clerk asks for something you heard about, it costs you no patience. When an office has no secrets left, you hear about the next one.",
+   "ui"
+  ],
+  [
+   "<b>Pocket items</b> are one-use helpers (rakija, pita). <b>The Vitrina</b> keeps trinkets you earn for good: equip them before a run.",
+   "ui"
+  ],
+  [
+   "<b>The Vitrina</b>: grandma's glass cabinet keeps the trinkets you earn, for good.",
+   "ui"
+  ],
+  [
+   "<b>The city map</b> between offices: pick a stop on the way, and watch out for trouble.",
+   "ui"
+  ],
+  [
+   "<b>The map.</b> Between offices you pick a route. Every step is a day. Some stops help (café, kafana, copy shop, cousin), some hurt (the bus doesn't come), and some are a choice.",
+   "ui"
+  ],
+  [
+   "A coffee, a glass of water, and nobody asks you for a paper.",
+   "ui"
+  ],
+  [
+   "A fresh {0}, dated today. Same paper, new date, new fee.",
+   "{0} = DOCS[tgt.doc].name"
+  ],
+  [
+   "A friend of a friend knows how it goes here.",
+   "ui"
+  ],
+  [
+   "A handwritten sign: \"Closed due to strike. Or illness. Come back tomorrow.\"",
+   "ui"
+  ],
+  [
+   "A long phone call about a cousin's wedding. You wait. Nothing else happens.",
+   "ui"
+  ],
+  [
+   "A second slot",
+   "ui"
+  ],
+  [
+   "A small choice. Could go either way.",
+   "ui"
+  ],
+  [
+   "A small envelope changes hands. Your wallet feels lighter. Your conscience too, somehow.",
+   "ui"
+  ],
+  [
+   "Action",
+   "ui"
+  ],
+  [
+   "Ahead",
+   "ui"
+  ],
+  [
+   "All cards",
+   "ui"
+  ],
+  [
+   "All your papers are fresh.",
+   "ui"
+  ],
+  [
+   "All your papers are from today. Nothing to do here.",
+   "ui"
+  ],
+  [
+   "And this is your Time: 3 dots every turn. Actions cost time (the number in the dark circle on a card). Handing in a document costs nothing.",
+   "ui"
+  ],
+  [
+   "Approved",
+   "ui"
+  ],
+  [
+   "At 3 a.m., between two kolo dances, you meet exactly the right person.",
+   "ui"
+  ],
+  [
+   "At a counter.",
+   "ui"
+  ],
+  [
+   "Back",
+   "ui"
+  ],
+  [
+   "Back in a minute",
+   "ui"
+  ],
+  [
+   "Back to menu",
+   "ui"
+  ],
+  [
+   "Back to the menu",
+   "ui"
+  ],
+  [
+   "Back to the title",
+   "ui"
+  ],
+  [
+   "Back to the window",
+   "ui"
+  ],
+  [
+   "Bank, two streets away",
+   "ui"
+  ],
+  [
+   "Before",
+   "ui"
+  ],
+  [
+   "Before your turn ends, you can keep up to 3 cards for the next one. The rest go to the Used pile. Tap the Small Envelope to keep it, then tap Keep.",
+   "ui"
+  ],
+  [
+   "Between old phone bills and a 1987 calendar: your {0}. It joins your cards.",
+   "{0} = DOCS[x].name"
+  ],
+  [
+   "Blocked",
+   "ui"
+  ],
+  [
+   "Bug",
+   "ui"
+  ],
+  [
+   "Calendar",
+   "ui"
+  ],
+  [
+   "Cancel",
+   "ui"
+  ],
+  [
+   "Cards",
+   "ui"
+  ],
+  [
+   "Cards marked HEARD will probably be asked for here.",
+   "ui"
+  ],
+  [
+   "Certificate of Completed Training",
+   "ui"
+  ],
+  [
+   "Chases his own tail",
+   "ui"
+  ],
+  [
+   "Citizen service centre",
+   "ui"
+  ],
+  [
+   "Clean out your cards",
+   "ui"
+  ],
+  [
+   "Clerk keeps it",
+   "ui"
+  ],
+  [
+   "Clerks get stricter later in the run: they can demand a certified copy, a fresher paper, or their system goes down.",
+   "ui"
+  ],
+  [
+   "Click to drop",
+   "ui"
+  ],
+  [
+   "Click to hand in",
+   "ui"
+  ],
+  [
+   "Click to keep",
+   "ui"
+  ],
+  [
+   "Click to play",
+   "ui"
+  ],
+  [
+   "Close",
+   "ui"
+  ],
+  [
+   "Close (Esc)",
+   "ui"
+  ],
+  [
+   "Close rules",
+   "ui"
+  ],
+  [
+   "Closed",
+   "ui"
+  ],
+  [
+   "Coffee break",
+   "ui"
+  ],
+  [
+   "Comes back",
+   "ui"
+  ],
+  [
+   "Connections",
+   "ui"
+  ],
+  [
+   "Copies, stamps and photos are kept by the clerk. Originals come back, unless the line says \"original or certified copy\" and you hand over the original.",
+   "ui"
+  ],
+  [
+   "Copy of {0} added to your hand. It stays in your cards.",
+   "{0} = DOCS[tgt.doc].name"
+  ],
+  [
+   "Copy shop",
+   "ui"
+  ],
+  [
+   "Copy which original?",
+   "ui"
+  ],
+  [
+   "Costs",
+   "ui"
+  ],
+  [
+   "Couldn't send. Check your connection and try again.",
+   "ui"
+  ],
+  [
+   "Day {0}",
+   "{0} = S.day"
+  ],
+  [
+   "Day {0}, {1}. The window closes at 15:00.",
+   "{0} = S.day; {1} = clockStr(o,cur())"
+  ],
+  [
+   "Day {0}. Five offices, each one hands you the paper the next one asks for. Every step between them is a day.",
+   "{0} = S.day"
+  ],
+  [
+   "Days",
+   "ui"
+  ],
+  [
+   "Dismiss",
+   "ui"
+  ],
+  [
+   "Document",
+   "ui"
+  ],
+  [
+   "Done",
+   "ui"
+  ],
+  [
+   "Done (envelope)",
+   "ui"
+  ],
+  [
+   "Done (paid at bank)",
+   "ui"
+  ],
+  [
+   "Draw",
+   "ui"
+  ],
+  [
+   "Draw pile",
+   "ui"
+  ],
+  [
+   "Draw pile, {0} cards",
+   "{0} = o.draw.length"
+  ],
+  [
+   "Empty slot. Tap a keepsake in the cabinet to take it.",
+   "ui"
+  ],
+  [
+   "Empty.",
+   "ui"
+  ],
+  [
+   "End of the day",
+   "ui"
+  ],
+  [
+   "End of turn: tap up to {0} cards to keep ({1}/{2}). The rest are discarded and you draw back up to {3}. Keep none to redraw all.",
+   "{0} = keepMax(); {1} = S.keeping.length; {2} = keepMax(); {3} = HAND_SIZE"
+  ],
+  [
+   "End run",
+   "ui"
+  ],
+  [
+   "End turn",
+   "ui"
+  ],
+  [
+   "End<br>turn",
+   "ui"
+  ],
+  [
+   "Envelopes",
+   "ui"
+  ],
+  [
+   "Errand",
+   "ui"
+  ],
+  [
+   "Errands",
+   "ui"
+  ],
+  [
+   "Every document and action you own.",
+   "ui"
+  ],
+  [
+   "Feedback",
+   "ui"
+  ],
+  [
+   "Feedback isn't connected yet in this build.",
+   "ui"
+  ],
+  [
+   "Fees take a fee stamp. No stamp? Pay at the bank instead, but it costs the rest of your turn.",
+   "ui"
+  ],
+  [
+   "Fill in the form",
+   "ui"
+  ],
+  [
+   "First time at the counter?",
+   "ui"
+  ],
+  [
+   "For you",
+   "ui"
+  ],
+  [
+   "Found",
+   "ui"
+  ],
+  [
+   "From the Vitrina",
+   "ui"
+  ],
+  [
+   "From your pocket",
+   "ui"
+  ],
+  [
+   "Gamble",
+   "ui"
+  ],
+  [
+   "Game paused",
+   "ui"
+  ],
+  [
+   "Get",
+   "ui"
+  ],
+  [
+   "Give up this run?",
+   "ui"
+  ],
+  [
+   "Go (lose your turn)",
+   "ui"
+  ],
+  [
+   "Go empty-handed",
+   "ui"
+  ],
+  [
+   "Go get it",
+   "ui"
+  ],
+  [
+   "Go get: {0}",
+   "{0} = esc(e.get)"
+  ],
+  [
+   "Go here",
+   "ui"
+  ],
+  [
+   "Go in",
+   "ui"
+  ],
+  [
+   "Go in.",
+   "ui"
+  ],
+  [
+   "Grandma's glass cabinet",
+   "ui"
+  ],
+  [
+   "Hand it over",
+   "ui"
+  ],
+  [
+   "Handing in a <b>document</b> is free. <b>Actions</b> show their time cost in the dark circle. You get 3 time a turn.",
+   "ui"
+  ],
+  [
+   "Heard",
+   "ui"
+  ],
+  [
+   "Heard about the {0}",
+   "{0} = d.full"
+  ],
+  [
+   "Heard in the queue",
+   "ui"
+  ],
+  [
+   "Heard it",
+   "ui"
+  ],
+  [
+   "Heard: [[he|she]] may ask for it later",
+   "ui"
+  ],
+  [
+   "Heard: a strange paper, right at the end",
+   "ui"
+  ],
+  [
+   "Helps",
+   "ui"
+  ],
+  [
+   "How it works",
+   "ui"
+  ],
+  [
+   "How to play",
+   "ui"
+  ],
+  [
+   "Idea",
+   "ui"
+  ],
+  [
+   "In a real run you'll also meet",
+   "ui"
+  ],
+  [
+   "In for four. Out for four.",
+   "ui"
+  ],
+  [
+   "In your bag",
+   "ui"
+  ],
+  [
+   "In your bag for this run",
+   "ui"
+  ],
+  [
+   "In your bag. Tap to put it back.",
+   "ui"
+  ],
+  [
+   "In your hand",
+   "ui"
+  ],
+  [
+   "Into your pocket",
+   "ui"
+  ],
+  [
+   "Issued today",
+   "ui"
+  ],
+  [
+   "It is wearing off.",
+   "ui"
+  ],
+  [
+   "It lasts the whole run.",
+   "ui"
+  ],
+  [
+   "KEEP",
+   "ui"
+  ],
+  [
+   "Keep everything",
+   "ui"
+  ],
+  [
+   "Keep it",
+   "ui"
+  ],
+  [
+   "Keep queuing",
+   "ui"
+  ],
+  [
+   "Keep {0} cards, discard the rest and end turn",
+   "{0} = S.keeping.length"
+  ],
+  [
+   "Keep<br>none",
+   "ui"
+  ],
+  [
+   "Keep<br>{0}",
+   "{0} = S.keeping.length"
+  ],
+  [
+   "Language",
+   "ui"
+  ],
+  [
+   "Later, in {0}. You can't go there yet.",
+   "{0} = esc(Lg.name)"
+  ],
+  [
+   "Leave",
+   "ui"
+  ],
+  [
+   "Leave the practice office?",
+   "ui"
+  ],
+  [
+   "Leave the tutorial",
+   "ui"
+  ],
+  [
+   "Leave the window",
+   "ui"
+  ],
+  [
+   "Locked",
+   "ui"
+  ],
+  [
+   "Main menu",
+   "ui"
+  ],
+  [
+   "Map",
+   "ui"
+  ],
+  [
+   "Miss",
+   "ui"
+  ],
+  [
+   "Music: off",
+   "ui"
+  ],
+  [
+   "Music: on",
+   "ui"
+  ],
+  [
+   "Never too old",
+   "ui"
+  ],
+  [
+   "New here? <b>How to play</b> on the title screen walks you through one practice office.",
+   "ui"
+  ],
+  [
+   "New in the Vitrina",
+   "ui"
+  ],
+  [
+   "New rule",
+   "ui"
+  ],
+  [
+   "New run",
+   "ui"
+  ],
+  [
+   "New turn, new cards: 3 time again, and a Municipal Fee Stamp in your hand. Hand it in for the fee line.",
+   "ui"
+  ],
+  [
+   "Next",
+   "ui"
+  ],
+  [
+   "Next action",
+   "ui"
+  ],
+  [
+   "Next action · blocked",
+   "ui"
+  ],
+  [
+   "Next morning, back at {0}. {1} does not remember you.",
+   "{0} = d.window; {1} = clerkName(d)"
+  ],
+  [
+   "No cards in hand.",
+   "ui"
+  ],
+  [
+   "No photo on you? There's another way. Cards with a dashed border are shady: they also cost Patience (the red heart). Tap the Small Envelope.",
+   "ui"
+  ],
+  [
+   "No stop on the way.",
+   "ui"
+  ],
+  [
+   "No strange papers here",
+   "ui"
+  ],
+  [
+   "Nobody here asked for {0}.",
+   "{0} = docName(c.doc,c.form)"
+  ],
+  [
+   "Not enough time left this turn.",
+   "ui"
+  ],
+  [
+   "Not now",
+   "ui"
+  ],
+  [
+   "Not now.",
+   "ui"
+  ],
+  [
+   "Not on your way any more.",
+   "ui"
+  ],
+  [
+   "Nothing",
+   "ui"
+  ],
+  [
+   "Nothing happens",
+   "ui"
+  ],
+  [
+   "Nothing new for the Vitrina this time.",
+   "ui"
+  ],
+  [
+   "Nothing new up here, but you find grandpa's old radio. It still works.",
+   "ui"
+  ],
+  [
+   "Nothing. A quiet street.",
+   "ui"
+  ],
+  [
+   "Now tap the Photo 3×4 line on the form. Nobody saw anything.",
+   "ui"
+  ],
+  [
+   "Now tap your Birth Certificate. The copy goes straight into your hand.",
+   "ui"
+  ],
+  [
+   "OK",
+   "ui"
+  ],
+  [
+   "OVJERENO",
+   "ui"
+  ],
+  [
+   "Obtained",
+   "ui"
+  ],
+  [
+   "Office {0}",
+   "{0} = s.leg+2"
+  ],
+  [
+   "On the way",
+   "ui"
+  ],
+  [
+   "On the way: {0}.",
+   "ui"
+  ],
+  [
+   "On to the {0}",
+   "{0} = esc(nx.short)"
+  ],
+  [
+   "One fee stamp of each kind, and four photos in which you look like you are being arrested. One joins your cards.",
+   "ui"
+  ],
+  [
+   "One more day and you are at the window.",
+   "ui"
+  ],
+  [
+   "One more turn of peace.",
+   "ui"
+  ],
+  [
+   "One use.",
+   "ui"
+  ],
+  [
+   "Open now",
+   "ui"
+  ],
+  [
+   "Options",
+   "ui"
+  ],
+  [
+   "Other",
+   "ui"
+  ],
+  [
+   "Packed",
+   "ui"
+  ],
+  [
+   "Paid",
+   "ui"
+  ],
+  [
+   "Patience",
+   "ui"
+  ],
+  [
+   "Patience: 0",
+   "ui"
+  ],
+  [
+   "Paused",
+   "ui"
+  ],
+  [
+   "Paused · practice office",
+   "ui"
+  ],
+  [
+   "Paused · {0}, office {1} of {2}",
+   "{0} = esc(cur().full); {1} = S.officeIdx+1; {2} = OFFICES.length"
+  ],
+  [
+   "Pay at bank",
+   "ui"
+  ],
+  [
+   "Personal phone call",
+   "ui"
+  ],
+  [
+   "Photocopy your original",
+   "ui"
+  ],
+  [
+   "Pick a connection. It lasts the whole run.",
+   "ui"
+  ],
+  [
+   "Pick a copy to notarize",
+   "ui"
+  ],
+  [
+   "Pick a document to backdate",
+   "ui"
+  ],
+  [
+   "Pick a document to re-issue (dated today)",
+   "ui"
+  ],
+  [
+   "Pick a line on the checklist to tick off",
+   "ui"
+  ],
+  [
+   "Pick a stop",
+   "ui"
+  ],
+  [
+   "Pick an original in your hand",
+   "ui"
+  ],
+  [
+   "Pick one stop on the way: it takes a day, and so does the walk to the office. Every route gives you something; some cost you on the way.",
+   "ui"
+  ],
+  [
+   "Pocket",
+   "ui"
+  ],
+  [
+   "Pockets full",
+   "ui"
+  ],
+  [
+   "Progress",
+   "ui"
+  ],
+  [
+   "Put back",
+   "ui"
+  ],
+  [
+   "Put it back.",
+   "ui"
+  ],
+  [
+   "Quit",
+   "ui"
+  ],
+  [
+   "Rare",
+   "ui"
+  ],
+  [
+   "Re-issue {0} more",
+   "{0} = S.counterLeft"
+  ],
+  [
+   "Received",
+   "ui"
+  ],
+  [
+   "Received! I looked at your original and gave it back: originals come back to your cards. Copies, stamps and photos the clerk keeps.",
+   "ui"
+  ],
+  [
+   "Release to drop",
+   "ui"
+  ],
+  [
+   "Release to hand in",
+   "ui"
+  ],
+  [
+   "Release to keep",
+   "ui"
+  ],
+  [
+   "Release to play",
+   "ui"
+  ],
+  [
+   "Remembers a new rule",
+   "ui"
+  ],
+  [
+   "Resume",
+   "ui"
+  ],
+  [
+   "Rules",
+   "ui"
+  ],
+  [
+   "Run map",
+   "ui"
+  ],
+  [
+   "Run map, office {0} of {1}",
+   "{0} = S.officeIdx+1; {1} = OFFICES.length"
+  ],
+  [
+   "Salary account opened",
+   "ui"
+  ],
+  [
+   "Save it for a counter: it only works at an office window.",
+   "ui"
+  ],
+  [
+   "Save that for the counter.",
+   "ui"
+  ],
+  [
+   "Send",
+   "ui"
+  ],
+  [
+   "Send feedback",
+   "ui"
+  ],
+  [
+   "Sending…",
+   "ui"
+  ],
+  [
+   "Sends your message, name, game version, office and device type. Nothing else.",
+   "ui"
+  ],
+  [
+   "Settings",
+   "ui"
+  ],
+  [
+   "Settings and pause: rules, music, end run",
+   "ui"
+  ],
+  [
+   "Settings and pause: rules, music, your cards, end run",
+   "ui"
+  ],
+  [
+   "Settled",
+   "ui"
+  ],
+  [
+   "Shady",
+   "ui"
+  ],
+  [
+   "Shady action",
+   "ui"
+  ],
+  [
+   "Shady actions (dashed border) also cost <b>patience</b>, shown with a red heart. Patience is your health. At zero you give up.",
+   "ui"
+  ],
+  [
+   "She has opinions about your apartment, your job and your posture.",
+   "ui"
+  ],
+  [
+   "She writes your name in a notebook with 600 other names. \"I won't forget this.\"",
+   "ui"
+  ],
+  [
+   "Show me",
+   "ui"
+  ],
+  [
+   "Sighs loudly",
+   "ui"
+  ],
+  [
+   "Signed",
+   "ui"
+  ],
+  [
+   "Skip",
+   "ui"
+  ],
+  [
+   "Skip tutorial",
+   "ui"
+  ],
+  [
+   "Smudged",
+   "ui"
+  ],
+  [
+   "Someone adjusts the date on your {0}. It will never be too old again.",
+   "{0} = DOCS[tgt.doc].name"
+  ],
+  [
+   "Someone else's priority number. +2 time this turn.",
+   "ui"
+  ],
+  [
+   "Something broke, felt unfair, or made you laugh? Tell us. We'll also note which office you're in.",
+   "ui"
+  ],
+  [
+   "Something you can keep for good, plus a pocket item.",
+   "ui"
+  ],
+  [
+   "Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. You might already have it: strange papers turn up in your starting cards, as rewards, and in your aunt's drawer. If not, tap <b>Go get it</b> or bribe it.",
+   "ui"
+  ],
+  [
+   "Sound",
+   "ui"
+  ],
+  [
+   "Stamped and filed",
+   "ui"
+  ],
+  [
+   "Start a real run",
+   "ui"
+  ],
+  [
+   "Start new run",
+   "ui"
+  ],
+  [
+   "Stay",
+   "ui"
+  ],
+  [
+   "Stay in line",
+   "ui"
+  ],
+  [
+   "Still warm, somehow. +8 patience.",
+   "ui"
+  ],
+  [
+   "Stocked up",
+   "ui"
+  ],
+  [
+   "Straight there: 1 day instead of 2. Your papers stay a day fresher.",
+   "ui"
+  ],
+  [
+   "Stricter",
+   "ui"
+  ],
+  [
+   "System down",
+   "ui"
+  ],
+  [
+   "Take it and go",
+   "ui"
+  ],
+  [
+   "Take the tram",
+   "ui"
+  ],
+  [
+   "Take them and go",
+   "ui"
+  ],
+  [
+   "Takes",
+   "ui"
+  ],
+  [
+   "Tap \"Go get it\" next to it on the form, or slip [[him|her]] a Small Envelope.",
+   "ui"
+  ],
+  [
+   "Tap End turn. The red lights around it are the turns left before the window closes for the day.",
+   "ui"
+  ],
+  [
+   "Tap a document to have it issued again, dated today (day {0}).",
+   "{0} = S.day"
+  ],
+  [
+   "Tap a stop to compare. Each route has something for you, and some have trouble on the way.",
+   "ui"
+  ],
+  [
+   "Tap to continue",
+   "ui"
+  ],
+  [
+   "Thanks! Your note went straight into the inbox. Unlike everything else in this game, nobody will ask you for another paper.",
+   "ui"
+  ],
+  [
+   "That item is no longer ticked. Hand in another one.",
+   "ui"
+  ],
+  [
+   "That's the job. Žućko stamps your certificate with his paw and goes back to his nap.",
+   "ui"
+  ],
+  [
+   "The Vitrina",
+   "ui"
+  ],
+  [
+   "The clerk puts up a little sign. Nothing happens until you come back.",
+   "ui"
+  ],
+  [
+   "The counter only serves people standing straight.",
+   "ui"
+  ],
+  [
+   "The form is empty. Even the clerk wants at least one line.",
+   "ui"
+  ],
+  [
+   "The last line is a fee. Fees take a fee stamp, and there's none in your hand. You could pay at the bank, but that costs the rest of your turn. Better: end the turn and draw new cards.",
+   "ui"
+  ],
+  [
+   "The neighbour is \"almost done\" with the bathroom. He has been almost done since March. 1 less time on your first turn at the next window.",
+   "ui"
+  ],
+  [
+   "The next line wants a COPY of your Birth Certificate, and you only have the original. Tap Photocopy (it costs 1 time).",
+   "ui"
+  ],
+  [
+   "The notary owes you one. Certified copy of {0}, dated today, no questions.",
+   "{0} = DOCS[tgt.doc].name"
+  ],
+  [
+   "The office is open. Tap it to go in.",
+   "ui"
+  ],
+  [
+   "The officer takes it, looks at you suspiciously, then thanks you. It takes the whole day (now day {0}), but you feel good.",
+   "{0} = S.day"
+  ],
+  [
+   "The queue moves. Barely.",
+   "ui"
+  ],
+  [
+   "The rest of your turn. {0} still takes [[his|her]] turn while you are away, and the clock ticks.",
+   "{0} = esc(clerkName(d))"
+  ],
+  [
+   "The screen freezes. Everyone waits for \"the IT guy\". You get 1 less time next turn.",
+   "ui"
+  ],
+  [
+   "The timetable says every 12 minutes. The timetable is a work of fiction.",
+   "ui"
+  ],
+  [
+   "The tram skips the stop and saves a day.",
+   "ui"
+  ],
+  [
+   "The window closes at 15:00 sharp. Come back tomorrow (day {0}). −5 patience. Ticked items still count, but all your papers are a day older.",
+   "{0} = S.day"
+  ],
+  [
+   "The window is closed. Come back tomorrow, between 8:00 and 15:00. You can close this tab now.",
+   "ui"
+  ],
+  [
+   "There is no new rule to argue about.",
+   "ui"
+  ],
+  [
+   "There's your copy. Hand it in.",
+   "ui"
+  ],
+  [
+   "These are your cards. Tap your ID Card to hand it in. (Hold a card to see it up close.)",
+   "ui"
+  ],
+  [
+   "This is the form. Every line is a paper the clerk wants from you. Tick off every line and you get what you came for.",
+   "ui"
+  ],
+  [
+   "This is your Patience. Clerks wear it down: sighs, coffee breaks, rules they suddenly remember. At zero you give up and the run is over.",
+   "ui"
+  ],
+  [
+   "This line takes an original or a certified copy. If you hand over the original, the clerk keeps it.",
+   "ui"
+  ],
+  [
+   "This office splits them into your hand, the draw pile and the used pile.",
+   "ui"
+  ],
+  [
+   "Throw away one card",
+   "ui"
+  ],
+  [
+   "Ticket 247. Now serving: 231.",
+   "ui"
+  ],
+  [
+   "Time",
+   "ui"
+  ],
+  [
+   "Time: {0} of 3",
+   "{0} = o.time"
+  ],
+  [
+   "Tip",
+   "ui"
+  ],
+  [
+   "Title screen",
+   "ui"
+  ],
+  [
+   "Trained",
+   "ui"
+  ],
+  [
+   "Tram",
+   "ui"
+  ],
+  [
+   "Trouble on the way",
+   "ui"
+  ],
+  [
+   "Turn music off",
+   "ui"
+  ],
+  [
+   "Turn music on",
+   "ui"
+  ],
+  [
+   "Turn your phone upright",
+   "ui"
+  ],
+  [
+   "Turns",
+   "ui"
+  ],
+  [
+   "Un-ticked",
+   "ui"
+  ],
+  [
+   "Un-ticks one item",
+   "ui"
+  ],
+  [
+   "Under the counter",
+   "ui"
+  ],
+  [
+   "Up here you always see what the clerk will do when you end your turn. Right now I am about to \"remember\" a new rule. Clerks love that one.",
+   "ui"
+  ],
+  [
+   "Use it",
+   "ui"
+  ],
+  [
+   "Used",
+   "ui"
+  ],
+  [
+   "Used pile, {0} cards",
+   "{0} = o.discard.length+o.exhaust.length"
+  ],
+  [
+   "Vibe created while putting H to sleep in 2026",
+   "ui"
+  ],
+  [
+   "Water everywhere, but your papers are laminated. Small victories.",
+   "ui"
+  ],
+  [
+   "Water from upstairs drips onto your {0}. The date is unreadable, so it counts as old. Re-issue it before anyone asks for a fresh one. −2 patience.",
+   "{0} = docName(c.doc,c.form)"
+  ],
+  [
+   "What happened? What did you expect?",
+   "ui"
+  ],
+  [
+   "What kind of feedback",
+   "ui"
+  ],
+  [
+   "What you earn stays here between runs. Take one thing with you.",
+   "ui"
+  ],
+  [
+   "What you earn stays here between runs. Take up to {0} things with you.",
+   "{0} = META.slots"
+  ],
+  [
+   "Winner",
+   "ui"
+  ],
+  [
+   "Woof! I mean: welcome. I'm Žućko, the temporary worker. The real clerk is on sick leave until 2031, so today this window is mine. Let me show you how it works.",
+   "ui"
+  ],
+  [
+   "Yawns loudly",
+   "ui"
+  ],
+  [
+   "Yes, end the run",
+   "ui"
+  ],
+  [
+   "You already have {0} [[0:connection|connections]].",
+   "{0} = S.relics.length"
+  ],
+  [
+   "You already know everyone here. You dance anyway.",
+   "ui"
+  ],
+  [
+   "You are here",
+   "ui"
+  ],
+  [
+   "You can check it any time on the map.",
+   "ui"
+  ],
+  [
+   "You can come back to it any time from the title screen.",
+   "ui"
+  ],
+  [
+   "You can go here.",
+   "ui"
+  ],
+  [
+   "You choose up to 3 cards to keep, as at the end of any turn.",
+   "ui"
+  ],
+  [
+   "You did it. Mostly.",
+   "ui"
+  ],
+  [
+   "You don't have the nerves for that right now.",
+   "ui"
+  ],
+  [
+   "You get",
+   "ui"
+  ],
+  [
+   "You get 2 copies, with the same date as the original. The clerk keeps a copy each time you hand one in.",
+   "ui"
+  ],
+  [
+   "You got the job. Your employer pays salaries only into a local bank account, and your first payday is soon. The bank wants your Employment Registration. The employment bureau wants a Tax Number. The tax office wants a Certificate of Residence. The police want a Citizenship Certificate. The registry wants your birth certificate. You have 80 patience.",
+   "ui"
+  ],
+  [
+   "You have no connections yet.",
+   "ui"
+  ],
+  [
+   "You have no originals to copy.",
+   "ui"
+  ],
+  [
+   "You have {0} [[0:fee stamp|fee stamps]] and {1} [[1:photo|photos]].",
+   "{0} = st; {1} = ph"
+  ],
+  [
+   "You hold {0} [[0:strange paper|strange papers]].",
+   "{0} = n"
+  ],
+  [
+   "You keep the rulebook open on the counter.",
+   "ui"
+  ],
+  [
+   "You keep walking. Nothing happens, which today counts as a win.",
+   "ui"
+  ],
+  [
+   "You learned something. Pick one action:",
+   "ui"
+  ],
+  [
+   "You need a copy in your hand to notarize.",
+   "ui"
+  ],
+  [
+   "You need a dated document in your hand.",
+   "ui"
+  ],
+  [
+   "You need a document in your hand that was issued before today.",
+   "ui"
+  ],
+  [
+   "You need an original document in your hand first.",
+   "ui"
+  ],
+  [
+   "You queue at the bank, pay the fee, and come back with a stamped payment slip. The rest of your turn is gone.",
+   "ui"
+  ],
+  [
+   "You quote the regulation, article and paragraph. [[He|She]] lets it go.",
+   "ui"
+  ],
+  [
+   "You send an envelope. Your aunt will still mention it at every family lunch.",
+   "ui"
+  ],
+  [
+   "You talk about who got fat and who moved to Germany. It is surprisingly nice.",
+   "ui"
+  ],
+  [
+   "You walk out of the {0}.",
+   "{0} = esc(d.full)"
+  ],
+  [
+   "You walk out of the {0}. Everything from this run is lost. Trinkets you've already earned stay in the Vitrina.",
+   "{0} = esc(cur().full)"
+  ],
+  [
+   "You win a bottle of homemade rakija. The kiosk lady is visibly upset.",
+   "ui"
+  ],
+  [
+   "You win the argument. It costs you.",
+   "ui"
+  ],
+  [
+   "Your cards",
+   "ui"
+  ],
+  [
+   "Your cards (your deck) are <b>documents</b> and <b>actions</b>. Each turn you draw back up to 5. At the end of every turn you choose up to 3 cards to keep; the rest are discarded. Keep none to redraw a fresh 5.",
+   "ui"
+  ],
+  [
+   "Your cards ({0})",
+   "{0} = S.deck.length"
+  ],
+  [
+   "Your copy of {0} is now certified, dated today.",
+   "{0} = DOCS[tgt.doc].name"
+  ],
+  [
+   "Your cousin has introduced you to everyone already. You drink coffee and complain together.",
+   "ui"
+  ],
+  [
+   "Your cousin knows a guy who knows [[his|her]] supervisor.",
+   "ui"
+  ],
+  [
+   "Your cousin's kitchen",
+   "ui"
+  ],
+  [
+   "Your deck has {0} [[0:card|cards]].",
+   "{0} = S.deck.length"
+  ],
+  [
+   "Your deck · {0} cards",
+   "{0} = S.deck.length"
+  ],
+  [
+   "Your employer can now pay your salary. Your bank card will arrive in 7–10 working days. To activate it, please bring your ID (original), a Certificate of Residence (certified copy), and a fee stamp.",
+   "ui"
+  ],
+  [
+   "Your feedback",
+   "ui"
+  ],
+  [
+   "Your friend has told you everything there is to know.",
+   "ui"
+  ],
+  [
+   "Your friend inside slips you a tip.",
+   "ui"
+  ],
+  [
+   "Your move",
+   "ui"
+  ],
+  [
+   "Your name (optional)",
+   "ui"
+  ],
+  [
+   "Your name, optional",
+   "ui"
+  ],
+  [
+   "Your original is too old: re-issue it, then copy",
+   "ui"
+  ],
+  [
+   "Your patience: {0}/{1}.",
+   "{0} = S.patience; {1} = S.maxP"
+  ],
+  [
+   "Your pockets are full, so it stays behind.",
+   "ui"
+  ],
+  [
+   "Your route",
+   "ui"
+  ],
+  [
+   "Yours is too old: re-issue it",
+   "ui"
+  ],
+  [
+   "an original is kept",
+   "ui"
+  ],
+  [
+   "issued today",
+   "ui"
+  ],
+  [
+   "max {0} [[0:day|days]] old",
+   "{0} = m"
+  ],
+  [
+   "on the way to the {0}",
+   "{0} = esc(nx.full)"
+  ],
+  [
+   "something comes up",
+   "ui"
+  ],
+  [
+   "take two things into every run",
+   "ui"
+  ],
+  [
+   "text {0}",
+   "{0} = a"
+  ],
+  [
+   "{0} ({1})",
+   "{0} = DOCS[doc].name; {1} = FORM[form].toLowerCase()"
+  ],
+  [
+   "{0} It stays in grandma's glass cabinet for good. Equip it before a run.",
+   "{0} = TRINKETS[k].text"
+  ],
+  [
+   "{0} Use it any time from the top of the screen. One use.",
+   "{0} = POCKET[k].text"
+  ],
+  [
+   "{0} [[0:day|days]] old",
+   "{0} = a"
+  ],
+  [
+   "{0} [[0:original|originals]] you could copy.",
+   "{0} = n"
+  ],
+  [
+   "{0} accepts the coffee. \"Just this once.\"",
+   "{0} = clerkName(d)"
+  ],
+  [
+   "{0} calls \"Next!\" before the door closes behind you.",
+   "{0} = esc(clerkName(d))"
+  ],
+  [
+   "{0} does not smile back. You use the moment to dig through your papers.",
+   "{0} = clerkName(d)"
+  ],
+  [
+   "{0} files your original {1}. It's gone for good.",
+   "{0} = clerkName(d); {1} = DOCS[c.doc].name"
+  ],
+  [
+   "{0} files your {1}. You won't see it again.",
+   "{0} = clerkName(d); {1} = docName(c.doc,c.form)"
+  ],
+  [
+   "{0} glances at your {1} and hands it back.",
+   "{0} = clerkName(d); {1} = DOCS[c.doc].name"
+  ],
+  [
+   "{0} hands over your {1} (original). It joins your cards. Next: pick a route to the {2}.",
+   "{0} = esc(clerkName(d)); {1} = esc(DOCS[d.reward].name); {2} = esc(nx.full)"
+  ],
+  [
+   "{0} is in a very good mood after the rakija.",
+   "{0} = who"
+  ],
+  [
+   "{0} is in your cards.",
+   "{0} = esc(S.errand.get)"
+  ],
+  [
+   "{0} looks for a problem and, for once, finds none.",
+   "{0} = who"
+  ],
+  [
+   "{0} looks for something to make stricter and, for once, finds nothing.",
+   "{0} = who"
+  ],
+  [
+   "{0} looks up from [[his|her]] screen. Then back down.",
+   "{0} = clerkName(d)"
+  ],
+  [
+   "{0} of your papers could be re-issued, {1} of them 4+ days old.",
+   "{0} = n; {1} = old"
+  ],
+  [
+   "{0} of your papers could be re-issued.",
+   "{0} = n"
+  ],
+  [
+   "{0} of {1} turns left before the window closes.",
+   "{0} = left; {1} = n"
+  ],
+  [
+   "{0} pretends not to see it, and puts it away very quickly. The next 2 actions are skipped.",
+   "{0} = clerkName(cur())"
+  ],
+  [
+   "{0} sighs loudly",
+   "{0} = who"
+  ],
+  [
+   "{0} sighs loudly, looks at the clock, and sighs again.",
+   "{0} = who"
+  ],
+  [
+   "{0} squints at the dates and, for once, finds nothing.",
+   "{0} = who"
+  ],
+  [
+   "{0} starts on a new rule. You lay your old party card on the counter. {1} looks at it for a long time, and the rule quietly doesn't apply to you.",
+   "{0} = who; {1} = who"
+  ],
+  [
+   "{0} time",
+   "{0} = timeCost(c)"
+  ],
+  [
+   "{0} was about to act ({1}), but didn't.",
+   "{0} = who; {1} = intentLabel(it).name.toLowerCase()"
+  ],
+  [
+   "{0} will be in your hand next turn. While you were away, the window kept working.",
+   "{0} = e.get"
+  ],
+  [
+   "{0} {1}",
+   "{0} = d.title; {1} = d.clerk"
+  ],
+  [
+   "{0}'s turn",
+   "{0} = who"
+  ],
+  [
+   "{0}, action, costs {1} time",
+   "{0} = a.name; {1} = timeCost(c)"
+  ],
+  [
+   "{0}, added to your cards for good. It will be in your hand next turn.",
+   "{0} = esc(e.get)"
+  ],
+  [
+   "{0}, document, free to hand in",
+   "{0} = docName(c.doc,c.form)"
+  ],
+  [
+   "{0}, next window",
+   "{0} = d.pal"
+  ],
+  [
+   "{0}, or pay at a bank (costs your turn)",
+   "{0} = DOCS[DOCS[r.doc].fee].name"
+  ],
+  [
+   "{0}, shady action, costs {1} time",
+   "{0} = a.name; {1} = timeCost(c)"
+  ],
+  [
+   "{0}, shady action, costs {1} time and {2} patience",
+   "{0} = a.name; {1} = timeCost(c); {2} = pc"
+  ],
+  [
+   "{0}/{1} ticked",
+   "{0} = done; {1} = total"
+  ],
+  [
+   "{0}: a plain copy won't do",
+   "{0} = DOCS[it.doc].name"
+  ],
+  [
+   "{0}: {1}",
+   "{0} = DOCS[it.doc].name; {1} = maxLabel(it.max)"
+  ],
+  [
+   "Ćevapi, one rakija that became three, and a lot of opinions about the government. Tomorrow you start a little slow: 1 less time on your first turn.",
+   "ui"
+  ],
+  [
+   "Žućko chases his own tail around the swivel chair. Three times. Then he sits down as if nothing happened.",
+   "ui"
+  ],
+  [
+   "Žućko looks up from the counter and wags his tail.",
+   "ui"
+  ],
+  [
+   "Žućko yawns so wide that his hat falls off. He puts it back on, very officially.",
+   "ui"
+  ],
+  [
+   "Žućko · temporary worker",
+   "ui"
+  ],
+  [
+   "Žućko, our temporary worker, will walk you through one practice office. It takes about three minutes.",
+   "ui"
+  ],
+  [
+   "↑ Slide up to drop",
+   "ui"
+  ],
+  [
+   "↑ Slide up to hand in",
+   "ui"
+  ],
+  [
+   "↑ Slide up to keep",
+   "ui"
+  ],
+  [
+   "↑ Slide up to play",
+   "ui"
+  ],
+  [
+   "−1 time next turn",
+   "ui"
+  ],
+  [
+   "−2 patience",
+   "ui"
+  ],
+  [
+   "−3 patience",
+   "ui"
+  ],
+  [
+   "−5 patience",
+   "ui"
+  ],
+  [
+   "−6 patience",
+   "ui"
+  ],
+  [
+   "−8 patience",
+   "ui"
+  ],
+  [
+   "−{0} patience",
+   "{0} = it.dmg"
+  ],
+  [
+   "−{0} patience, −1 time next turn",
+   "{0} = it.dmg"
+  ]
+ ],
+ "data": [
+  [
+   "ID Card",
+   "document name"
+  ],
+  [
+   "Birth Certificate",
+   "document name"
+  ],
+  [
+   "Rental Contract",
+   "document name"
+  ],
+  [
+   "Electricity Bill",
+   "document name"
+  ],
+  [
+   "Job Offer Letter",
+   "document name"
+  ],
+  [
+   "Citizenship Certificate",
+   "document name"
+  ],
+  [
+   "Certificate of Residence",
+   "document name"
+  ],
+  [
+   "Tax Number",
+   "document name"
+  ],
+  [
+   "Proof of Being Alive",
+   "document name"
+  ],
+  [
+   "Landlord's Statement",
+   "document name"
+  ],
+  [
+   "No Tax Debt Certificate",
+   "document name"
+  ],
+  [
+   "Salary Certificate",
+   "document name"
+  ],
+  [
+   "Employment Registration",
+   "document name"
+  ],
+  [
+   "High School Diploma",
+   "document name"
+  ],
+  [
+   "Photo 3×4",
+   "document name"
+  ],
+  [
+   "Fee Stamp",
+   "document name"
+  ],
+  [
+   "Municipal Fee Stamp",
+   "document name"
+  ],
+  [
+   "Federal Fee Stamp",
+   "document name"
+  ],
+  [
+   "Admin Fee Stamp",
+   "document name"
+  ],
+  [
+   "Municipal fee",
+   "document name"
+  ],
+  [
+   "Federal fee",
+   "document name"
+  ],
+  [
+   "Administrative fee",
+   "document name"
+  ],
+  [
+   "Original",
+   "document form (original/copy...)"
+  ],
+  [
+   "Copy",
+   "document form (original/copy...)"
+  ],
+  [
+   "Certified copy",
+   "document form (original/copy...)"
+  ],
+  [
+   "Original or certified copy",
+   "document form (original/copy...)"
+  ],
+  [
+   "Wait in Line",
+   "action card name"
+  ],
+  [
+   "Draw 3 cards. Lose 1 patience.",
+   "action card rules text"
+  ],
+  [
+   "Deep Breath",
+   "action card name"
+  ],
+  [
+   "Recover 3 patience.",
+   "action card rules text"
+  ],
+  [
+   "Polite Smile",
+   "action card name"
+  ],
+  [
+   "Draw 2 cards.",
+   "action card rules text"
+  ],
+  [
+   "Know the Rulebook",
+   "action card name"
+  ],
+  [
+   "Block the clerk's next new rule or rejection.",
+   "action card rules text"
+  ],
+  [
+   "Photocopy",
+   "action card name"
+  ],
+  [
+   "Copy an original in your hand. The copy joins your cards, with the same date as the original.",
+   "action card rules text"
+  ],
+  [
+   "Notarize",
+   "action card name"
+  ],
+  [
+   "A copy in your hand becomes a certified copy, dated today.",
+   "action card rules text"
+  ],
+  [
+   "Re-issue",
+   "action card name"
+  ],
+  [
+   "A document in your hand is issued again: dated today.",
+   "action card rules text"
+  ],
+  [
+   "Backdate",
+   "action card name"
+  ],
+  [
+   "A document in your hand never gets too old again.",
+   "action card rules text"
+  ],
+  [
+   "Argue",
+   "action card name"
+  ],
+  [
+   "Strike the newest added rule. Lose 4 patience.",
+   "action card rules text"
+  ],
+  [
+   "Take a Number",
+   "action card name"
+  ],
+  [
+   "+2 time next turn. Once per office.",
+   "action card rules text"
+  ],
+  [
+   "Coffee for the Clerk",
+   "action card name"
+  ],
+  [
+   "The clerk skips their next action.",
+   "action card rules text"
+  ],
+  [
+   "Small Envelope",
+   "action card name"
+  ],
+  [
+   "Tick off any one item. Used up: removed from your deck.",
+   "action card rules text"
+  ],
+  [
+   "Call Your Cousin",
+   "action card name"
+  ],
+  [
+   "Cancel the next action and draw 2. Once per office.",
+   "action card rules text"
+  ],
+  [
+   "Notary Owes You",
+   "action card name"
+  ],
+  [
+   "An original in your hand gets a certified copy dated today, no copy needed.",
+   "action card rules text"
+  ],
+  [
+   "My Friend Went Last Week",
+   "action card name"
+  ],
+  [
+   "Draw 1. Hear one thing this clerk will ask for later. Nothing left? Hear about the next office.",
+   "action card rules text"
+  ],
+  [
+   "First job",
+   "chapter"
+  ],
+  [
+   "Salary account",
+   "chapter goal"
+  ],
+  [
+   "You got the job. Your employer pays salaries only into a local bank account, and your first payday is soon.",
+   "chapter intro"
+  ],
+  [
+   "Registry",
+   "office name (short label)"
+  ],
+  [
+   "Municipal Registry",
+   "office full name"
+  ],
+  [
+   "Window 3",
+   "counter/window label"
+  ],
+  [
+   "Mrs.",
+   "title before a clerk first name (Mrs. Vesna)"
+  ],
+  [
+   "Police",
+   "office name (short label)"
+  ],
+  [
+   "Police Station",
+   "office full name"
+  ],
+  [
+   "Counter 2",
+   "counter/window label"
+  ],
+  [
+   "Mr.",
+   "title before a clerk first name (Mrs. Vesna)"
+  ],
+  [
+   "Tax Office",
+   "office name (short label)"
+  ],
+  [
+   "Tax",
+   "office short name"
+  ],
+  [
+   "Counter 7",
+   "counter/window label"
+  ],
+  [
+   "Bureau",
+   "office name (short label)"
+  ],
+  [
+   "Employment Bureau",
+   "office full name"
+  ],
+  [
+   "Room 14",
+   "counter/window label"
+  ],
+  [
+   "Bank",
+   "office name (short label)"
+  ],
+  [
+   "Desk 2",
+   "counter/window label"
+  ],
+  [
+   "Salary Account",
+   "document the office issues"
+  ],
+  [
+   "Ms.",
+   "title before a clerk first name (Mrs. Vesna)"
+  ],
+  [
+   "Health Center, ground floor",
+   "errand place"
+  ],
+  [
+   "A doctor looks at you for four seconds and signs a paper confirming that you are alive.",
+   "errand story"
+  ],
+  [
+   "Counter 4, same building",
+   "errand place"
+  ],
+  [
+   "To prove you have no tax debt they need your Tax Number. You are here to get a Tax Number. After an hour of silence, someone stamps it anyway.",
+   "errand story"
+  ],
+  [
+   "Your landlord's flat, across town",
+   "errand place"
+  ],
+  [
+   "He signs a statement that you live in his flat. He also mentions that the rent is going up.",
+   "errand story"
+  ],
+  [
+   "Your old high school",
+   "errand place"
+  ],
+  [
+   "The secretary finds your file in the basement, between 1994 and a broken radiator. The certified copy costs more than the diploma did.",
+   "errand story"
+  ],
+  [
+   "Your new employer's HR office",
+   "errand place"
+  ],
+  [
+   "HR cannot issue a salary certificate before your first salary. Your first salary needs a bank account. The HR lady sighs and writes one anyway.",
+   "errand story"
+  ],
+  [
+   "Copy shop & notary",
+   "errand place"
+  ],
+  [
+   "The copier jams twice. The notary is at lunch until 13:30. She comes back at 13:45.",
+   "errand story"
+  ],
+  [
+   "Kiosk by the bus stop",
+   "errand place"
+  ],
+  [
+   "The kiosk has fee stamps but no change. You buy gum you don't want.",
+   "errand story"
+  ],
+  [
+   "Photo booth at the post office",
+   "errand place"
+  ],
+  [
+   "Four photos. In all four you look like you are being arrested.",
+   "errand story"
+  ],
+  [
+   "Another office across town",
+   "errand place"
+  ],
+  [
+   "You find the right building on the third try. The paper costs you the day.",
+   "errand story"
+  ],
+  [
+   "Thermos of coffee",
+   "trinket"
+  ],
+  [
+   "+3 patience every morning.",
+   "trinket effect"
+  ],
+  [
+   "You start with it.",
+   "how to unlock trinket"
+  ],
+  [
+   "Tin of fee stamps",
+   "trinket"
+  ],
+  [
+   "Start each run with one extra fee stamp of each kind.",
+   "trinket effect"
+  ],
+  [
+   "Get through the Municipal Registry.",
+   "how to unlock trinket"
+  ],
+  [
+   "Grandpa's notebook",
+   "trinket"
+  ],
+  [
+   "At every office you already know one thing the clerk will ask for.",
+   "trinket effect"
+  ],
+  [
+   "Get through the Tax Office.",
+   "how to unlock trinket"
+  ],
+  [
+   "Old party card",
+   "trinket"
+  ],
+  [
+   "Once per run, a new rule simply doesn't apply to you.",
+   "trinket effect"
+  ],
+  [
+   "Run out of patience once.",
+   "how to unlock trinket"
+  ],
+  [
+   "Plastic folder with sleeves",
+   "trinket"
+  ],
+  [
+   "Keep up to 4 cards at the end of a turn instead of 3.",
+   "trinket effect"
+  ],
+  [
+   "Open the salary account (win a run).",
+   "how to unlock trinket"
+  ],
+  [
+   "Laminated papers",
+   "trinket"
+  ],
+  [
+   "The documents you start with never get too old.",
+   "trinket effect"
+  ],
+  [
+   "Found in grandpa's attic.",
+   "how to unlock trinket"
+  ],
+  [
+   "Bottle of rakija",
+   "pocket item"
+  ],
+  [
+   "The clerk skips their next 2 actions.",
+   "pocket item effect"
+  ],
+  [
+   "Grandma's pita",
+   "pocket item"
+  ],
+  [
+   "Recover 8 patience.",
+   "pocket item effect"
+  ],
+  [
+   "Priority ticket",
+   "pocket item"
+  ],
+  [
+   "+2 time this turn.",
+   "pocket item effect"
+  ],
+  [
+   "Café across the street",
+   "map stop"
+  ],
+  [
+   "Sit down. Have a coffee. Recover 10 patience.",
+   "map stop effect"
+  ],
+  [
+   "Kafana",
+   "map stop"
+  ],
+  [
+   "Recover 20 patience. Tomorrow you start with 1 less time.",
+   "map stop effect"
+  ],
+  [
+   "Kiosk & photo booth",
+   "map stop"
+  ],
+  [
+   "Get one fee stamp of each kind and 1 Photo 3×4.",
+   "map stop effect"
+  ],
+  [
+   "Copy shop",
+   "map stop"
+  ],
+  [
+   "Pick an original. Get 2 copies of it.",
+   "map stop effect"
+  ],
+  [
+   "Citizen service centre",
+   "map stop"
+  ],
+  [
+   "Re-issue up to 2 documents: they are dated today.",
+   "map stop effect"
+  ],
+  [
+   "Visit your cousin",
+   "map stop"
+  ],
+  [
+   "Coffee, gossip, and a useful connection.",
+   "map stop effect"
+  ],
+  [
+   "Clean out your cards",
+   "map stop"
+  ],
+  [
+   "Throw away one card.",
+   "map stop effect"
+  ],
+  [
+   "Your aunt's drawer",
+   "map stop"
+  ],
+  [
+   "She keeps every paper ever issued. Take one strange paper.",
+   "map stop effect"
+  ],
+  [
+   "The bus doesn't come",
+   "map stop"
+  ],
+  [
+   "You wait 50 minutes in the rain. −6 patience.",
+   "map stop effect"
+  ],
+  [
+   "Neighbour's renovation",
+   "map stop"
+  ],
+  [
+   "Drilling from 7:00. −5 patience, and 1 less time on your first turn tomorrow.",
+   "map stop effect"
+  ],
+  [
+   "Burst pipe upstairs",
+   "map stop"
+  ],
+  [
+   "Water on your papers. One document is smudged and counts as old. −2 patience.",
+   "map stop effect"
+  ],
+  [
+   "Mother-in-law visits",
+   "map stop"
+  ],
+  [
+   "−8 patience. She leaves you a pita.",
+   "map stop effect"
+  ],
+  [
+   "Post office strike",
+   "map stop"
+  ],
+  [
+   "Nobody tells you until you get there. −5 patience.",
+   "map stop effect"
+  ],
+  [
+   "Something comes up",
+   "map stop"
+  ],
+  [
+   "A small choice. Could go either way.",
+   "map stop effect"
+  ],
+  [
+   "Grandpa's attic",
+   "map stop"
+  ],
+  [
+   "Dusty boxes. Something in here is worth keeping, for good.",
+   "map stop effect"
+  ],
+  [
+   "A neighbour with a petition",
+   "event title"
+  ],
+  [
+   "\"For the new playground. Just a signature. And your ID number. And your father's name.\"",
+   "event text"
+  ],
+  [
+   "Sign it",
+   "event choice button"
+  ],
+  [
+   "−3 patience. She owes you one: a pocket item.",
+   "event choice result"
+  ],
+  [
+   "Walk past",
+   "event choice button"
+  ],
+  [
+   "Nothing happens.",
+   "event choice result"
+  ],
+  [
+   "Your cousin's wedding",
+   "event title"
+  ],
+  [
+   "Four hundred guests, a brass band, and everyone wants to know when you're getting married.",
+   "event text"
+  ],
+  [
+   "Go",
+   "event choice button"
+  ],
+  [
+   "−6 patience. You meet someone useful: a connection.",
+   "event choice result"
+  ],
+  [
+   "Send an envelope",
+   "event choice button"
+  ],
+  [
+   "−2 patience.",
+   "event choice result"
+  ],
+  [
+   "An old classmate",
+   "event title"
+  ],
+  [
+   "She works at the municipality now. She remembers you copied her homework.",
+   "event text"
+  ],
+  [
+   "Ask a favour",
+   "event choice button"
+  ],
+  [
+   "Get a Notary Owes You card.",
+   "event choice result"
+  ],
+  [
+   "Just chat",
+   "event choice button"
+  ],
+  [
+   "Recover 5 patience.",
+   "event choice result"
+  ],
+  [
+   "Scratch card at the kiosk",
+   "event title"
+  ],
+  [
+   "The kiosk lady swears the last winner was here last week.",
+   "event text"
+  ],
+  [
+   "Buy one",
+   "event choice button"
+  ],
+  [
+   "Half the time: a bottle of rakija. Otherwise −3 patience.",
+   "event choice result"
+  ],
+  [
+   "Skip it",
+   "event choice button"
+  ],
+  [
+   "A wallet on the pavement",
+   "event title"
+  ],
+  [
+   "Inside: an ID card, three receipts and a photo of a dog.",
+   "event text"
+  ],
+  [
+   "Take it to the police",
+   "event choice button"
+  ],
+  [
+   "Recover 8 patience. Good karma.",
+   "event choice result"
+  ],
+  [
+   "Leave it at the kiosk",
+   "event choice button"
+  ],
+  [
+   "Neighbor who is a notary",
+   "connection (relic)"
+  ],
+  [
+   "Notarize costs 1 time.",
+   "connection effect"
+  ],
+  [
+   "Uncle in the police",
+   "connection (relic)"
+  ],
+  [
+   "Shady actions cost 1 less patience.",
+   "connection effect"
+  ],
+  [
+   "Thick skin",
+   "connection (relic)"
+  ],
+  [
+   "Clerk sighs and coffee breaks cost you 1 less patience.",
+   "connection effect"
+  ],
+  [
+   "Friend on the inside",
+   "connection (relic)"
+  ],
+  [
+   "When a clerk says FT1P, draw 2 and gain 1 time.",
+   "connection effect"
+  ],
+  [
+   "My son-in-law wants to open a café. In this economy.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Mine wants to start a podcast.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "I told the doctor I don't have stress. I work at the municipality.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "What did he say?",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "He laughed for a long time.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Did you see Mira's new car?",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "On her salary? I'm saying nothing. Nothing.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "The burek at the bakery got smaller again.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "And the price got bigger. Like this queue.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "My neighbor's dog only barks when I'm on the balcony.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "It knows.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Are you going to the wedding on Saturday?",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Which one?",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Exactly.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Thirty-one years at this window.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Feels like more.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "It is more. I stopped counting.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My daughter says I should try yoga.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "You already stretch for the stamp all day.",
+   "small talk at Vesna's office; C=clerk Vesna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "The fish weren't biting on Sunday.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Neither are we, today.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Did you fix the printer?",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "I unplugged it and plugged it back in. Now it has a different problem.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My wife wants to redo the bathroom again.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Again?",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "She saw a new tile.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Watching the match tonight?",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Only the second half. The first half I'm here.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My cousin got a job in Austria.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Doing what?",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Not this.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Eleven years until retirement.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Who's counting?",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "I am. In days.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Is the heating on?",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Officially, yes.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My son wants a PlayStation for his birthday.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "How old?",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Thirty-four.",
+   "small talk at Dragan's office; C=clerk Dragan, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My husband finally retired.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Congratulations.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Now he's home all day.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My condolences.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Did you get the thirteenth salary?",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "I got a thirteenth form to fill out.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My grandson says I should be on TikTok.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "This. Apparently people would watch.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Sarma or pita for Sunday?",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Both. It's Sunday.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "The new software has a button I've never seen.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Don't press it.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Our neighbor built a third floor without a permit.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Brave.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Connected.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Going to the seaside this year?",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "If my leave request gets approved.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Who approves it?",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Me.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My daughter-in-law makes the coffee too weak.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Did you tell her?",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Every visit.",
+   "small talk at Jasna's office; C=clerk Jasna, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My son finished economics.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Congratulations. Where does he work?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Here. Next month. Room 15.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "How many people did we place in jobs this year?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Including us?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "I planted tomatoes at the weekend house.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "In October?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "They don't know it's October.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Did you see the new form M-4?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "It replaces M-3.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "And M-3?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Still required.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My wife says I talk about work at home.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "What do you say?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "I say nothing. That's the job.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "The heating guy came.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "And?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "He needs a form.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Ćevapi after work?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Ten or five?",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Ten. It's been a week.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Twenty-two years and I still don't know what Room 13 does.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Nobody does. It's locked.",
+   "small talk at Zoran's office; C=clerk Zoran, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "He hasn't texted back since Tuesday.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Maybe his phone died.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "For four days?",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Gym after work?",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "I'm going to think about going to the gym.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "My mom keeps asking when I'll get married.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "What did you say?",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "When the system is back online.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "The new manager is from head office.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "So he'll be gone in a month.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "I ordered a dress online. It came in a different color.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Return it?",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "There's a form for that. I can't.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Did you see the brunch place that opened?",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Nine marks for two eggs.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "I'm thinking about moving to Germany.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "Everyone is thinking about moving to Germany.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Then who will work here?",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "The system is slow today.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "It's slow every day.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the colleague"
+  ],
+  [
+   "Today I can feel it.",
+   "small talk at Ana's office; C=clerk Ana, K=colleague at next window; this line by the clerk"
+  ],
+  [
+   "That's a new scarf.",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "It's not new. I just never wore it.",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "Green suits you. Like the umbrella.",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "What umbrella?",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "The green one on your coat rack. Yours is red.",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "Someone lent it to me. It was raining.",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "The Employment Bureau called again. Third time this week.",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "They had a question about a form.",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "Which form?",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "A complicated one.",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "You were on the phone for forty minutes.",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "It is a very complicated form.",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "Are you coming to Biljana's name day on Thursday?",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "I can't. Thursday is inventory.",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "We don't do inventory.",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "Then somebody has to start.",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "You are humming.",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "I'm not humming.",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "You've been humming since Tuesday.",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "That is the radiator.",
+   "continuing story at the Registry; line by the clerk"
+  ],
+  [
+   "Then tell the radiator Zlata says hello.",
+   "continuing story at the Registry; line by the colleague"
+  ],
+  [
+   "Anything on the parking report?",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "Grey Zastava outside the Employment Bureau. Lunch hour. Again.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "Whose?",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "Registry permit. And fuzzy dice on the mirror.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "Vesna's car has fuzzy dice.",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "I didn't say Vesna. I said dice.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "You're not writing it up?",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "Parking for ninety minutes isn't a crime.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "In a forty-five minute zone it is.",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "Then the meter must be broken.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "Saw Zoran from the Bureau on Saturday. In the rain.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "So?",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "No umbrella. Soaked through. Smiling like he won the lottery.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "Maybe he lent his umbrella to someone.",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "That's what I'm afraid of.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "My wife says the Registry choir rehearses on Thursdays now.",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "Vesna sings in a choir?",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "Since spring. Funny thing. The choir has never heard of her.",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "Mirsad. Some things are not police business.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "Everything is police business, Dragan. That's the job.",
+   "continuing story at the Police; line by the colleague"
+  ],
+  [
+   "Then I'm on my break.",
+   "continuing story at the Police; line by the clerk"
+  ],
+  [
+   "Holiday requests from the other offices came in.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "Bureau, Zoran: second week of July.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "Registry, Vesna: second week of July.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "Lots of people like July.",
+   "continuing story at the Tax Office; line by the clerk"
+  ],
+  [
+   "Both wrote \"Makarska\". Same nervous handwriting.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "We don't comment on other people's forms, Biljana.",
+   "continuing story at the Tax Office; line by the clerk"
+  ],
+  [
+   "I'm not commenting. I'm cross-referencing.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "...Same hotel?",
+   "continuing story at the Tax Office; line by the clerk"
+  ],
+  [
+   "Different hotels. Next door to each other.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "Well. That's practically a different city.",
+   "continuing story at the Tax Office; line by the clerk"
+  ],
+  [
+   "Zoran claimed a deduction for \"flowers, office decoration\".",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "The Bureau has no flowers. I was there in May.",
+   "continuing story at the Tax Office; line by the clerk"
+  ],
+  [
+   "It has one vase now. On the counter where the Registry drops off the mail.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "On Thursdays?",
+   "continuing story at the Tax Office; line by the clerk"
+  ],
+  [
+   "Only on Thursdays.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "Vesna skipped my name day. \"Inventory,\" she said.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "The Registry doesn't do inventory.",
+   "continuing story at the Tax Office; line by the clerk"
+  ],
+  [
+   "It does now. Thursdays.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "Do you think anyone knows?",
+   "continuing story at the Tax Office; line by the clerk"
+  ],
+  [
+   "Everyone knows. Nobody says. It's the most efficient system in this city.",
+   "continuing story at the Tax Office; line by the colleague"
+  ],
+  [
+   "If only the paperwork worked like that.",
+   "continuing story at the Tax Office; line by the clerk"
+  ],
+  [
+   "Who are the flowers for?",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "The office. Morale.",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "Our morale has been fine for nineteen years.",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "Then it deserves flowers.",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "Nedim, do people... talk? About me?",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "People talk about the weather, the prices, and you. In that order.",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "What do they say?",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "That you walk differently. Like a man whose X-ray came back clean.",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "Coffee at ten again?",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "It's just coffee.",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "Every day at ten for four months is not a coffee. It is a schedule.",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "Then I'll put it in the schedule.",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "Under what?",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "\"Inter-office coordination.\"",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "Have you seen my green umbrella? I lent it out.",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "To whom?",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "To someone who needed it more.",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "It was raining on everyone, Zoran.",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "Not in the same way.",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "That is either very romantic or very bad meteorology.",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "The Tax Office asked about your July request.",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "What did you tell them?",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "That you love the sea.",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "I do love the sea.",
+   "continuing story at the Bureau; line by the clerk"
+  ],
+  [
+   "You get seasick in the bathtub.",
+   "continuing story at the Bureau; line by the colleague"
+  ],
+  [
+   "Did you see who came in this morning?",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "Mrs. Vesna from the Registry. Opening a savings account.",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "What for?",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "The form says \"travel\".",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "For one?",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "The form doesn't ask. I checked twice.",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "And at noon, Zoran from the Bureau. Same counter.",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "He asked for the exchange rate. Dinars to \"whatever they use at the seaside\".",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "We use dinars at the seaside, Ana.",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "I told him. He said, \"Good. Then nothing has to change.\"",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "Then a transfer. From her to him. A small amount.",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "What did the memo say?",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "\"For the umbrella.\"",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "That's either a debt or a love letter.",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "At this bank it is both. We charge a fee for each.",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "Her husband came by after lunch. Asked if his wife had been in.",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "\"Bank secrecy.\"",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "You've never said bank secrecy in your life.",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "I was saving it for something worth it.",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "So. Do you think they will?",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "Go to Makarska?",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "Go anywhere.",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "Love in this city is like a building permit. Everyone talks about it, nobody sees it, and somehow it still happens.",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "You should work at the Registry.",
+   "continuing story at the Bank; line by the colleague"
+  ],
+  [
+   "One clerk in love over there is enough.",
+   "continuing story at the Bank; line by the clerk"
+  ],
+  [
+   "How many more of them today?",
+   "clerks hinting at the clerk's next move (sigh)"
+  ],
+  [
+   "You don't want to know.",
+   "clerks hinting at the clerk's next move (sigh)"
+  ],
+  [
+   "My back is killing me.",
+   "clerks hinting at the clerk's next move (sigh)"
+  ],
+  [
+   "It's the chairs.",
+   "clerks hinting at the clerk's next move (sigh)"
+  ],
+  [
+   "There was a new instruction this morning.",
+   "clerks hinting at the clerk's next move (rule)"
+  ],
+  [
+   "Oh? Let me see that.",
+   "clerks hinting at the clerk's next move (rule)"
+  ],
+  [
+   "Wasn't there something about an extra form?",
+   "clerks hinting at the clerk's next move (rule)"
+  ],
+  [
+   "There's always an extra form.",
+   "clerks hinting at the clerk's next move (rule)"
+  ],
+  [
+   "Is that the old stamp design?",
+   "clerks hinting at the clerk's next move (reject)"
+  ],
+  [
+   "Hm. Let me look again.",
+   "clerks hinting at the clerk's next move (reject)"
+  ],
+  [
+   "These new copies are so faint.",
+   "clerks hinting at the clerk's next move (reject)"
+  ],
+  [
+   "A faint copy is not a copy.",
+   "clerks hinting at the clerk's next move (reject)"
+  ],
+  [
+   "Coffee?",
+   "clerks hinting at the clerk's next move (break)"
+  ],
+  [
+   "Give me two minutes.",
+   "clerks hinting at the clerk's next move (break)"
+  ],
+  [
+   "I haven't eaten since seven.",
+   "clerks hinting at the clerk's next move (break)"
+  ],
+  [
+   "Bakery?",
+   "clerks hinting at the clerk's next move (break)"
+  ],
+  [
+   "Bakery.",
+   "clerks hinting at the clerk's next move (break)"
+  ],
+  [
+   "My sister is supposed to call about the wedding.",
+   "clerks hinting at the clerk's next move (phone)"
+  ],
+  [
+   "Which wedding?",
+   "clerks hinting at the clerk's next move (phone)"
+  ],
+  [
+   "If my phone rings, I have to take it.",
+   "clerks hinting at the clerk's next move (phone)"
+  ],
+  [
+   "It always rings.",
+   "clerks hinting at the clerk's next move (phone)"
+  ],
+  [
+   "Helps",
+   "map stop kind tag"
+  ],
+  [
+   "Trouble",
+   "map stop kind tag"
+  ],
+  [
+   "Could go either way",
+   "map stop kind tag"
+  ],
+  [
+   "Rare find",
+   "map stop kind tag"
+  ],
+  [
+   "Practice",
+   "tutorial practice office"
+  ],
+  [
+   "Practice Office",
+   "tutorial practice office"
+  ],
+  [
+   "Window 0",
+   "tutorial practice office"
+  ],
+  [
+   "Certificate of Completed Training",
+   "tutorial practice office"
+  ]
+ ]
+}
