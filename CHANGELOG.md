@@ -2,6 +2,9 @@
 
 Newest first. Each version is a git tag (`v24`, `v22`, …) on the last commit of that version, so `git checkout v22` gives you that build exactly. The build number is the commit count, shown on the title screen as `v24 · build N`. Full design notes for every version live in the game design doc's change log.
 
+## v27 — 2026-10-27 · build 42
+- **New app icon** (home screen icon on iPhone and the browser tab icon).
+
 ## v26 — 2026-10-27 · build 41
 - **Tutorial art:** Žućko is now drawn like the other clerks, from layered pictures (body, head, and small closed-eyes and open-mouth patches switched on for blinks and talking, so the rest of his face never flickers). He has his own office (Window 0: a sunny training counter with a dog bowl under it), stamps each line of the form with his paw as you tick it off, and the end screen shows the Certificate of Completed Training with Žućko asleep next to it.
 - Art brief: `ASSETS-tutorial.md` (made with ChatGPT; source PNGs are kept outside the repo).
