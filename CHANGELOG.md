@@ -2,6 +2,10 @@
 
 Newest first. Each version is a git tag (`v24`, `v22`, …) on the last commit of that version, so `git checkout v22` gives you that build exactly. The build number is the commit count, shown on the title screen as `v24 · build N`. Full design notes for every version live in the game design doc's change log.
 
+## v26 — 2026-10-27 · build 41
+- **Tutorial art:** Žućko is now drawn like the other clerks, from layered pictures (body, head, and small closed-eyes and open-mouth patches switched on for blinks and talking, so the rest of his face never flickers). He has his own office (Window 0: a sunny training counter with a dog bowl under it), stamps each line of the form with his paw as you tick it off, and the end screen shows the Certificate of Completed Training with Žućko asleep next to it.
+- Art brief: `ASSETS-tutorial.md` (made with ChatGPT; source PNGs are kept outside the repo).
+
 ## v25 — 2026-10-24 · build 40
 Includes the hand springs (build 39: cards trail and lean when you slide the hand, pop up and bounce back, deal in from the Draw pile).
 - **Tutorial:** *How to play* on the title screen opens a practice office, and the first time the game is opened on a device it offers it once (Show me / Not now). The clerk is on sick leave until 2031, so the window is run by Žućko, a temporary worker: a puppy in a hat folded from an old form. Fixed deck, 15 coached steps (a ring around the thing being explained, Žućko's speech bubble, only the next move can be tapped): the form, Patience, Time, handing in, photocopying, the next action, fees, End turn, keeping cards, a new rule, a fee stamp, the Small Envelope. Ends on a Certificate of Completed Training. Doesn't touch the Vitrina or run counts.
