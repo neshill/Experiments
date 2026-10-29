@@ -109,6 +109,14 @@
    "ui"
   ],
   [
+   "+1 redraw.",
+   "v29"
+  ],
+  [
+   "+1 redraw. You have {0}.",
+   "v29"
+  ],
+  [
    "+1 time on the first turn of each day.",
    "v28 moods"
   ],
@@ -157,6 +165,10 @@
    "ui"
   ],
   [
+   "<b>Every run, the forms are different.</b> Each office still asks for the paper the office before gave you; the rest of the form, the rules clerks suddenly remember and their strange papers are rolled when the run starts.",
+   "v29"
+  ],
+  [
    "<b>Fali ti jedan papir.</b> When you're one line from done, a clerk may ask for a strange paper nobody has heard of. Tap <b>Go get it</b> or slip them an envelope.",
    "ui"
   ],
@@ -175,6 +187,10 @@
   [
    "<b>Pocket items</b> are one-use helpers (rakija, pita). <b>The Vitrina</b> keeps trinkets you earn for good: equip them before a run.",
    "ui"
+  ],
+  [
+   "<b>Redraws.</b> You start a run with 3. During your turn, tap <b>Redraw</b>, pick any cards and swap them for new ones. It costs no time. You get one back after every office and at the café or kafana (6 at most). Key: R.",
+   "v29"
   ],
   [
    "<b>The Vitrina</b>: grandma's glass cabinet keeps the trinkets you earn, for good.",
@@ -297,6 +313,10 @@
    "ui"
   ],
   [
+   "Between old phone bills and a 1987 calendar: your {0}. It goes in your bag, ready for the clerk who asks for it.",
+   "v29"
+  ],
+  [
    "Between old phone bills and a 1987 calendar: your {0}. It joins your cards.",
    "{0} = DOCS[x].name"
   ],
@@ -363,6 +383,10 @@
   [
    "Click to keep",
    "ui"
+  ],
+  [
+   "Click to pick for swapping",
+   "v29"
   ],
   [
    "Click to play",
@@ -575,6 +599,10 @@
   [
    "From the Vitrina",
    "ui"
+  ],
+  [
+   "From your bag",
+   "v29"
   ],
   [
    "From your pocket",
@@ -1141,6 +1169,22 @@
    "ui"
   ],
   [
+   "Redraw",
+   "v29"
+  ],
+  [
+   "Redraw: swap cards for new ones. {0} left this run.",
+   "v29"
+  ],
+  [
+   "Redraw: tap the cards you want to swap ({0} picked), then tap Swap. Free, no time. {1} [[1:redraw|redraws]] left this run.",
+   "v29"
+  ],
+  [
+   "Redraws: {0}.",
+   "v29"
+  ],
+  [
    "Rejects papers twice as often.",
    "v28 moods"
   ],
@@ -1155,6 +1199,10 @@
   [
    "Release to keep",
    "ui"
+  ],
+  [
+   "Release to pick for swapping",
+   "v29"
   ],
   [
    "Release to play",
@@ -1183,6 +1231,10 @@
   [
    "Run map, office {0} of {1}",
    "{0} = S.officeIdx+1; {1} = OFFICES.length"
+  ],
+  [
+   "SWAP",
+   "v29"
   ],
   [
    "Salary account opened",
@@ -1305,6 +1357,10 @@
    "ui"
   ],
   [
+   "Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. Strange papers never go into your cards: the ones you find (one at the start, some rewards, your aunt's drawer) wait in your <b>bag</b>, and you hand them over straight from the form. If you don't have it, tap <b>Go get it</b> or bribe it.",
+   "v29"
+  ],
+  [
    "Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. You might already have it: strange papers turn up in your starting cards, as rewards, and in your aunt's drawer. If not, tap <b>Go get it</b> or bribe it.",
    "ui"
   ],
@@ -1345,6 +1401,10 @@
    "ui"
   ],
   [
+   "Strange papers in your bag",
+   "v29"
+  ],
+  [
    "Strict about the queue.",
    "v28 moods"
   ],
@@ -1355,6 +1415,10 @@
   [
    "Suspicious of fresh ink.",
    "v28 moods"
+  ],
+  [
+   "Swap {0}",
+   "v29"
   ],
   [
    "System down",
@@ -1681,6 +1745,10 @@
    "ui"
   ],
   [
+   "You dig through your bag and swap {0} [[0:card|cards]].",
+   "v29"
+  ],
+  [
    "You don't have the nerves for that right now.",
    "ui"
   ],
@@ -1739,6 +1807,10 @@
   [
    "You need an original document in your hand first.",
    "ui"
+  ],
+  [
+   "You pull the {0} out of your bag. {1} looks at it for a long time, then files it.",
+   "v29"
   ],
   [
    "You queue at the bank, pay the fee, and come back with a stamped payment slip. The rest of your turn is gone.",
@@ -1949,6 +2021,10 @@
    "{0} = who"
   ],
   [
+   "{0} is in your bag: hand it over from the form. While you were away, the window kept working.",
+   "v29"
+  ],
+  [
    "{0} is in your cards.",
    "{0} = esc(S.errand.get)"
   ],
@@ -2095,6 +2171,10 @@
   [
    "↑ Slide up to keep",
    "ui"
+  ],
+  [
+   "↑ Slide up to pick for swapping",
+   "v29"
   ],
   [
    "↑ Slide up to play",
