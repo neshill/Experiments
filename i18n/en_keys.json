@@ -1,6 +1,10 @@
 {
  "ui": [
   [
+   "\"A copy? Today? No.\" Only a certified copy counts here.",
+   "v28 moods"
+  ],
+  [
    "\"A plain copy? No, no. {0}, certified.\" That line now needs a certified copy.",
    "{0} = DOCS[r.doc].name"
   ],
@@ -49,6 +53,14 @@
    "{0} = who; {1} = DOCS[d.ft1p].name"
   ],
   [
+   "\"The copier is broken.\" No photocopies at this office.",
+   "v28 moods"
+  ],
+  [
+   "\"The ink is still wet.\" {0} is dated today, and today that doesn't count here.",
+   "v28 moods"
+  ],
+  [
    "\"The system is down\"",
    "ui"
   ],
@@ -77,6 +89,10 @@
    "{0} = DOCS[r.doc].name; {1} = maxLabel(r.max)"
   ],
   [
+   "\"Watch out at the {0}. {1}: {2}\" {3}",
+   "v28 moods"
+  ],
+  [
    "\"You're missing one paper.\" {0} also needs your {1}. Exactly like your friend said.",
    "{0} = clerkName(d); {1} = DOCS[d.ft1p].name"
   ],
@@ -91,6 +107,10 @@
   [
    "+1 item on the form, −1 patience",
    "ui"
+  ],
+  [
+   "+1 time on the first turn of each day.",
+   "v28 moods"
   ],
   [
    "+10 patience",
@@ -117,6 +137,10 @@
    "ui"
   ],
   [
+   "11:00",
+   "v28 moods"
+  ],
+  [
    "2 days to the office",
    "ui"
   ],
@@ -139,6 +163,10 @@
   [
    "<b>Five offices</b>, one after another. Each one hands you the paper the next one wants.",
    "ui"
+  ],
+  [
+   "<b>Moods.</b> Every run, each clerk is in a mood: the copier is broken, they don't trust copies, it's their birthday. A mood is a rule for that whole office, shown on a note at the top of the form. The map shows the next clerk's mood, so you can prepare. The bank clerk has two, and the second is a surprise unless a friend tips you off.",
+   "v28 moods"
   ],
   [
    "<b>My Friend Went Last Week</b> tells you something the clerk will ask for later: a rule they will suddenly remember, or their strange paper. Tips show up on the form in pencil and mark matching cards in your hand <b>Heard</b>, so you know what to keep. If the clerk asks for something you heard about, it costs you no patience. When an office has no secrets left, you hear about the next one.",
@@ -183,6 +211,10 @@
   [
    "A second slot",
    "ui"
+  ],
+  [
+   "A sign goes up: \"Pauza\". The window is shut this turn. Only free cards (0 time) work.",
+   "v28 moods"
   ],
   [
    "A small choice. Could go either way.",
@@ -301,6 +333,10 @@
    "ui"
   ],
   [
+   "Checks everything twice.",
+   "v28 moods"
+  ],
+  [
    "Citizen service centre",
    "ui"
   ],
@@ -353,6 +389,10 @@
    "ui"
   ],
   [
+   "Coffee for the Clerk costs no patience here and draws 1.",
+   "v28 moods"
+  ],
+  [
    "Comes back",
    "ui"
   ],
@@ -401,12 +441,20 @@
    "ui"
   ],
   [
+   "Didn't sleep.",
+   "v28 moods"
+  ],
+  [
    "Dismiss",
    "ui"
   ],
   [
    "Document",
    "ui"
+  ],
+  [
+   "Doesn't trust copies today.",
+   "v28 moods"
   ],
   [
    "Done",
@@ -431,6 +479,10 @@
   [
    "Draw pile, {0} cards",
    "{0} = o.draw.length"
+  ],
+  [
+   "Dying for a coffee.",
+   "v28 moods"
   ],
   [
    "Empty slot. Tap a keepsake in the cabinet to take it.",
@@ -473,8 +525,16 @@
    "ui"
   ],
   [
+   "Every date limit here is 2 days shorter. Lines with no limit want papers at most 7 days old.",
+   "v28 moods"
+  ],
+  [
    "Every document and action you own.",
    "ui"
+  ],
+  [
+   "Every line you tick with a document: +2 patience.",
+   "v28 moods"
   ],
   [
    "Feedback",
@@ -497,12 +557,20 @@
    "ui"
   ],
   [
+   "First turn of each day: 1 less time.",
+   "v28 moods"
+  ],
+  [
    "For you",
    "ui"
   ],
   [
    "Found",
    "ui"
+  ],
+  [
+   "Friday feeling.",
+   "v28 moods"
   ],
   [
    "From the Vitrina",
@@ -557,6 +625,14 @@
    "ui"
   ],
   [
+   "Good mood",
+   "v28 moods"
+  ],
+  [
+   "Got a new memo.",
+   "v28 moods"
+  ],
+  [
    "Grandma's glass cabinet",
    "ui"
   ],
@@ -605,6 +681,10 @@
    "ui"
   ],
   [
+   "Hungry. Lunch is at 11.",
+   "v28 moods"
+  ],
+  [
    "Idea",
    "ui"
   ],
@@ -649,6 +729,18 @@
    "ui"
   ],
   [
+   "It's [[his|her]] birthday.",
+   "v28 moods"
+  ],
+  [
+   "It's on a note at the top of the form.",
+   "v28 moods"
+  ],
+  [
+   "Just had a talk with the director.",
+   "v28 moods"
+  ],
+  [
    "KEEP",
    "ui"
   ],
@@ -675,6 +767,10 @@
   [
    "Keep<br>{0}",
    "{0} = S.keeping.length"
+  ],
+  [
+   "Knows the camera is on.",
+   "v28 moods"
   ],
   [
    "Language",
@@ -705,6 +801,18 @@
    "ui"
   ],
   [
+   "Loves a tidy file.",
+   "v28 moods"
+  ],
+  [
+   "Lunch break",
+   "v28 moods"
+  ],
+  [
+   "Lunch break: the window is shut this turn. Only free cards work.",
+   "v28 moods"
+  ],
+  [
    "Main menu",
    "ui"
   ],
@@ -715,6 +823,10 @@
   [
    "Miss",
    "ui"
+  ],
+  [
+   "Mood",
+   "v28 moods"
   ],
   [
    "Music: off",
@@ -801,6 +913,10 @@
    "ui"
   ],
   [
+   "Not today. [[He|She]] just came back from the director's office.",
+   "v28 moods"
+  ],
+  [
    "Nothing",
    "ui"
   ],
@@ -845,6 +961,10 @@
    "{0} = s.leg+2"
   ],
   [
+   "On the 3rd turn of each day the window is shut: no time, only free cards.",
+   "v28 moods"
+  ],
+  [
    "On the way",
    "ui"
   ],
@@ -865,8 +985,16 @@
    "ui"
   ],
   [
+   "One more mood you'll only see at the window. A tip can tell you.",
+   "v28 moods"
+  ],
+  [
    "One more turn of peace.",
    "ui"
+  ],
+  [
+   "One more you'll only see at the window.",
+   "v28 moods"
   ],
   [
    "One use.",
@@ -891,6 +1019,10 @@
   [
    "Paid",
    "ui"
+  ],
+  [
+   "Papers dated today don't count here, fresh certified copies included. Backdated papers are fine.",
+   "v28 moods"
   ],
   [
    "Patience",
@@ -919,6 +1051,10 @@
   [
    "Personal phone call",
    "ui"
+  ],
+  [
+   "Photocopy can't be played here. Bring your copies with you.",
+   "v28 moods"
   ],
   [
    "Photocopy your original",
@@ -957,6 +1093,10 @@
    "ui"
   ],
   [
+   "Plain copies don't count here. Certified copies still do.",
+   "v28 moods"
+  ],
+  [
    "Pocket",
    "ui"
   ],
@@ -989,12 +1129,20 @@
    "{0} = S.counterLeft"
   ],
   [
+   "Read a new circular this morning.",
+   "v28 moods"
+  ],
+  [
    "Received",
    "ui"
   ],
   [
    "Received! I looked at your original and gave it back: originals come back to your cards. Copies, stamps and photos the clerk keeps.",
    "ui"
+  ],
+  [
+   "Rejects papers twice as often.",
+   "v28 moods"
   ],
   [
    "Release to drop",
@@ -1015,6 +1163,10 @@
   [
    "Remembers a new rule",
    "ui"
+  ],
+  [
+   "Remembers new rules twice as often.",
+   "v28 moods"
   ],
   [
    "Resume",
@@ -1089,6 +1241,10 @@
    "ui"
   ],
   [
+   "Shady cards cost double patience here.",
+   "v28 moods"
+  ],
+  [
    "She has opinions about your apartment, your job and your posture.",
    "ui"
   ],
@@ -1099,6 +1255,14 @@
   [
    "Show me",
    "ui"
+  ],
+  [
+   "Sighs and coffee breaks hit 2 harder.",
+   "v28 moods"
+  ],
+  [
+   "Sighs and coffee breaks hit 2 softer.",
+   "v28 moods"
   ],
   [
    "Sighs loudly",
@@ -1115,6 +1279,10 @@
   [
    "Skip tutorial",
    "ui"
+  ],
+  [
+   "Small Envelope can't be played here.",
+   "v28 moods"
   ],
   [
    "Smudged",
@@ -1177,8 +1345,16 @@
    "ui"
   ],
   [
+   "Strict about the queue.",
+   "v28 moods"
+  ],
+  [
    "Stricter",
    "ui"
+  ],
+  [
+   "Suspicious of fresh ink.",
+   "v28 moods"
   ],
   [
    "System down",
@@ -1241,6 +1417,10 @@
    "ui"
   ],
   [
+   "The copier is broken.",
+   "v28 moods"
+  ],
+  [
    "The counter only serves people standing straight.",
    "ui"
   ],
@@ -1295,6 +1475,10 @@
   [
    "The window closes at 15:00 sharp. Come back tomorrow (day {0}). −5 patience. Ticked items still count, but all your papers are a day older.",
    "{0} = S.day"
+  ],
+  [
+   "The window closes one turn earlier each day.",
+   "v28 moods"
   ],
   [
    "The window is closed. Come back tomorrow, between 8:00 and 15:00. You can close this tab now.",
@@ -1353,6 +1537,10 @@
    "ui"
   ],
   [
+   "Today's mood",
+   "v28 moods"
+  ],
+  [
    "Trained",
    "ui"
   ],
@@ -1379,6 +1567,10 @@
   [
    "Turns",
    "ui"
+  ],
+  [
+   "Two moods",
+   "v28 moods"
   ],
   [
    "Un-ticked",
@@ -1411,6 +1603,10 @@
   [
    "Vibe created while putting H to sleep in 2026",
    "ui"
+  ],
+  [
+   "Wants to leave early.",
+   "v28 moods"
   ],
   [
    "Water everywhere, but your papers are laminated. Small victories.",
@@ -1665,6 +1861,10 @@
    "ui"
   ],
   [
+   "certified only",
+   "v28 moods"
+  ],
+  [
    "issued today",
    "ui"
   ],
@@ -1711,6 +1911,14 @@
   [
    "{0} accepts the coffee. \"Just this once.\"",
    "{0} = clerkName(d)"
+  ],
+  [
+   "{0} at the {1} today",
+   "v28 moods"
+  ],
+  [
+   "{0} at the {1}: in no particular mood",
+   "v28 moods"
   ],
   [
    "{0} calls \"Next!\" before the door closes behind you.",
@@ -1791,6 +1999,10 @@
   [
    "{0} time",
    "{0} = timeCost(c)"
+  ],
+  [
+   "{0} today",
+   "v28 moods"
   ],
   [
    "{0} was about to act ({1}), but didn't.",

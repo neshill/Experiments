@@ -2,6 +2,12 @@
 
 Newest first. Each version is a git tag (`v24`, `v22`, …) on the last commit of that version, so `git checkout v22` gives you that build exactly. The build number is the commit count, shown on the title screen as `v24 · build N`. Full design notes for every version live in the game design doc's change log.
 
+## v28 — 2026-10-28 · build 43
+- **Clerk moods:** every run, each clerk is in a mood, a rule for that whole office. The Registry has none or a mild/friendly one, the Police, Tax Office and Employment Bureau one each, the Bank two (the second stays hidden until you get there, or until My Friend Went Last Week tips you off). 16 moods: the copier is broken (no Photocopy), doesn't trust copies (certified only), a new circular (date limits 2 days shorter, 7 days where there was none), fresh ink (papers dated today don't count), checks everything twice (more rejections), the camera is on (shady cards cost double patience), just talked to the director (no Small Envelope), wants to leave early (one turn less a day), lunch at 11 (3rd turn of the day: no time), strict about the queue (−1 time on the day's first turn), didn't sleep (sighs and coffee breaks +2), a new memo (new rules twice as often); friendly: dying for a coffee (Coffee free and draws 1), loves a tidy file (+2 patience per document handed in), birthday (sighs and coffee breaks −2), Friday feeling (+1 time on the day's first turn).
+- Rolled so a run never piles on one way of playing (at most 2 that hurt papers-and-copies play, 1 that hurts shady play, 2 that hurt everyone) and always has at least one friendly mood.
+- Shown as taped notes at the top of the form, announced when you reach the window, and on the map for the office you're heading to (also on its route card). Rules page explains them. Not in the practice office.
+- Translated into all five languages (53 new lines).
+
 ## v27 — 2026-10-27 · build 42
 - **New app icon** (home screen icon on iPhone and the browser tab icon).
 
