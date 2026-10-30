@@ -1,0 +1,23 @@
+Built-in image generation. Supporting art and character layers generated from the approved brief and existing style references.
+Layer images need pixel alignment verification before integration; generative edits are not guaranteed pixel-identical.
+
+office_Practice.png
+Riso-print and carbon-copy game art: flat ink layers, slight misregistration, visible paper grain, stamp-like edges, lightly cubist angular facets. 1980s Yugoslav palette cream #f2e5c8, ink #18283a, navy #153c62, orange #e76a36, red #c93f31, turquoise #4c9e9b, gold #e8b44b, sage #7d9d80. Bold silhouette legible at thumbnail size. Absolutely no text, letters, numbers, logos or watermark. Any document marks are abstract nonlinguistic scribbles. Landscape 3:2 at least 1536x1024 opaque background. Small makeshift training counter in 1980s Yugoslav municipal office, least important service window. Straight-on single service window with glass and speaking hole, worn counter, rubber plant on far right, wall clock with tick marks NO NUMERALS, instruction poster with abstract scribbles NO LETTERS, practice forms, rubber stamp and ink pad. Dog bowl and squeaky toy bone tucked under counter on far right. No people or animals. Warm friendly cream gold sage colors. Center and left-center calm empty for clerk overlay; top-right corner and bottom strip quiet for UI. No signage, no window number.
+
+tut_certificate.png
+Riso-print and carbon-copy game art: flat ink layers, slight misregistration, visible paper grain, stamp-like edges, lightly cubist angular facets. 1980s Yugoslav palette cream #f2e5c8, ink #18283a, navy #153c62, orange #e76a36, red #c93f31, turquoise #4c9e9b, gold #e8b44b, sage #7d9d80. Bold silhouette legible at thumbnail size. Absolutely no text, letters, numbers, logos or watermark. Any document marks are abstract nonlinguistic scribbles. Portrait 3:4 at least 768x1024. One official cream paper certificate, ornate navy/gold guilloche border, ribbon seal in corner, abstract illegible scribble shapes where text would be. Big muddy red puppy paw-print stamp across middle, proudly smudged. Slightly tilted, soft drop shadow, full paper edges visible with clear padding. Transparent background.
+
+tut_pawstamp.png
+Riso-print and carbon-copy game art: flat ink layers, slight misregistration, visible paper grain, stamp-like edges, lightly cubist angular facets. 1980s Yugoslav palette cream #f2e5c8, ink #18283a, navy #153c62, orange #e76a36, red #c93f31, turquoise #4c9e9b, gold #e8b44b, sage #7d9d80. Bold silhouette legible at thumbnail size. Absolutely no text, letters, numbers, logos or watermark. Any document marks are abstract nonlinguistic scribbles. Square at least 512x512. Single red #c93f31 rubber-stamped puppy paw impression, four small toe pads and one big central pad, uneven ink coverage, distressed rough edges. Just ink mark on transparent background, no paper or objects.
+
+zucko_bust.png
+Edit the reference into a body-only animation layer. Preserve reference canvas aspect 3:4 and EXACT position and size of shirt, tie, lanyard, tilted blank badge. Remove entire head, ears and hat; transparent everywhere those were. Keep only body with neck cut at collar, fill hidden shirt shoulders naturally. Do not recenter/enlarge body: it remains in lower portion of canvas, top portion EMPTY TRANSPARENT. No paws. Same print texture and palette. Canvas at least 1024x1365.
+
+zucko_head.png
+Edit reference into head-only animation layer. Keep exact same head, eyes open and mouth closed, ears and paper hat included. Preserve EXACT canvas framing, head position and size. Remove shirt tie lanyard badge and body to transparency, lower portion EMPTY. Do not recenter or enlarge head. Preserve neck fur beneath jaw enough for overlap. Same 3:4 canvas at least 1024x1365, transparent.
+
+zucko_head_blink.png
+Edit reference into head-only BLINK animation layer. Only facial change: close both eyes as two soft curves. Keep same head ears hat muzzle closed smiling mouth and neck fur. Preserve EXACT canvas framing, position and size of head. Remove entire shirt tie lanyard badge body to transparency; lower portion EMPTY. Do not recenter or enlarge head. Same 3:4 canvas at least 1024x1365 transparent.
+
+zucko_head_talk.png
+Edit reference into head-only TALK animation layer. Only facial change: open mouth mid-word with small pink-orange tongue; eyes open. Keep identical ears hat eye patch and expression. Preserve EXACT canvas framing, position and size of head. Remove entire shirt tie lanyard badge body to transparency; lower portion EMPTY. Do not recenter or enlarge head. Same 3:4 canvas at least 1024x1365 transparent.
