@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#e8e6e0">
+<meta name="description" content="Redukcija: seven days with a family, a broken water supply, and the promises they keep.">
+<title>Redukcija</title>
+<meta name="apple-mobile-web-app-title" content="Redukcija">
+<!-- icons: home screen (iOS, 180x180; apple-touch-icon.png sits next to this file too) and browser tab -->
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAADKUlEQVR4Xu3cMU4VURSAYTDauQUjvZ0tBYSWBbgASxs712ClG3APNrQEClpjY09iYlyADRVGe5Oj75ohP99XD/e9mflz85KTy/73b9e3exDxIHIf8JugSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KQ+3upuT99dbfTQ7OH99sMNf/392aFIETYqgSRE0KYImRdCkCJoUQZMiaFL2V//3URNAftlqomiHJkXQpAiaFEGTImhSBE2KoEkRNCmCJmWzM4UVX94eLb2VZ28ul663lcPj09FHX12cja6bskOTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KM4V/sPqs4NT0cytnD1ezQ5MiaFIETYqgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkCJoUQZMiaFIETcq9O1M4PbN3103v476dPbRDkyJoUgRNiqBJETQpgiZF0KQImhRBk5KZFE4nZ/fN9LlUJop2aFIETYqgSRE0KYImRdCkCJoUQZMiaFKWTwp/XH8aPaDHB89H103X29s7Gq334fLr6LqXR09G19030/fxaKMHY4cmRdCkCJoUQZMiaFIETYqgSRE0KYImZfmkcPUEcLoeu5lOAKfv4+bzh92+0D+yQ5MiaFIETYqgSRE0KYImRdCkCJoUQZOyfFK4euI0Xe/Zm9l7mf43zsrZw6cv3o0ezHQCOH0fzhTCAn5ykCJoUgRNiqBJETQpgiZF0KQImpTlk8LVE6fV662eKG5lqwng9H04UwgL+MlBiqBJETQpgiZF0KQImhRBkyJoUpZPCs9fH4we0Mn70WXjM2zTCdb0TNx0ojhdb/X322q9m4+vZi9uI3ZoUgRNiqBJETQpgiZF0KQImhRBkyJoUva/f7u+vct3dHh8epe/Hn9wdXG2ybOxQ5MiaFIETYqgSRE0KYImRdCkCJoUQZNy5yeF8Dfs0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBk/IT8GByu6PHM2oAAAAASUVORK5CYII=">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA9ElEQVR4XmNkgAKtsgP/YWxagmtdDozI5jPR0jJiACO9fI4OYCEx4CHAQkwwYQNXO+1RhLXLD5JklLKaNjjNDXgIjDqA5DSAHvcwABMnNS2MRsGAhwDRaQBX3KMDUtPC4A8BYn1ObkgMeAgQ7YC5Bx+DMbUB0Q6gFRh1AMuXB+fAocujYASm0fny4f1g8YcrC8E0LB0k28vijRVYnYDLfFao7gGPAhZcPicUErgAIZ/D7Pt5YS7YiIEPAUJpAFdIEBtywycNkBpShNQPmjQA76fBekiEXE6p/M8N2SgZaMBzAUpPFQRgPRZag7u3roLtHvAQAAA9wI2LU+K7SwAAAABJRU5ErkJggg==">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@600;700;800&display=swap">
+<style>
+/* Layout: portrait-first, one screen. Top: day tile + family/pause. HUD: a big water tank tile (one block per unit),
+   three need tiles (10 blocks each), a strip of small counters. Middle: the decision card; two chunky choice buttons under it.
+   Landscape (≥900px wide): the HUD becomes a left column.
+   Look: light, neutral "pixel" — notched corners, hard offset shadows, dithered shading, one saturated colour per resource.
+   Fonts are readable sans (no pixel fonts): Barlow Condensed for numbers and labels, Atkinson Hyperlegible for text. */
+:root{
+  --bg:#e8e6e0; --surface:#f8f7f3; --surface-2:#efede7; --ink:#23262b; --muted:#66655f; --line:#b9b6ad; --shade:rgba(35,38,43,.16);
+  /* one colour per resource — the same everywhere: tiles, chips, icons */
+  --water:#2a76c0; --water-res:#9cc0e2; --food:#cf6f12; --hygiene:#12938a; --spirits:#c63a72;
+  --cash:#a7801a; --errands:#6a4fb0; --strain:#c33b2b; --file:#55677b; --promise:#b0782a;
+  --go:#3f8a4a; --go-dark:#2d6a37;
+  --f-num:"Barlow Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+  --f-text:"Atkinson Hyperlegible","Helvetica Neue",Arial,sans-serif;
+  --px:3px; /* pixel unit for notches, borders and shadows */
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-text);-webkit-text-size-adjust:100%;
+  background-image:radial-gradient(rgba(35,38,43,.07) 1px,transparent 1.2px);background-size:6px 6px}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--water);outline-offset:3px}
+button:disabled{cursor:not-allowed}
+h1,h2,h3,p{margin:0}
+#app{min-height:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;
+  padding:0 max(14px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+.lbl{font:700 12px/1 var(--f-num);letter-spacing:.09em;text-transform:uppercase}
+.num{font-family:var(--f-num);font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.muted{color:var(--muted)}
+
+/* ---------- pixel frame: notched corners + inset border; shadows come from the parent's drop-shadow ---------- */
+.px{--bc:var(--ink);--bw:var(--px);position:relative;
+  clip-path:polygon(var(--px) 0,calc(100% - var(--px)) 0,calc(100% - var(--px)) var(--px),100% var(--px),100% calc(100% - var(--px)),calc(100% - var(--px)) calc(100% - var(--px)),calc(100% - var(--px)) 100%,var(--px) 100%,var(--px) calc(100% - var(--px)),0 calc(100% - var(--px)),0 var(--px),var(--px) var(--px));
+  box-shadow:inset 0 0 0 var(--bw) var(--bc)}
+.drop{filter:drop-shadow(var(--px) var(--px) 0 var(--shade))}
+/* dithered shading on the lower part of coloured tiles */
+.dith::after{content:"";position:absolute;left:var(--px);right:var(--px);bottom:var(--px);height:38%;pointer-events:none;
+  background:repeating-conic-gradient(rgba(0,0,0,.13) 0 25%,transparent 0 50%) 0 0/4px 4px;
+  -webkit-mask:linear-gradient(transparent,#000 90%);mask:linear-gradient(transparent,#000 90%)}
+.ico{display:inline-block;flex-shrink:0;image-rendering:pixelated;vertical-align:middle}
+
+/* ---------- top bar ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0 10px}
+.daytile{display:flex;align-items:center;gap:10px;background:var(--surface);padding:7px 12px 6px;min-width:0}
+.daytile .num{font-size:24px}
+.daytile .t{min-width:0}
+.daytile .t div{font:700 13px/1.15 var(--f-num);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.daytile .t small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .btns{display:flex;gap:8px;flex-shrink:0}
+.iconbtn{background:var(--surface);border:0;height:42px;min-width:42px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font:700 14px var(--f-num);letter-spacing:.06em;text-transform:uppercase}
+.iconbtn:hover{background:#fff}
+.iconbtn svg{width:18px;height:18px}
+.iconbtn .badge{background:var(--promise);color:#fff;font:700 12px/18px var(--f-num);padding:0 6px;min-width:18px}
+
+/* ---------- HUD ---------- */
+.hud{display:grid;gap:8px;padding-bottom:12px}
+.tile{color:#fff;padding:9px 11px 10px;--bc:rgba(0,0,0,.28)}
+.tile .head{display:flex;align-items:center;gap:6px;justify-content:space-between}
+.tile .head .lbl{display:flex;align-items:center;gap:6px}
+.tile .big{font-size:34px}
+.tile .big small{font:700 14px var(--f-num);letter-spacing:.04em;text-transform:uppercase;margin-left:3px;opacity:.9}
+.delta{font:700 15px/1 var(--f-num);padding:3px 6px 2px;background:#fff;color:var(--ink);margin-left:6px;font-variant-numeric:tabular-nums;position:relative;top:-6px;display:inline-block}
+.delta.cost{color:var(--strain)}.delta.gain{color:var(--go-dark)}
+.watertile{background:var(--water)}
+.watertile .row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:4px}
+.watertile .res{font:700 13px/1.2 var(--f-num);letter-spacing:.04em;text-transform:uppercase;text-align:right;opacity:.95}
+/* the tank: one block per unit, 20 per row */
+.tank{display:grid;grid-template-columns:repeat(20,1fr);gap:2px;margin-top:8px;position:relative;z-index:1}
+.tank i{aspect-ratio:1;background:rgba(0,0,0,.22);display:block}
+.tank i.r{background:var(--water-res)}
+.tank i.f{background:#fff}
+.tank i.lose{background:repeating-linear-gradient(45deg,#fff 0 2px,#e9a59c 2px 4px);animation:blink .8s steps(2) infinite}
+.tank i.gain{background:transparent;box-shadow:inset 0 0 0 2px #fff;animation:blink .8s steps(2) infinite}
+.needs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.need .big{font-size:30px}
+.need.food{background:var(--food)}.need.hygiene{background:var(--hygiene)}.need.spirits{background:var(--spirits)}
+.segs{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;margin-top:7px;position:relative;z-index:1}
+.segs i{height:8px;background:rgba(0,0,0,.22);display:block}
+.segs i.on{background:#fff}
+.segs i.lose{background:repeating-linear-gradient(45deg,#fff 0 2px,rgba(0,0,0,.25) 2px 4px);animation:blink .8s steps(2) infinite}
+.segs i.gain{box-shadow:inset 0 0 0 2px #fff;background:transparent;animation:blink .8s steps(2) infinite}
+.need.low{background:var(--surface);color:var(--strain);--bc:var(--strain)}
+.need.low .segs i{background:rgba(195,59,43,.18)}.need.low .segs i.on{background:var(--strain)}
+.need .lowtag{font:700 11px/1 var(--f-num);background:var(--strain);color:#fff;padding:3px 5px 2px;letter-spacing:.06em}
+.counters{display:flex;flex-wrap:nowrap;gap:8px}
+.ctr{display:inline-flex;align-items:center;gap:7px;background:var(--surface);padding:6px 10px 5px;font:700 14px/1 var(--f-num);letter-spacing:.04em;text-transform:uppercase}
+.ctr .n{font-size:19px}
+.ctr .delta{top:0;padding:2px 4px 1px;margin-left:0;box-shadow:inset 0 0 0 1.5px currentColor}
+.pips{display:inline-flex;gap:3px}
+.pips i{width:11px;height:11px;display:inline-block;box-shadow:inset 0 0 0 2px currentColor}
+.pips i.on{background:currentColor}
+@keyframes blink{50%{opacity:.35}}
+
+/* ---------- stage ---------- */
+main{flex:1;padding:4px 0 8px;display:flex;flex-direction:column}
+.progress{display:flex;gap:4px;margin-bottom:12px}
+.progress span{height:8px;flex:1;background:var(--line)}
+.progress .done{background:var(--ink)}.progress .now{background:var(--water)}
+.cardwrap{position:relative}
+.card{background:var(--surface);padding:16px 16px 18px;touch-action:pan-y;user-select:none;-webkit-user-select:none;transition:transform .2s steps(4);animation:enter .2s steps(3)}
+.card.dragging{transition:none;cursor:grabbing}
+.cardhead{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+/* portrait slot: dithered frame in the speaker's colour, until the art arrives */
+.portrait{width:64px;height:64px;flex-shrink:0;display:grid;place-items:center;color:#fff;font:700 30px var(--f-num);--bc:rgba(0,0,0,.3)}
+.portrait::after{content:"";position:absolute;inset:var(--px);background:repeating-conic-gradient(rgba(0,0,0,.14) 0 25%,transparent 0 50%) 0 0/4px 4px;-webkit-mask:linear-gradient(transparent 45%,#000);mask:linear-gradient(transparent 45%,#000)}
+.cardhead .who .lbl{color:var(--muted);display:block;margin-bottom:3px}
+.cardhead .who strong{font:700 20px/1.1 var(--f-num);letter-spacing:.02em;display:block}
+.cardhead .who span{font-size:13px;color:var(--muted)}
+.card h2{font:700 30px/1.05 var(--f-num);letter-spacing:.01em;margin-bottom:10px;text-wrap:balance}
+.prose{font-size:18px;line-height:1.55}
+.lean{position:absolute;top:10px;font:700 13px/1.1 var(--f-num);letter-spacing:.06em;text-transform:uppercase;padding:6px 9px 5px;opacity:0;background:var(--ink);color:#fff;max-width:62%;z-index:2}
+.lean.l{left:10px}.lean.r{right:10px;text-align:right}
+.card.dragging[data-lean="0"] .lean.l,.card.dragging[data-lean="1"] .lean.r{opacity:1}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media (max-width:420px){.choices{grid-template-columns:1fr}}
+.choice{text-align:left;border:0;background:var(--surface);padding:12px 13px 13px;display:flex;flex-direction:column;gap:9px;--bw:var(--px)}
+.choice:not(:disabled):hover,.choice.hot{background:#fff;--bc:var(--water)}
+.choice:not(:disabled):active{transform:translate(var(--px),var(--px))}
+.choice:disabled{background:var(--surface-2);color:var(--muted);--bc:var(--line)}
+.ct{display:flex;gap:8px;font:700 18px/1.15 var(--f-num);letter-spacing:.02em}
+.ct .arrow{color:var(--muted)}
+.choice.r .ct{justify-content:space-between}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+/* a chip = icon + signed number. Gains are filled with the resource colour; costs are white with a coloured frame. */
+.chip{--c:var(--ink);display:inline-flex;align-items:center;gap:4px;padding:4px 7px 3px 5px;font:700 16px/1 var(--f-num);font-variant-numeric:tabular-nums;--bw:2px;--px:2px}
+.chip.gain{background:var(--c);color:#fff;--bc:rgba(0,0,0,.25)}
+.chip.cost{background:#fff;color:var(--c);--bc:var(--c)}
+.chip.chance{background:#fff;color:var(--c);--bc:var(--c);border:0;outline:2px dashed var(--c);outline-offset:-2px}
+.chip.chance .odds{font-size:12px;color:var(--muted);margin-left:2px}
+.chip.none{background:var(--surface-2);color:var(--muted);--bc:var(--line)}
+.chip.spill{background:#fff;color:var(--muted);--bc:var(--line)}
+.blocked{display:flex;align-items:center;gap:6px;font:700 14px/1.2 var(--f-num);letter-spacing:.02em;color:var(--strain)}
+.under{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+.selected{font:700 16px/1.2 var(--f-num);letter-spacing:.03em;text-transform:uppercase;color:var(--muted);padding-bottom:10px;border-bottom:2px dotted var(--line)}
+.outcome{font-size:20px;line-height:1.5;margin:14px 0 14px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.primary,.secondary{border:0;padding:14px 22px 13px;font:700 18px/1 var(--f-num);letter-spacing:.06em;text-transform:uppercase}
+.primary{background:var(--go);color:#fff;--bc:var(--go-dark)}
+.primary:hover{background:#4a9a55}
+.secondary{background:var(--surface);--bc:var(--ink)}
+.secondary:hover{background:#fff}
+.primary:active,.secondary:active{transform:translate(var(--px),var(--px))}
+.textbutton{border:0;background:none;padding:6px 0;font-size:14px;color:var(--muted);text-decoration:underline}
+.scene{animation:enter .2s steps(3)}
+.panel{background:var(--surface);padding:16px}
+.panel h2,.scene>h2{font:700 34px/1.05 var(--f-num);margin:6px 0 12px;text-wrap:balance}
+.eyebrow{font:700 13px/1 var(--f-num);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.days{display:flex;gap:4px;margin:0 0 14px}
+.days span{flex:1;text-align:center;font:700 14px/1 var(--f-num);padding:6px 0 5px;background:var(--surface-2);color:var(--muted)}
+.days .on{background:var(--ink);color:#fff}.days .past{background:var(--line);color:var(--surface)}
+.notice{display:grid;gap:8px;margin-top:14px}
+.fc{display:flex;gap:10px;align-items:center;font-size:15px;background:var(--surface);padding:9px 11px 9px 9px;--bw:2px;--bc:var(--line)}
+.tag{font:700 12px/1 var(--f-num);letter-spacing:.08em;text-transform:uppercase;padding:4px 6px 3px;flex-shrink:0;color:#fff}
+.tag.confirmed{background:var(--go)}.tag.expected{background:var(--cash)}.tag.rumoured{background:var(--file)}.tag.none{background:var(--strain)}
+.summary{display:grid;gap:6px;margin:14px 0}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 11px 8px 9px;background:var(--surface);font-size:15px;--bw:2px;--bc:var(--line)}
+.srow .k{display:flex;align-items:center;gap:8px}
+.srow .v{font:700 19px/1 var(--f-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.srow .v .was{color:var(--muted);font-size:16px}
+.warning{display:flex;gap:8px;align-items:flex-start;font-size:15px;color:var(--strain);margin:8px 0}
+.promise{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px;padding:8px 0;border-bottom:2px dotted var(--line)}
+.promise .st{font:700 13px/1 var(--f-num);text-transform:uppercase;letter-spacing:.08em;padding:4px 6px 3px;color:#fff}
+.promise .st.open{background:var(--promise)}.promise .st.kept{background:var(--go)}.promise .st.broken{background:var(--strain)}
+
+/* ---------- title ---------- */
+.title{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;padding:40px 0 60px;position:relative}
+.title .logo{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.title h1{font:800 clamp(54px,15vw,84px)/.9 var(--f-num);letter-spacing:-.01em;text-transform:uppercase;margin:6px 0 16px}
+.title h1 .sub{display:block;color:var(--water);font-size:.38em;letter-spacing:.04em;margin-top:8px}
+.title .lead{font-size:19px;line-height:1.45}
+.title .menu{display:grid;gap:10px;margin-top:26px;max-width:340px}
+.title .menu button{text-align:left}
+.title .quote{font-style:italic;font-size:17px;margin-top:30px;color:var(--muted)}
+.title .quote span{display:block;font:700 12px var(--f-num);letter-spacing:.08em;text-transform:uppercase;font-style:normal;margin-top:4px}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.ver{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));font:700 13px var(--f-num);letter-spacing:.05em;color:var(--muted)}
+.cast{display:none}
+
+/* ---------- dialogs ---------- */
+dialog{border:0;background:var(--surface);color:var(--ink);width:min(560px,calc(100% - 24px));max-height:86dvh;padding:22px;box-shadow:inset 0 0 0 3px var(--ink),6px 6px 0 rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(35,38,43,.55)}
+dialog header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:16px}
+dialog h2{font:700 32px/1 var(--f-num);text-transform:uppercase}
+dialog h3{font:700 17px/1.2 var(--f-num);letter-spacing:.05em;text-transform:uppercase;margin:18px 0 6px;display:flex;align-items:center;gap:7px}
+dialog p,dialog li{font-size:15px;margin:6px 0}
+dialog .close{border:0;background:none;font-size:30px;line-height:1;padding:0 6px}
+dialog .menu{display:grid;gap:8px}
+dialog .menu button{text-align:left}
+.entry{border-top:2px dotted var(--line);padding:12px 0}
+.entry h3{margin:4px 0}.entry p{font-size:15px}
+.person{display:flex;gap:12px;padding:12px 0;border-top:2px dotted var(--line)}
+.person .portrait{width:48px;height:48px;font-size:22px}
+.person p{font-size:14px}
+.person .mem{font-size:15px;color:var(--ink);display:flex;gap:6px;align-items:flex-start}
+.person strong{font:700 19px var(--f-num)}
+kbd{font:700 13px var(--f-num);padding:1px 5px;background:var(--surface-2);box-shadow:inset 0 0 0 1.5px var(--line)}
+
+@keyframes enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- landscape: HUD as a column on the left ---------- */
+@media (min-width:900px) and (orientation:landscape){
+  #app{max-width:1120px}
+  .game{display:grid;grid-template-columns:330px minmax(0,640px);gap:0 44px;justify-content:center;align-content:start;flex:1}
+  .game .top{grid-column:1/-1}
+  .game .hud{align-self:start}
+  .game .needs{grid-template-columns:1fr}
+  .title{display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:center}
+  .cast{display:block}
+  .cast .person:first-child{border-top:0}
+}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style></head><body><div id="app"></div><dialog id="dialog"></dialog>
+<script>
+(()=>{
+// ---------- story.js ----------
+// All quantities are abstract game units. A card: id, phase, speaker, title, text, two options, and an optional `when` (is it in today's deck).
+// An option: label, effects (water food hygiene spirits cash errands), response, extra (flags; $promise / $keep / $break), chance.
+// Any field can be a function of the state, for text or costs that depend on earlier choices.
+const option=(label,fx,resp,extra={},chance=null)=>({label,fx,resp,extra,chance});
+const card=(id,phase,speaker,title,text,a,b,opts={})=>({id,phase,speaker,title,text,choices:[a,b],...opts});
+const people={
+ Samir:{role:'You · father',initial:'S',bio:'You used to check bus timetables for a living. Now you check tanker schedules. You still believe a plan helps, even when nobody else is convinced.'},
+ Lejla:{role:'Your partner · 38',initial:'L',bio:'Repairs clothes at the kitchen table. Measures twice, cuts once. Has a dry sense of humour and little patience for being called resourceful by people with running water.'},
+ Iman:{role:'Your daughter · 15',initial:'I',bio:'Makes recordings of the city on an old phone. Wants to be seen as capable, but would also like one afternoon when being capable is not required.'},
+ Niko:{role:'Your son · turning 7',initial:'N',bio:'Keeps a list titled WHEN IT COMES BACK. Swimming is first. Washing the moon is second. He knows the moon is too far away. That is not the point.'},
+ Vesna:{role:'Neighbour · fourth floor',initial:'V',bio:'A retired bus driver who knows every route across the city. Pretends she is borrowing things when she is really checking whether everyone is all right.'},
+ City:{role:'Municipal water service',initial:'↳',bio:'Every message ends with “Thank you for your patience.” There is no button for saying you have run out.'}
+};
+const days=[
+ {title:'Temporary interruption',news:'The utility promises normal pressure by tomorrow evening.',intro:'The tap gives a short, hollow cough. Lejla puts a bowl beneath it anyway. “Optimism,” she says, “is apparently dishwasher-safe.”',cards:[
+ card('d1meal','Morning','Lejla','The good pan','“We can do porridge in one pan. Or bread and cheese.” She holds up the pan with the repaired handle. “Before you ask: yes, I trust my repair. I just don’t trust your washing-up.”',option('Porridge. I’ll do the washing.',{water:-3,food:30,spirits:3},'She gives you the good spoon. It is a small promotion.'),option('Bread and cheese today.',{cash:-2,food:22},'“A meal without a pan,” she says. “The future finally delivers.”')),
+ card('d1shirt','Morning','Iman','Inside out','Iman has turned her school shirt inside out. “It’s a look.” Then, quieter: “It’s not a look.” She waits until Niko leaves before asking whether you can wash it.',option('Wash a small load.',{water:-5,hygiene:25,spirits:5},'“Thanks.” She takes the shirt before you can offer to hang it. Some jobs she still wants to do herself.',{shirt:true}),option('Clean the collar and cuffs.',{water:-1,hygiene:10,spirits:-2},'She watches you work. “If anyone asks, I’m starting a movement.” It is almost a joke.')),
+ card('d1queue','Midday','Vesna','A place in line','Vesna calls from the stairs. “Tanker at the tram depot. I’ve seen it, not heard about it from somebody’s cousin.” You have time to join her or take a small delivery job.',option('Go with the empty containers.',{water:10,errands:-1},'The driver fills each container to the line. Vesna talks about the old tram route all the way home. You realise she has carried the heavier one.'),option('Take the delivery job.',{cash:5,errands:-1},'You pass the tanker on the way to work. For once, the rumour was true. The money is real too.')),
+ card('d1birthday','Afternoon','Niko','Six more sleeps','“For my birthday, can we make the sea in the blue bowl?” Niko means the washing bowl and his paper boats. “It doesn’t have to be the whole sea.”',option('Promise him a little sea.',{spirits:6},'He writes SEA under his birthday in the notebook, in letters large enough to launch a boat from.',{seaPromise:true,$promise:'sea'}),option('Promise a birthday, not a sea.',{spirits:1},'“Okay. Could it have a lighthouse?” You tell him a lamp is probably within your powers.',{honestBirthday:true})),
+ card('d1neighbour','Evening','Vesna','One kettle','Vesna knocks with an empty bottle hidden behind her leg. “Just enough for tea. My sister is calling. I like having something to do with my hands.”',option('Fill her bottle.',{water:-3,spirits:3},'“I’ll bring it back.” You tell her she can keep the bottle. “I meant the favour, Samir.”',{helpedVesna:true}),option('Tell her you’re counting every cup.',{},'She nods before you finish. “I know.” She stays a moment to ask about the children.')),
+ card('d1night','Night','Lejla','A job nobody applied for','Lejla finds your water tally beside the shopping list. “Keep the numbers. Just don’t make me ask permission to wash my hands.” She is tired, not trying to start a fight.',option('Make the plan together.',{spirits:6},'She pulls up a chair. You move the notebook between you instead of keeping it on your side.',{sharedPlan:true}),option('Offer to handle it all yourself.',{spirits:-3},'“That isn’t the same thing as helping.” She goes to put Niko to bed. You leave the notebook open.') )
+ ]},
+ {title:'By tomorrow evening',news:'Mains repair delayed by 24 hours.',intro:'On the radio, a spokesperson says nobody has been left without access. Lejla turns it down with her elbow.',cards:[
+ card('d2meal','Morning','Niko','A face on the plate','Niko arranges breakfast into a face, then eats one eye. “Now it’s a pirate.” Lejla says there are lentils for lunch if somebody soaks them now.',option('Put the lentils on.',{water:-3,food:30},'By lunchtime the kitchen smells like lunch, instead of a room where everyone is waiting.'),option('Buy filled rolls.',{cash:-3,food:25,spirits:2},'Niko calls his roll a submarine. Iman tells him submarines do not normally have eyebrows.')),
+ card('d2wash','Morning','Lejla','Customer facing','A customer is collecting a repaired coat. Lejla touches her hair. “I would like to look like a person who repairs coats, not someone who has been living in one.”',option('Set aside a proper basin wash.',{water:-4,hygiene:23,spirits:4},'She comes back wearing earrings. “There. Now I can charge what it’s worth.”'),option('Freshen up with a small cloth.',{water:-1,hygiene:8},'She chooses the bigger earrings. “Distraction is also a professional skill.”')),
+ card('d2fee','Midday','City','An administrative shortcut','At the depot, the clerk slides your form back. “Standard allocation is next week. Priority handling is five credits.” Behind him, a sign says ALL HOUSEHOLDS EQUAL.',option('Pay for priority water.',{cash:-5,water:12,errands:-1},'The stamp lands before the money leaves your hand. You bring home the water and fold the receipt into a very small square.',{paidFee:true}),option('Keep your money and your place.',{errands:-1},'“Next week, then,” he says. You ask for that in writing. He points at the sign.',{refusedFee:true})),
+ card('d2record','Afternoon','Iman','Room tone','Iman is recording the tap. “For school. A sound portrait of the neighbourhood.” The file is fourteen seconds of nothing, then someone laughing downstairs.',option('Ask her to play you the whole thing.',{spirits:5},'She starts explaining where to listen. It is the longest conversation you’ve had today that is not about water.',{listened:true}),option('Ask her to help with the containers first.',{spirits:-2},'“In a minute” becomes “fine.” She puts her phone face down. You both carry the containers without talking.')),
+ card('d2leak','Evening','Vesna','Water nobody gets','A pipe is leaking behind the depot fence. Vesna has a photograph. “We carry it up four floors while they let it run into a drain.” She is collecting repair reference numbers.',option('Help document the leak.',{errands:-1,spirits:2},'You find three old complaints about the same pipe. The oldest is dated before Niko was born.',{evidence:1}),option('Stay in and play cards.',{spirits:7},'Iman wins without looking pleased. Niko wins by declaring that sevens are boats and boats beat everything.')),
+ card('d2night','Night','Lejla','The smallest repair','The blue bowl has a hairline crack. Lejla holds it to the light. “I can patch it. Or we can stop owning things that need rescuing.”',option('Sit with her while she patches it.',{spirits:4},'You hold the edges still. “See,” she says, “occasionally I do need your highly specialised thumbs.”',{bowlFixed:true}),option('Let the bowl retire.',{},'She sets it beside the recycling. Niko retrieves it ten minutes later. “It can still be a dry sea.”'))
+ ]},
+ {title:'A recording of rain',news:'A depot tanker is expected at midday. Not confirmed.',intro:'A drop runs down the kitchen window. Niko cheers. It is condensation from the upstairs vent. Nobody corrects him straight away.',cards:[
+ card('d3meal','Morning','Lejla','Soup weather','“It looks like soup weather,” Lejla says. “Which is different from having soup resources.” There are vegetables starting to soften and crackers that will last.',option('Use the vegetables in soup.',{water:-4,food:32,spirits:4},'Everyone asks for seconds. You divide what is left without calling it dividing.'),option('Buy cheese for the crackers.',{cash:-2,food:22},'You eat by the window. Iman adds the sound of crackers snapping to her recording.')),
+ card('d3wash','Morning','Niko','The invisible dirt','Niko holds out his hands. “They look clean.” Lejla points at a sticky thumbprint on the wall. “An excellent disguise.”',option('Hands, faces, and the kitchen surface.',{water:-4,hygiene:24},'He washes each finger separately, like a very careful piano player.'),option('Do the essentials with one basin.',{water:-1,hygiene:9},'“Same water, different jobs,” Niko announces. You help him finish before the lesson becomes a flood.')),
+ card('d3tanker','Midday','Vesna','Expected shortly','The depot message says EXPECTED SHORTLY. Vesna remembers when shortly meant twenty minutes. Waiting will use one errand. Today’s delivery is uncertain.',option('Wait with the containers.',{errands:-1},s=>s.rolls.tanker3?'At twenty past one, the tanker turns the corner. Vesna claps once, as if it were a bus that had finally kept its timetable.':'After an hour, the driver calls the guard. The tanker has been diverted to a private complex. Vesna says nothing on the walk home.',s=>s.rolls.tanker3?{}:{missedTanker:true},{key:'tanker3',win:{water:10},odds:'about even odds'}),option('Use the time for paid work.',{cash:5,errands:-1},'When you finish, the depot message still says EXPECTED SHORTLY. At least you have been paid.')),
+ card('d3sound','Afternoon','Iman','Listen with headphones',s=>s.flags.listened?'“I finished it.” Iman hands you one earbud. There is the tap, the stairs, Vesna laughing. Then an old recording of rain. “I found that part on my phone.”':'Iman is listening to something with her eyes shut. She notices you. “It’s rain. From last year. It isn’t sad unless you make it sad.”',option('Share the headphones.',{spirits:8},'For a minute, the room feels cooler. “Don’t say it’s beautiful,” she says. You ask how she made the transition instead.',{heardRain:true}),option('Ask her to send it for later.',{spirits:1},'“Sure.” A file appears on your phone. Its name is home_final_FINAL2.')),
+ card('d3bottle','Evening','Vesna','A clean bottle',s=>s.flags.helpedVesna?'Vesna returns your bottle, full. “My sister came by. Before you object, I have enough.” She is already looking for a place to put it.':'Vesna has spare water from her sister. “I can sell you a container at what she paid. Or you can help carry mine upstairs and we’ll call it even.”',option('Accept the water.',s=>s.flags.helpedVesna?{water:5}:{water:5,cash:-1},'You start to explain how useful it is. “Good,” she says. “Then we’ve established that water is useful.”'),option('Carry her containers upstairs.',{water:5,errands:-1,spirits:2},'On the fourth floor, you both pretend you stopped to admire the view.')),
+ card('d3night','Night','Niko','Things that don’t need water','Niko has drawn a second list. “Things we can do now.” It includes shadows, counting red cars, and insulting the moon. “Only politely.”',option('Make a shadow animal together.',{spirits:7},'Yours looks like a broken glove. Niko names it Minister of Rabbits. Lejla laughs from the next room.',{shadowGame:true}),option('Read him a familiar story.',{spirits:5},'He knows where you skip a sentence. He makes you go back. Tonight, this is a thing that can be put right.'))
+ ]},
+ {title:'Progress is being made',news:'The utility announces a successful inspection.',intro:'A photograph of a new pumping station fills the news. Iman enlarges it. “That’s the same ribbon from last year.” Lejla says the ribbon is receiving excellent maintenance.',cards:[
+ card('d4meal','Morning','Iman','Let me make it','“I can cook,” Iman says. “I don’t mean I can help you cook.” She has a recipe for rice and beans open on her phone. You can already see a step you would do differently.',option('Give her the kitchen.',{water:-4,food:30,spirits:6},'The rice sticks. The beans are excellent. You ask for the recipe, not an explanation.',{trustedIman:true}),option('Suggest a cold lunch together.',{cash:-2,food:22,spirits:1},'She slices the tomatoes beautifully and says very little. You leave the knife where she prefers it.')),
+ card('d4wash','Morning','Lejla','The pile on the chair','The laundry pile has acquired its own geography. “North sock,” Lejla says. “South towel. The disputed trousers.” A full small load would make the room feel different.',option('Wash the small load.',{water:-5,hygiene:28,spirits:3},'The apartment smells of soap. For a while, it feels like a house doing ordinary house things.'),option('Wash underwear and cloths only.',{water:-2,hygiene:13},'“The disputed trousers survive another day.” She folds the clean things carefully.')),
+ card('d4official','Midday','City','Ticket closed','Your building receives a notice: ISSUE RESOLVED. The tap is dry. The form allows a new complaint, but not a reply to the old one.',option('File the evidence again.',{errands:-1},'You attach the photograph and the old reference numbers. This time you copy the residents’ group.',{evidence:1}),option('Take a job across town.',{cash:5,errands:-1},'At the office where you deliver a parcel, a fountain burbles beside the lift. You notice it before you notice the receptionist.')),
+ card('d4friend','Afternoon','Iman','No big announcement','Iman wants to invite her friend Sara over. “She knows about the water. Everybody knows. Can we just not make it the subject?”',option('Make tea and give them the room.',{water:-2,spirits:9},'Through the wall you hear an argument about music. It has nothing to do with the crisis. You are absurdly grateful.',{friendVisited:true}),option('Suggest a walk. Sara can come another time.',{spirits:3},'Iman accepts. On the way out, she asks when, exactly, another time is. You say before the week is out.',{$promise:'sara'})),
+ card('d4gift','Evening','Lejla','A seam in the sky','Lejla has stitched a little flag for Niko’s birthday boat from a customer’s offcuts. “Unused scraps,” she says. “I am not running a maritime theft operation.”',option('Help her make a whole fleet.',{spirits:6},'Iman wanders over to correct your folding. She stays to make three boats.',{fleet:true}),option('Keep the one boat a secret.',{spirits:3},'Lejla hides it in the sewing tin, where no child in this house has ever willingly looked.')),
+ card('d4night','Night','Lejla','Not the reassuring answer','“Are we all right?” Lejla asks. You start to say yes. She shakes her head. “Not the answer you give him. The answer you give me.”',option('Tell her what worries you.',{spirits:5},'She listens without fixing it. Then she tells you what worries her. The list is longer, but it belongs to two people now.',{sharedPlan:true}),option('Tell her you have a plan.',{spirits:-2},'“I know you do.” She straightens a corner of the tablecloth. You hear the rest of the sentence anyway.'))
+ ]},
+ {title:'The long way round',news:'A collection point opens across the river.',intro:'The lift is out. Vesna has written WATER FIRST, COMPLAINTS SECOND on the stairwell notice. Underneath, somebody has added COFFEE WHEN?',cards:[
+ card('d5meal','Morning','Lejla','The last onion','Lejla turns the last onion in her hand. “This can be dinner or a very small still life.” Niko votes for a portrait. Nobody votes for chopping it.',option('Make a one-pot dinner.',{water:-3,food:30,spirits:2},'You chop. Everyone else claims they would have helped if you had asked five seconds later.'),option('Buy bread and tinned fish.',{cash:-3,food:25},'Niko draws the onion while you eat. He gives it a serious expression.')),
+ card('d5wash','Morning','Iman','A closed door','“I want to wash my hair.” Iman says it without an apology this time. “And I want nobody timing me from the hallway.”',option('Give her a measured jug and privacy.',{water:-5,hygiene:25,spirits:7},'She comes out with wet hair and plays music while she dries it. Nobody comments on how much happier she looks.',{privacy:true}),option('Offer a smaller wash today.',{water:-2,hygiene:11,spirits:-3},'“I know.” She takes the jug. You wish knowing made things less disappointing.')),
+ card('d5collect','Midday','Vesna','Across the river','The collection point is open. The walk takes both errand slots. Vesna knows a route with fewer steps, which is not quite the same as a short route.',option('Make the trip.',{water:14,errands:-2},'You return with sore hands. Vesna buys one cherry sweet and breaks it in half with a look of fierce concentration.'),option('Do two small jobs nearby.',{cash:7,errands:-2},'You get paid on time. Today, that feels like an event worth writing down.')),
+ card('d5birthday','Afternoon','Niko','The guest list','Niko’s birthday list has five names. One is Vesna. One is “Iman if she wants.” He asks whether cake needs water.',option('Buy a little cake to share.',{cash:-4,spirits:6},'“How little?” He holds his hands an inch apart. You promise it is bigger than that.',{cake:true}),option('Plan birthday toast and candles.',{spirits:2},'“Can the toast have a face?” It can. “A pirate?” Apparently you have a theme now.',{toastBirthday:true})),
+ card('d5iman','Evening','Iman','Not for school',s=>s.flags.heardRain?'Iman has added the sound of the collection queue to her recording. “I could put this online. Not for school. So they can’t say there isn’t a queue.”':'Iman wants to post her sound recording. “You can hear the whole street waiting. Maybe somebody should.”',option('Help her remove names before sharing.',{spirits:5},'You listen for addresses and names together. She chooses the title: Shortly. For once, you have helped without taking over.',{recordingShared:true,evidence:1}),option('Ask to keep it within the building.',{spirits:1},'She sends it to the residents’ group. Vesna replies with six clapping hands. “She’s my demographic,” Iman says.')),
+ card('d5night','Night','Niko','Is it our fault?','“If we use less, will the water come back?” Niko asks. You wonder how long he has been doing that arithmetic by himself.',option('Explain that grown-ups must fix the pipes.',{spirits:6},'“So my birthday isn’t breaking it?” No, you tell him. His birthday is not breaking anything.',{blameExplained:true}),option('Explain what saving helps us do.',{spirits:2},'You tell him saving helps your containers last, but the broken pipes are not his fault. He crosses “no swimming” out of his notebook.'))
+ ]},
+ {title:'Someone has a spanner',news:'A maintenance crew is finally on your street.',intro:'There are actual tools beside the open trench. Lejla leans out of the window. “Should we take a photograph? For the museum?”',cards:[
+ card('d6meal','Morning','Lejla','Feed the helpers','Two residents have been carrying containers for the older neighbours. There is enough to make a pot of rice for them too, if you use a little extra water.',option('Make a bigger pot.',{water:-5,food:35,spirits:6},'Nobody stays long. Each person washes their own spoon in the little basin without needing to ask.',{fedHelpers:true}),option('Keep lunch for the family.',{water:-2,food:25},'You wave the helpers in for a rest. They sit for five minutes and compare the shapes of the handles bruised into their palms.')),
+ card('d6wash','Morning','Niko','Birthday eve','Niko wants to be clean “in advance.” Lejla says that is not generally how children work. He offers to avoid all dirt until tomorrow.',option('Give him a small bath.',{water:-5,hygiene:26,spirits:5},'He emerges solemnly, then sits on the dusty balcony floor to supervise a beetle.'),option('Wash faces, feet, and hands.',{water:-2,hygiene:12,spirits:1},'“All the corners,” he says, checking a knee. You do the knees too.')),
+ card('d6crew','Midday','City','The wrong work order',s=>s.flags.evidence>=2?'The crew has come to inspect the wrong valve. You have photographs, dates and two complaint numbers. The foreman looks at your folder. “All right. Show me.”':'The crew has come to inspect the wrong valve. The foreman is willing to look at the leak if someone takes him there. His dispatcher wants him elsewhere.',option('Walk the crew to the leak.',{errands:-1},s=>s.flags.evidence>=2?'The foreman matches your photographs to the pipe. “This should have been done months ago.” He signs for a repair and leaves you a copy.':'The foreman finds the leak. He writes down the location but cannot authorise the parts today. At least this report describes the right pipe.',{crewShown:true}),option('Work while the crew is here.',{cash:5,errands:-1},'You give Vesna the location before leaving. When you return, the trench is covered. Nobody knows whether that is a good sign.')),
+ card('d6iman','Afternoon','Iman','A useful distinction',s=>s.flags.trustedIman?'“I’ll do breakfast tomorrow,” Iman says. “No supervising.” She has already put the good pan on the counter.':'Iman is folding birthday boats alone. “You can let me do things without making them a lesson in responsibility, you know.”',option('Ask what she wants to take care of.',{spirits:6},'“The boats. And the music.” She pauses. “And I want to be a guest at some point.” You tell her that is part of the arrangement.',{imanParty:true}),option('Thank her and let her finish.',{spirits:3},'She nods. You resist the urge to improve the crease on the nearest boat.'),{when:s=>!isOpen(s,'sara')}),
+ card('d6sara','Afternoon','Iman','Another time','Iman holds her phone out without quite looking at you. “You said Sara could come before the week is out. The week is nearly out.” She has already tidied her half of the room.',option('Invite Sara for the afternoon.',{water:-2,spirits:9},'Through the wall you hear an argument about music. It has nothing to do with the crisis. Iman thanks you on the way to the door, quickly, so it does not count.',{friendVisited:true,$keep:'sara'}),option('Not this week after all.',{spirits:-5},'“Right.” She types something and deletes it. “I’ll tell her it’s the water.” You both know it is partly the water.',{$break:'sara'}),{when:s=>isOpen(s,'sara')}),
+ card('d6sea','Evening','Lejla','The bowl on the counter',s=>s.flags.seaPromise?'“You promised him the sea.” Lejla taps the blue bowl. “We can do it with four units. But decide before he sets the boats out.”':'Lejla sets the blue bowl on the counter. “You didn’t promise. We could still surprise him. Four units would do it.”',option('Prepare the little sea for tomorrow.',{water:-4,spirits:3},s=>s.flags.bowlFixed?'The patch holds. You cover the bowl with a tray, as if a sea is something you can hide from a six-year-old.':'You line the cracked bowl with a spare bag. Lejla tests it twice. “Temporary infrastructure,” she says.',{seaReady:true,$keep:'sea'}),option('Make a dry harbour with a lamp.',{spirits:1},'You arrange a paper shoreline. The lamp makes a convincing lighthouse. You hope convincing will be enough.',{dryHarbour:true})),
+ card('d6night','Night','Lejla','One quiet minute','The children are asleep. Lejla sits beside you without bringing the notebook. “Tell me something that has nothing to do with pipes.”',option('Tell her about the day you met.',{spirits:7},'“That is not how it happened,” she says immediately. You let her tell it properly.',{quietTogether:true}),option('Ask where she would go for a day.',{spirits:7},'“Somewhere I am not in charge of a bag.” After thinking: “You may come. You can carry it.”',{quietTogether:true}))
+ ]},
+ {title:'A small sea',news:'No promise of normal service today.',intro:'Niko wakes before everyone else and waits in the doorway with enormous effort. “I’m seven,” he whispers, to nobody in particular.',cards:[
+ card('d7meal','Morning','Iman','The birthday breakfast',s=>s.flags.imanParty?'Iman is already at the stove. “I chose the quiet music. That’s my gift to the adults.” She wants to make pancakes.':'Iman offers to make breakfast. “I can manage a pancake. It is a circle with consequences.”',option('Make pancakes together.',{water:-3,food:32,spirits:6},'The first one is terrible. Niko requests it because it looks like an island.'),option('Make pirate toast.',{cash:-1,food:24,spirits:4},'Nobody agrees where the eyepatch should go. Niko eats the evidence.')),
+ card('d7wash','Morning','Lejla','Company coming','Lejla surveys the table. “Clean enough to eat from. Not clean enough for my aunt, but fortunately she isn’t invited.” You have time for a small wash before everyone arrives.',option('Wash up and wipe the table.',{water:-3,hygiene:20},'You put out the mismatched cups. Lejla rotates the chipped one toward herself; you rotate it back toward you.'),option('Use a cloth and do the essentials.',{water:-1,hygiene:8},'The table is a little sticky. There will be toast crumbs soon anyway.')),
+ card('d7news','Midday','City','A new notice',s=>s.flags.crewShown&&s.flags.evidence>=2?'A message arrives from the foreman: the local valve is repaired. Pressure is still limited. The residents can collect an extra container today. The official bulletin calls it a planned improvement.':'The bulletin says restoration is proceeding according to plan. Nobody in the building has seen the plan. Vesna has found another confirmed collection point.',option('Collect the available water.',{water:10,errands:-1},s=>s.flags.crewShown&&s.flags.evidence>=2?'Water runs from the depot tap. Only a thin stream, but yours to collect. You save the foreman’s number.':'There is a queue. It moves. Today you are grateful for a queue that moves.'),option('Stay home for the birthday.',{spirits:5},'You put the phone in a drawer. For the next hour, there is no bulletin.')),
+ card('d7sea','Afternoon','Niko','Launch day',s=>s.flags.seaReady?'Niko lifts the tray off the blue bowl. “You kept it.” He means the promise, or the sea, or both. He has given every boat a name.':s.flags.seaPromise?'Niko finds the paper harbour. He looks for the water, then looks at you. “You said.” Behind him, the lighthouse lamp is already on.':'Niko finds the paper harbour. “A dry sea!” He moves a boat along the table. “These ones have wheels you can’t see.”',option(s=>s.flags.seaReady?'Launch every boat.':'Fill a small bowl now.',s=>s.flags.seaReady?{spirits:14}:{water:-4,spirits:12},'The boats lean against each other. Niko rescues one with a spoon. Iman makes a solemn announcement about maritime regulations.',{birthdaySea:true,$keep:'sea'}),option(s=>s.flags.seaReady?'Let him be captain of the whole game.':'Make the lighthouse story together.',s=>s.flags.seaReady?{spirits:14}:{spirits:s.flags.seaPromise?-4:8},s=>s.flags.seaReady?'Niko assigns you the job of weather. You make a breeze. Lejla advises you not to get ambitious.':s.flags.seaPromise?'You apologise without adding “but.” He is disappointed. Then he asks you to hold the lighthouse while he brings the boats home.':'The lamp sweeps across the paper sea. Niko supplies the waves. Iman supplies a foghorn so terrible that everyone laughs.',s=>({birthdayStory:true,...(s.flags.seaReady?{}:{$break:'sea'})}))),
+ card('d7cake','Evening','Vesna','Seven candles',s=>s.flags.cake?'Vesna arrives with seven candles. “I counted twice.” The cake is small. Lejla cuts it with the concentration she usually reserves for expensive fabric.':'Vesna arrives with seven candles. “Cake is a serving suggestion,” she says, planting one in the birthday toast.',option('Ask Niko what he wished for.',{spirits:5},'“If I tell you, you’ll put it on a list.” He has you there.'),option('Take a picture of everyone.',{spirits:7},'In the picture, nobody is looking in the same direction. Everyone wants a copy.',{photo:true})),
+ card('d7night','Night','Lejla','Tomorrow’s containers','The cups are stacked. Niko is asleep with a paper boat beside his pillow. Lejla puts the notebook on the table, then leaves room beside it for two cups.',option('Sit down and plan tomorrow together.',{spirits:5},'You write the remaining water at the top of a clean page. Lejla adds bread. Then, underneath: call Vesna. There is room for more.',{sharedPlan:true}),option('Take a minute before opening the book.',{spirits:5},'For a minute, you sit without counting anything. Then you open the book together.',{sharedPlan:true}))
+ ]}
+];
+
+
+// ---------- engine.js ----------
+const GAME_VERSION='v2.1';
+// GAME_BUILD is rewritten automatically on every commit by .githooks/pre-commit (don't edit by hand):
+const GAME_BUILD={n:3,date:'2026-10-30 14:03'};
+const versionLabel=()=>`${GAME_VERSION} · build ${GAME_BUILD.n}`;
+
+const SAVE_KEY='redukcija.save', SAVE_V=1;
+const CAP=40, RESERVE=8, ERRANDS=2, START={water:24,food:65,hygiene:65,spirits:65,cash:8,errands:ERRANDS,strain:0,evidence:0};
+const NIGHT={food:-28,hygiene:-20,spirits:-18};      // nightly need decay, after the day's cards
+const LOW=25, GOOD=50, STRAIN_MAX=3;
+const WEEKDAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const LABEL={water:'water',food:'Food',hygiene:'Hygiene',spirits:'Spirits',cash:'credits',errands:'errand',evidence:'evidence'};
+
+// Two supply schedules; one is picked at the start of each week. Deliveries are announced the night before (confirmed).
+const SCHEDULES=[
+  {id:'promises',supply:[0,8,0,8,0,10,6]},
+  {id:'drymiddle',supply:[0,6,5,0,0,10,8]}
+];
+// Things the family can know about a day ahead, beyond the building delivery.
+const EXPECT={2:[['expected','Depot tanker at midday · about even odds']],4:[['confirmed','Collection point across the river · takes both errands']],5:[['confirmed','Maintenance crew on your street']]};
+
+// Promises: made on a card ($promise), resolved on a later card ($keep / $break), broken at bedtime if still open on the due day.
+const PROMISES={
+  sea:{who:'Niko',text:'A little sea for his birthday',due:6},
+  sara:{who:'Iman',text:'Sara can come before the week is out',due:5}
+};
+const isOpen=(s,id)=>s.promises?.[id]?.state==='open';
+
+// Seeded random so a week's uncertain outcomes are fixed at the start (reloading never rerolls them).
+function rng(seed){let t=seed>>>0;return()=>{t+=0x6D2B79F5;let r=Math.imul(t^t>>>15,1|t);r^=r+Math.imul(r^r>>>7,61|r);return((r^r>>>14)>>>0)/4294967296};}
+
+function newRun(seed=(Date.now()^Math.random()*1e9)>>>0){
+  const r=rng(seed);
+  return {v:SAVE_V,seed,schedule:Math.floor(r()*SCHEDULES.length),rolls:{tanker3:r()<.5},
+    day:0,idx:0,stage:'brief',st:{...START},flags:{},promises:{},log:[],deck:[],arrival:null,
+    zeroFood:0,supportUsed:0,helpAsked:0,morning:null,result:null,summary:null,ending:null};
+}
+const val=(x,s)=>typeof x==='function'?x(s):x;
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const free=s=>Math.max(0,s.st.water-RESERVE);
+const supplyFor=(s,d)=>SCHEDULES[s.schedule].supply[d]||0;
+
+function startDay(s){
+  const want=supplyFor(s,s.day), got=Math.min(want,CAP-s.st.water);
+  s.st.water+=got; s.arrival={promised:want,received:got,overflow:want-got};
+  s.st.errands=ERRANDS;
+  if(s.day>0)s.st.cash+=2;                          // Lejla's repair work
+  s.deck=days[s.day].cards.filter(c=>!c.when||c.when(s)).slice(0,6).map(c=>c.id);
+  s.idx=0; s.stage='brief'; s.result=null;
+  s.morning=null; s.morning=JSON.stringify(s);      // snapshot for "Replay this morning"
+}
+const cardById=id=>{for(const d of days)for(const c of d.cards)if(c.id===id)return c;};
+const currentCard=s=>cardById(s.deck[s.idx]);
+
+// What an option costs / gives, with chance outcomes listed separately (never hidden).
+function optionView(o,s){
+  const fx=val(o.fx,s)||{}; return {label:val(o.label,s),fx,chance:o.chance||null};
+}
+function allowed(o,s){const {fx}=optionView(o,s);return !deficits(o,s).length;}
+function deficits(o,s){
+  const {fx}=optionView(o,s),out=[];
+  if(fx.water<0&&-fx.water>free(s))out.push(`Needs ${-fx.water} free water; ${free(s)} free.`);
+  if(fx.cash<0&&-fx.cash>s.st.cash)out.push(`Needs ${-fx.cash} credits; you have ${s.st.cash}.`);
+  if(fx.errands<0&&-fx.errands>s.st.errands)out.push(`Needs ${-fx.errands} errand${-fx.errands>1?'s':''}; ${s.st.errands} left today.`);
+  return out;
+}
+const FALLBACK={label:'Make do.',fx:{spirits:-2},resp:'You find another way. It is not a better way, but it is a way.'};
+
+// Apply one choice atomically: costs, capped gains, flags, promises, log, save.
+function choose(s,c,o){
+  const {label,fx}=optionView(o,s); let total={...fx};
+  if(o.chance&&s.rolls[o.chance.key])for(const[k,v]of Object.entries(o.chance.win))total[k]=(total[k]||0)+v;
+  const actual=applyFx(s,total);
+  const extra=val(o.extra,s)||{};
+  for(const[k,v]of Object.entries(extra)){
+    if(k==='$promise'){if(!s.promises[v])s.promises[v]={state:'open',madeDay:s.day};}
+    else if(k==='$keep'){if(isOpen(s,v))s.promises[v].state='kept';}
+    else if(k==='$break'){if(isOpen(s,v)){s.promises[v].state='broken';}}
+    else if(typeof v==='number')s.flags[k]=(s.flags[k]||0)+v;
+    else s.flags[k]=v;
+  }
+  if(extra.evidence)s.st.evidence=s.flags.evidence;
+  s.log.push({day:s.day,title:c.title,speaker:c.speaker,choice:label,fx:actual});
+  s.result={speaker:c.speaker,choice:label,response:val(o.resp,s),actual};
+  s.stage='after';
+}
+function applyFx(s,fx){
+  const actual={};
+  for(const[k,v]of Object.entries(fx)){
+    if(!v)continue; const before=s.st[k];
+    if(k==='water')s.st.water=clamp(before+v,0,CAP);
+    else if(k==='food'||k==='hygiene'||k==='spirits')s.st[k]=clamp(before+v,0,100);
+    else s.st[k]=Math.max(0,before+v);
+    actual[k]=s.st[k]-before;
+    if(k==='water'&&v>0&&before+v>CAP)actual.overflow=before+v-CAP;
+  }
+  return actual;
+}
+function advance(s){
+  if(s.idx<s.deck.length-1){s.idx++;s.stage='card';return;}
+  nightfall(s);
+}
+// Bedtime: reserve consumed once, needs decay once, strain from low needs, promises due today break.
+function nightfall(s){
+  const before={...s.st}, broke=[];
+  for(const[id,p]of Object.entries(s.promises))if(p.state==='open'&&PROMISES[id].due<=s.day){p.state='broken';broke.push(id);s.st.spirits=clamp(s.st.spirits-8,0,100);}
+  s.st.water=Math.max(0,s.st.water-RESERVE);
+  for(const[k,v]of Object.entries(NIGHT))s.st[k]=clamp(s.st[k]+v,0,100);
+  const low=['food','hygiene','spirits'].filter(k=>s.st[k]<LOW);
+  let strain=low.length;
+  if(!low.length&&['food','hygiene','spirits'].every(k=>s.st[k]>=GOOD)&&s.st.strain>0)strain=-1;
+  s.st.strain=clamp(s.st.strain+strain,0,STRAIN_MAX);
+  s.zeroFood=s.st.food===0?s.zeroFood+1:0;
+  s.summary={before,after:{...s.st},low,strain,broke};
+  s.stage='night';
+}
+function nextMorning(s){
+  if(s.st.strain>=STRAIN_MAX||s.zeroFood>=2){s.stage='support';return;}
+  if(s.day>=6){finish(s,'week');return;}
+  s.day++; startDay(s);
+}
+function afterBrief(s){s.stage=s.st.water<RESERVE?'dawn':'card';}
+function dawn(s,how){
+  if(how==='buy'){s.st.cash-=3;s.st.water=clamp(s.st.water+10,0,CAP);}
+  if(how==='ask'){s.helpAsked++;s.st.water=clamp(s.st.water+8,0,CAP);if(s.helpAsked>1)s.st.spirits=clamp(s.st.spirits-4,0,100);s.flags.askedBuilding=true;}
+  if(how==='leave'){finish(s,'relocated');return;}
+  s.stage='card';
+}
+function support(s,how){
+  if(how==='help'){s.supportUsed++;s.flags.gotSupport=true;s.st.food=clamp(s.st.food+25,0,100);s.st.hygiene=clamp(s.st.hygiene+25,0,100);s.st.spirits=clamp(s.st.spirits+10,0,100);s.st.strain=1;s.zeroFood=0;
+    if(s.day>=6){finish(s,'week');return;} s.day++; startDay(s); return;}
+  finish(s,'relocated');
+}
+function finish(s,kind){s.ending=kind;s.stage='ending';}
+
+// ---------- save ----------
+let saveOK=true;
+function save(s){try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));saveOK=true;}catch(e){saveOK=false;}}
+function load(){try{const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');return s&&s.v===SAVE_V&&s.stage!=='ending'?s:null;}catch(e){return null;}}
+function clearSave(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
+
+// ---------- ui.js ----------
+const COLORS={Samir:'#5f7a69',Lejla:'#a0583a',Iman:'#3f6f8a',Niko:'#c08a1e',Vesna:'#7a5a96',City:'#6f7378'};
+// What each person remembers, read from the week's flags (shown in Family).
+const MEMORIES=[
+  ['Lejla','sharedPlan','You made the water plan together instead of keeping the notebook on your side.'],
+  ['Lejla','bowlFixed','You held the edges of the blue bowl while she patched it.'],
+  ['Lejla','quietTogether','One quiet minute that had nothing to do with pipes.'],
+  ['Iman','shirt','You washed her school shirt the first morning.'],
+  ['Iman','listened','You listened to her whole recording.'],
+  ['Iman','trustedIman','You gave her the kitchen. The beans were excellent.'],
+  ['Iman','privacy','A measured jug, and nobody timing her from the hallway.'],
+  ['Iman','recordingShared','You helped her take the names out before she shared “Shortly”.'],
+  ['Iman','friendVisited','Sara came over. Nobody made the water the subject.'],
+  ['Niko','seaPromise','You promised him a little sea.'],
+  ['Niko','shadowGame','The Minister of Rabbits.'],
+  ['Niko','blameExplained','You told him his birthday isn’t breaking anything.'],
+  ['Niko','birthdaySea','The boats on the blue bowl.'],
+  ['Vesna','helpedVesna','You filled her bottle for tea.'],
+  ['Vesna','fedHelpers','You fed the people carrying water for the older neighbours.'],
+  ['Vesna','crewShown','You walked the crew to the right pipe.'],
+];
+const app=document.getElementById('app'), dlg=document.getElementById('dialog');
+let S=null, lean=null;
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Placeholder portraits: the speaker's colour, dithered, with an initial. Real art replaces these later.
+const portrait=(n,cls='')=>`<span class="portrait px ${cls}" aria-hidden="true" style="background:${COLORS[n]}">${esc(people[n].initial)}</span>`;
+const av=portrait;
+const sign=v=>v>0?`+${v}`:`−${-v}`;
+
+// ---------- pixel icons ----------
+// 10×10 bitmaps: X = the resource colour (or currentColor), o = white highlight. Placeholders until the icon sheet arrives.
+const PIX={
+  water:['....XX....','....XX....','...XXXX...','..XXXXXX..','..XXXXXX..','.XXXXXXXX.','.XoXXXXXX.','.XoXXXXXX.','..XoXXXX..','...XXXX...'],
+  food:['..X..X..X.','...X..X..X','..X..X..X.','..........','XXXXXXXXXX','XoXXXXXXXX','.XoXXXXXX.','.XXXXXXXX.','..XXXXXX..','...XXXX...'],
+  hygiene:['......XX..','.....X..X.','.XX..X..X.','X..X..XX..','X..X......','.XX.......','..XXXXXXX.','.XXoXXXXXX','.XXXXXXXXX','..XXXXXXX.'],
+  spirits:['..........','.XX...XX..','XXXX.XXXX.','XoXXXXXXX.','XoXXXXXXX.','XXXXXXXXX.','.XXXXXXX..','..XXXXX...','...XXX....','....X.....'],
+  cash:['...XXXX...','..XXXXXX..','.XXoooXXX.','.XXoXXXXX.','.XXoXXXXX.','.XXoXXXXX.','.XXoooXXX.','.XXXXXXXX.','..XXXXXX..','...XXXX...'],
+  errands:['..........','...XXXX...','...XXXX...','...XXXX...','...XXXX...','...XXXXX..','...XXXXXX.','..XXXXXXXX','XXXXXXXXXX','XXXXXXXXXX'],
+  strain:['.....XXXX.','....XXXX..','...XXXX...','..XXXX....','.XXXXXXXX.','....XXXX..','...XXXX...','..XXXX....','..XX......','.X........'],
+  file:['..........','XXXX......','XXXXXXXXXX','XXXXXXXXXX','XooooooooX','XoXXXXXooX','XooooooooX','XoXXXXoooX','XooooooooX','XXXXXXXXXX'],
+  lock:['...XXXX...','..X....X..','..X....X..','.XXXXXXXX.','.XXXXXXXX.','.XXXooXXX.','.XXXooXXX.','.XXXXXXXX.','.XXXXXXXX.','..........'],
+  promise:['....X.....','...XXX....','...XXX....','XXXXXXXXX.','.XXXXXXX..','..XXXXX...','..XXXXX...','.XXX.XXX..','.XX...XX..','..........'],
+  warn:['....XX....','...XXXX...','...XooX...','..XXooXX..','..XXooXX..','.XXXooXXX.','.XXXXXXXX.','XXXXooXXXX','XXXXXXXXXX','..........'],
+  radio:['.......X..','......X...','XXXXXXXXXX','XooooXXXXX','XoXXoXoXoX','XooooXXXXX','XoXXoXoXoX','XooooXXXXX','XXXXXXXXXX','.X......X.'],
+  sun:['....X.....','.X..X..X..','..XXXXX...','.XXXXXXX..','XXXXXXXXXX','.XXXXXXX..','..XXXXX...','.X..X..X..','....X.....','..........'],
+  moon:['...XXXX...','..XXX.....','.XXX......','.XXX......','XXXX......','XXXX......','.XXXX.....','.XXXXX..X.','..XXXXXXX.','...XXXXX..'],
+};
+const RCOL={water:'var(--water)',food:'var(--food)',hygiene:'var(--hygiene)',spirits:'var(--spirits)',cash:'var(--cash)',errands:'var(--errands)',strain:'var(--strain)',file:'var(--file)',evidence:'var(--file)',lock:'var(--water-res)',promise:'var(--promise)',warn:'var(--strain)',radio:'var(--file)',sun:'var(--cash)',moon:'var(--errands)'};
+function px(name,size=18,color){
+  const rows=PIX[name]; if(!rows)return '';
+  const fill=color||RCOL[name]||'currentColor'; let r='';
+  rows.forEach((row,y)=>[...row].forEach((ch,x)=>{if(ch==='X')r+=`<rect x="${x}" y="${y}" width="1" height="1"/>`;}));
+  let o='';rows.forEach((row,y)=>[...row].forEach((ch,x)=>{if(ch==='o')o+=`<rect x="${x}" y="${y}" width="1" height="1"/>`;}));
+  return `<svg class="ico" width="${size}" height="${size}" viewBox="0 0 10 10" shape-rendering="crispEdges" aria-hidden="true"><g fill="${fill}">${r}</g><g fill="#fff">${o}</g></svg>`;
+}
+const NAME={water:'water',food:'Food',hygiene:'Hygiene',spirits:'Spirits',cash:'credits',errands:'errands',evidence:'evidence'};
+// One chip per effect: icon + signed number. Gains filled, costs framed; screen readers get words.
+function chip(k,v,cls){const kind=cls||(v<0?'cost':'gain');
+  return `<span class="chip px ${kind}" style="--c:${RCOL[k]}" title="${sign(v)} ${NAME[k]}">${px(k,15,kind==='gain'?'#fff':null)}${sign(v)}<span class="sr">${NAME[k]}</span></span>`;}
+function fxList(fx,chance){
+  const out=[];
+  for(const k of ['water','food','hygiene','spirits','cash','errands']){const v=fx[k];if(v)out.push(chip(k,v));}
+  if(fx.overflow)out.push(`<span class="chip px spill" title="${fx.overflow} water spilled: the tank was full">${px('water',15,'var(--line)')}${fx.overflow} spilled</span>`);
+  if(chance)for(const[k,v]of Object.entries(chance.win))out.push(`<span class="chip chance" style="--c:${RCOL[k]}" title="${sign(v)} ${NAME[k]} if it comes, ${chance.odds}">${px(k,15)}${sign(v)}?<span class="odds">${chance.odds.replace('about even odds','50%')}</span></span>`);
+  return `<span class="chips">${out.length?out.join(''):'<span class="chip px none">No cost</span>'}</span>`;
+}
+const icon={gear:'<svg viewBox="0 0 10 10" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true"><path d="M4 0h2v1h1v1h1v1h1v4H8v1H7v1H6v1H4V9H3V8H2V7H1V3h1V2h1V1h1zM4 3v1H3v2h1v1h2V6h1V4H6V3z"/></svg>',
+  family:'<svg viewBox="0 0 10 10" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true"><path d="M2 1h2v1h1v2H4v1H2V4H1V2h1zM7 2h1v1h1v2H8v1H7V5H6V3h1zM1 6h4v1h1v3H0V7h1zM6 7h3v1h1v2H7V8H6z"/></svg>'};
+
+// ---------- HUD ----------
+function hud(preview){
+  const s=S.st,p=preview||{},f=Math.max(0,s.water-RESERVE),res=Math.min(RESERVE,s.water),pw=p.water||0;
+  const loss=pw<0?Math.min(-pw,f):0, gain=pw>0?Math.min(pw,CAP-s.water):0;
+  // tank: one block per unit, reserve first, then free water; preview blinks the blocks that would go or come
+  let cells='';for(let i=0;i<CAP;i++){let c='';if(i<res)c='r';else if(i<s.water)c=i>=s.water-loss?'lose':'f';else if(i<s.water+gain)c='gain';cells+=`<i class="${c}"></i>`;}
+  const delta=(d,shown)=>d?`<span class="delta ${d>0?'gain':'cost'}">${sign(shown??d)}</span>`:'';
+  const need=k=>{const v=s[k],d=p[k]||0,after=clamp(v+d,0,100),on=Math.ceil(v/10),onA=Math.ceil(after/10);
+    let segs='';for(let i=0;i<10;i++){let c=i<Math.min(on,onA)?'on':'';if(d<0&&i>=onA&&i<on)c='lose';if(d>0&&i>=on&&i<onA)c='gain';segs+=`<i class="${c}"></i>`;}
+    const low=after<LOW;
+    return `<div class="tile need ${k} px dith ${low?'low':''}" role="group" aria-label="${NAME[k]} ${after} of 100${low?', low':''}"><div class="head"><span class="lbl">${px(k,16,low?null:'#fff')}${NAME[k]}</span>${low?'<span class="lowtag">LOW</span>':''}</div>
+      <div class="num big">${after}${delta(d,after-v)}</div><div class="segs">${segs}</div></div>`;};
+  return `<section class="hud" aria-label="Household">
+    <div class="drop"><div class="tile watertile px dith" role="group" aria-label="${f} free water, ${res} reserved for drinking, ${s.water} of ${CAP} in the tank">
+      <div class="head"><span class="lbl">${px('water',16,'#fff')}Water</span><span class="lbl" style="opacity:.9">${s.water} / ${CAP} in the tank</span></div>
+      <div class="row"><span class="num big">${f}<small>free</small>${delta(pw,gain?gain:-loss)}</span><span class="res">${px('lock',14,'var(--water-res)')} ${res} kept for drinking</span></div>
+      <div class="tank">${cells}</div></div></div>
+    <div class="needs drop">${['food','hygiene','spirits'].map(need).join('')}</div>
+    <div class="counters drop">
+      <span class="ctr px" style="--bc:var(--cash);--bw:2px;color:var(--cash)">${px('cash',16)}<span class="n">${s.cash}</span>${delta(p.cash)}<span class="sr">credits</span></span>
+      <span class="ctr px" style="--bc:var(--errands);--bw:2px;color:var(--errands)" title="Errands left today">${px('errands',16)}<span class="pips">${[0,1].map(i=>`<i class="${i<s.errands-(p.errands<0?-p.errands:0)?'on':''}"></i>`).join('')}</span><span class="sr">${s.errands} errands left</span>${delta(p.errands)}</span>
+      <span class="ctr px" style="--bc:var(--strain);--bw:2px;color:var(--strain)" title="Strain: low needs at bedtime add one. At 3 the family needs help.">${px('strain',16)}<span class="pips">${[0,1,2].map(i=>`<i class="${i<s.strain?'on':''}"></i>`).join('')}</span><span class="sr">strain ${s.strain} of 3</span></span>
+      ${s.evidence?`<span class="ctr px" style="--bc:var(--file);--bw:2px;color:var(--file)" title="Complaint file">${px('file',16)}<span class="n">${s.evidence}</span><span class="sr">complaint file entries</span></span>`:''}
+    </div></section>`;
+}
+function topbar(){
+  const open=Object.values(S.promises).filter(p=>p.state==='open').length;
+  return `<header class="top drop"><div class="daytile px"><span class="num">${S.day+1}<span class="muted" style="font-size:15px">/7</span></span><div class="t"><div>${WEEKDAYS[S.day]}</div><small>${esc(days[S.day].title)}</small></div></div>
+    <div class="btns"><button class="iconbtn px" data-act="family" aria-label="Family and promises">${icon.family}<span>Family</span>${open?`<span class="badge" title="Open promises">${open}</span>`:''}</button>
+    <button class="iconbtn px" data-act="pause" aria-label="Pause menu">${icon.gear}</button></div></header>`;
+}
+function shell(inner){app.innerHTML=`<div class="game">${topbar()}<div id="hud">${hud()}</div><main id="scene" tabindex="-1">${inner}</main></div>`;}
+function setPreview(fx){const h=document.getElementById('hud');if(h)h.innerHTML=hud(fx);}
+
+// ---------- screens ----------
+function render(){
+  document.title=S&&S.stage!=='title'?`Day ${S.day+1} · Redukcija`:'Redukcija';
+  if(!S){titleScreen();return;}
+  const st=S.stage;
+  if(st==='brief')return brief();
+  if(st==='dawn')return dawnScreen();
+  if(st==='card')return cardScreen();
+  if(st==='after')return afterScreen();
+  if(st==='night')return nightScreen();
+  if(st==='support')return supportScreen();
+  if(st==='ending')return endingScreen();
+}
+function titleScreen(){
+  const saved=load();
+  app.innerHTML=`<section class="title"><div><span class="eyebrow logo">${px('water',22)} A family story in seven days</span>
+    <h1>Redukcija<span class="sub">until the taps return</span></h1><p class="lead">There is enough water for something.<br>There is never enough for everything.</p>
+    <div class="menu drop">${saved?`<button class="primary px" data-act="continue">Continue · Day ${saved.day+1}</button>`:''}
+      <button class="${saved?'secondary':'primary'} px" data-act="new">${saved?'Start a new week':'Begin Monday'}</button>
+      <button class="secondary px" data-act="rules">How to play</button>
+      <button class="secondary px" data-act="quit">Quit</button></div>
+    <p class="quote">“It doesn’t have to be the whole sea.”<span>Niko, six days before his birthday</span></p></div>
+    <div class="cast">${['Lejla','Iman','Niko','Vesna'].map(n=>`<div class="person">${portrait(n)}<div><strong>${n}</strong> <span class="muted" style="font-size:13px">${esc(people[n].role)}</span><p class="muted">${esc(people[n].bio)}</p></div></div>`).join('')}</div>
+    <span class="ver" title="Build ${GAME_BUILD.n}, committed ${GAME_BUILD.date}">${versionLabel()}</span></section>`;
+}
+const fcRow=(tag,text,ic)=>`<div class="fc px">${ic||''}<span class="tag ${tag}">${tag}</span><span>${text}</span></div>`;
+function brief(){
+  const d=days[S.day],a=S.arrival,rows=[];
+  rows.push(a.promised?fcRow('confirmed',`<b>${chip('water',a.received)}</b> delivered to the building${a.overflow?` · ${a.overflow} more would not fit`:''}`,px('water',18)):fcRow('none','No building delivery this morning.',px('water',18,'var(--line)')));
+  for(const[t,x]of EXPECT[S.day]||[])rows.push(fcRow(t,esc(x),px('sun',18)));
+  if(S.day)rows.push(fcRow('confirmed',`${chip('cash',2)} Lejla’s repair work`,px('cash',18)));
+  rows.push(fcRow('rumoured',esc(d.news),px('radio',18)).replace('>rumoured<','>radio<'));
+  shell(`<section class="scene"><div class="drop"><div class="panel px"><span class="eyebrow">${px('sun',16)} Morning</span><h2>${esc(d.title)}</h2>
+    <div class="days">${['M','T','W','T','F','S','S'].map((x,i)=>`<span class="${i===S.day?'on':i<S.day?'past':''}">${x}</span>`).join('')}</div>
+    <p class="prose">${esc(val(d.intro,S))}</p></div></div>
+    <div class="notice drop">${rows.join('')}</div>
+    <p class="under" style="text-align:left">${px('lock',14)} ${RESERVE} water is kept for drinking every night. You can spend the rest.</p>
+    <div class="actions drop"><button class="primary px" data-act="next">Start the day →</button></div></section>`);
+}
+function speakerHead(n,eyebrow){return `<div class="cardhead">${portrait(n)}<div class="who"><span class="lbl">${eyebrow}</span><strong>${n==='City'?'The city':esc(n)}</strong><span>${esc(people[n].role)}</span></div></div>`;}
+function dawnScreen(){
+  const canBuy=S.st.cash>=3;
+  shell(`<section class="scene"><div class="drop"><div class="card px">${speakerHead('Lejla','Before breakfast')}
+    <h2>First, the essentials.</h2><p class="prose">“There isn’t enough for today’s drinking water.” Lejla sets the empty containers on the table. “We can ask. We don’t have to turn this into a test.”</p></div></div>
+    <div class="choices drop"><button class="choice px" data-dawn="buy" ${canBuy?'':'disabled'}><span class="ct">Buy an emergency container.</span>${fxList({cash:-3,water:10})}${canBuy?'':`<span class="blocked">${px('warn',14)} Needs 3 credits.</span>`}</button>
+    <button class="choice px" data-dawn="ask"><span class="ct">Ask the residents for help.</span>${fxList(S.helpAsked?{water:8,spirits:-4}:{water:8})}</button></div>
+    <div class="actions"><button class="textbutton" data-dawn="leave">Arrange a stay with relatives instead (ends the week)</button></div></section>`);
+}
+function cardScreen(){
+  const c=currentCard(S), os=c.choices.map(o=>({o,v:optionView(o,S),ok:allowed(o,S)}));
+  const any=os.some(x=>x.ok);
+  shell(`${progress()}<div class="cardwrap drop"><article class="card px" id="card" tabindex="0" aria-describedby="hint">
+    <span class="lean l">← ${esc(os[0].v.label)}</span><span class="lean r">${esc(os[1].v.label)} →</span>
+    ${speakerHead(c.speaker,`${esc(c.phase)} · ${S.idx+1} of ${S.deck.length}`)}
+    <h2>${esc(c.title)}</h2><p class="prose">${esc(val(c.text,S))}</p></article></div>
+    <div class="choices drop">${os.map((x,i)=>`<button class="choice px ${i?'r':'l'}" data-choice="${i}" ${x.ok?'':'disabled'}>
+      <span class="ct">${i?`<span>${esc(x.v.label)}</span><span class="arrow">→</span>`:`<span class="arrow">←</span><span>${esc(x.v.label)}</span>`}</span>
+      ${fxList(x.v.fx,x.v.chance)}${x.ok?'':`<span class="blocked">${px('warn',14)} ${esc(deficits(x.o,S).join(' '))}</span>`}</button>`).join('')}</div>
+    ${any?'':`<div class="choices drop" style="grid-template-columns:1fr"><button class="choice px" data-act="fallback"><span class="ct">${FALLBACK.label}</span>${fxList(FALLBACK.fx)}</button></div>`}
+    <p class="under" id="hint">Swipe the card or tap a choice · costs happen now, people remember later</p>`);
+  bindSwipe(os);
+}
+function progress(){return `<div class="progress" aria-label="Decision ${S.idx+1} of ${S.deck.length}">${S.deck.map((_,i)=>`<span class="${i<S.idx?'done':i===S.idx?'now':''}"></span>`).join('')}</div>`;}
+function afterScreen(){
+  const r=S.result,last=S.idx>=S.deck.length-1;
+  shell(`${progress()}<div class="drop"><section class="card px">${speakerHead(r.speaker,`${esc(currentCard(S).phase)} · after the decision`)}
+    <div class="selected">${esc(r.choice)}</div><p class="outcome">${esc(r.response)}</p>${fxList(r.actual)}</section></div>
+    <div class="actions drop"><button class="primary px" data-act="next">${last?'Put the day to bed':'Continue'} →</button></div>
+    <p class="under" style="text-align:left">${saveOK?'Saved on this device.':'Saving is unavailable in this browser. Keep this tab open.'}</p>`);
+}
+const srow=(ic,k,v)=>`<div class="srow px"><span class="k">${ic}${k}</span><span class="v">${v}</span></div>`;
+function nightScreen(){
+  const r=S.summary,b=r.before,a=r.after,tomorrow=S.day<6?supplyFor(S,S.day+1):0;
+  const warn=[];
+  if(r.broke.length)warn.push(...r.broke.map(id=>`Promise broken: ${PROMISES[id].text.toLowerCase()} (${PROMISES[id].who}). −8 Spirits.`));
+  if(r.low.length)warn.push(`${r.low.map(k=>NAME[k]).join(' and ')} ended the day low. +${r.low.length} strain.`);
+  if(r.strain<0)warn.push('Everyone went to bed fed, clean and in decent spirits. −1 strain.');
+  if(a.strain>=STRAIN_MAX)warn.push('The family is under too much strain. Tomorrow starts with asking for help.');
+  else if(a.strain===2)warn.push('One more hard night and the family will need outside help.');
+  if(S.zeroFood===1)warn.push('Food is at zero. A second night like this and the family needs help.');
+  if(S.day<6&&a.water+tomorrow<RESERVE)warn.push('Tomorrow’s drinking reserve is short, even with the delivery.');
+  const ch=(was,now)=>`<span class="was">${was} →</span> ${now}`;
+  shell(`<section class="scene"><div class="drop"><div class="panel px"><span class="eyebrow">${px('moon',16)} Night · the apartment is quiet</span><h2>${S.day===6?'The end of a week.':'What carries into tomorrow.'}</h2>
+    <p class="prose">${esc(nightLine())}</p></div></div>
+    <div class="summary drop">${srow(px('lock',18),'Drinking water used',`−${Math.min(RESERVE,b.water)} · ${a.water} left`)}
+    ${['food','hygiene','spirits'].map(k=>srow(px(k,18),NAME[k],ch(b[k],a[k]<LOW?`<span style="color:var(--strain)">${a[k]}</span>`:a[k]))).join('')}
+    ${srow(px('strain',18),'Strain',`${a.strain} of ${STRAIN_MAX}`)}
+    ${S.day<6?srow(px('water',18),'Tomorrow’s delivery',`<span class="tag ${tomorrow?'confirmed':'none'}">${tomorrow?'confirmed':'none'}</span> ${tomorrow}`):''}</div>
+    ${warn.map(w=>`<p class="warning">${px('warn',16)}<span>${esc(w)}</span></p>`).join('')}
+    <p class="under" style="text-align:left">Every night: ${RESERVE} water for drinking, Food −${-NIGHT.food}, Hygiene −${-NIGHT.hygiene}, Spirits −${-NIGHT.spirits}. A need under ${LOW} adds strain; all three at ${GOOD}+ removes one.</p>
+    <div class="actions drop"><button class="primary px" data-act="next">${S.day===6&&a.strain<STRAIN_MAX?'Read the epilogue':'Tomorrow morning'} →</button></div></section>`);
+}
+function supportScreen(){
+  const can=S.supportUsed<1;
+  shell(`<section class="scene"><div class="drop"><div class="card px">${speakerHead('Lejla','Before breakfast')}
+    <h2>${can?'We need help, and that’s allowed.':'It’s time to go somewhere easier.'}</h2>
+    <p class="prose">${can?'“Nobody is sleeping. Niko asked if we’re being punished.” Lejla has the community centre’s leaflet. “They have a kitchen and showers. Vesna says nobody there asks questions.”':'“I called my sister.” Lejla says it before you can start a list. “A few weeks. The children can take the bus to school. This isn’t giving up. The pipes are not our job.”'}</p></div></div>
+    <div class="choices drop">${can?`<button class="choice px" data-support="help"><span class="ct">Go to the community centre together.</span>${fxList({food:25,hygiene:25,spirits:10})}<span class="blocked" style="color:var(--go-dark)">${px('strain',14)} Strain back to 1</span></button>`:''}
+    <button class="choice px" data-support="leave"><span class="ct">Stay with relatives for a while.</span><span class="chips"><span class="chip px none">Ends the week</span></span></button></div></section>`);
+}
+
+function nightLine(){const f=S.flags;return ['Lejla leaves the bowl under the tap. You leave it there too.','Iman’s recording is still on your phone. Through the wall, someone is boiling a kettle.','Niko’s notebook is open on the sofa. There are now more things on the second list.','The clean cups are upside down on a towel. For once, nobody needs the table for anything.','You find a paper boat in your shoe. Preparations are apparently under way.',f.seaReady?'There is a small sea under a tray on the kitchen counter. Tomorrow, somebody will discover it.':'The lighthouse lamp waits on the table. The boats are lined up beside it.','The candles have burned down to seven small puddles. You leave the paper boats out.'][S.day];}
+function endingText(){
+  const f=S.flags,s=S.st;
+  if(S.ending==='relocated')return {title:'A few weeks somewhere easier.',paras:['You arrange a stay with Lejla’s sister. Lejla packs the sewing tin. Iman checks the chargers. Niko asks whether the boats can come. They can.','Leaving the apartment is a decision about care, too. The broken supply is not something your family was obliged to endure alone.',f.helpedVesna||f.fedHelpers?'Vesna promises to water the plants, then laughs at herself. She will keep the complaint numbers safe.':'Vesna waves from the fourth-floor window until the bus turns the corner.']};
+  const repaired=f.crewShown&&(f.evidence||0)>=2;
+  const p=[ 'On Monday morning, you try the tap. It coughs. This time, nobody mistakes the sound for a promise.',
+    repaired?'The local valve has been repaired. It does not fix the whole network, but your block has a collection point that works. Vesna keeps the complaint numbers. You keep the foreman’s number.':(f.evidence||0)>=1?'The repair is still unfinished, but there is a complaint file now, with dates and photographs. People in the queue recognise each other.':'The repair is still unfinished. There are reference numbers, rumours and people who now recognise each other in the queue.',
+    f.paidFee?(f.refusedFee?'':'The priority receipt is still folded in your wallet. Next week, the clerk’s fee has gone up.'):'You never paid the clerk. Your name is still on the standard list, which is the only list anyone admits exists.',
+    S.promises.sea?.state==='kept'?'Niko’s birthday sea has been packed away. He has crossed it off his list, then written it again for next year. Some things are worth wanting twice.':S.promises.sea?.state==='broken'?'Niko remembers the sea you promised. He is not angry any more. He has added it to the list for when the water comes back, which is a kind of forgiveness.':'Niko’s lighthouse still stands on the windowsill. He turns it on every night, for boats with wheels you can’t see.',
+    S.promises.sara?.state==='kept'||f.friendVisited?'Iman and Sara are making a second recording. This one has music in it.':S.promises.sara?.state==='broken'?'Iman hasn’t mentioned Sara again. You notice, and you put it at the top of next week’s list.':'Iman has a new recording on her phone. She plays it for you without being asked.',
+    f.sharedPlan?'The notebook lives in the middle of the table now. Two handwritings, sometimes three.':'The notebook is still yours. Lejla has started a second one.'].filter(Boolean);
+  const title=s.strain===0?'Together, and mostly all right.':s.strain===1?'Tired, and still together.':'Through the week, just.';
+  return {title,paras:p};
+}
+function endingScreen(){
+  const e=endingText(),pr=Object.entries(S.promises);
+  app.innerHTML=`<section class="scene" style="padding:28px 0 60px;max-width:640px;margin:0 auto;width:100%"><div class="drop"><div class="panel px"><span class="eyebrow">${S.ending==='relocated'?`Day ${S.day+1} · the end of this week`:'Epilogue'}</span><h2>${esc(e.title)}</h2>
+    ${e.paras.map(p=>`<p class="prose" style="margin-top:12px">${esc(p)}</p>`).join('')}
+    ${pr.length?`<h3 class="eyebrow" style="margin-top:22px">Promises</h3>${pr.map(([id,p])=>`<div class="promise"><span>${px('promise',16)} ${esc(PROMISES[id].text)} · ${PROMISES[id].who}</span><span class="st ${p.state}">${p.state}</span></div>`).join('')}`:''}</div></div>
+    <div class="summary drop">${srow(px('water',18),'Water left',S.st.water)}${srow(px('strain',18),'Strain',`${S.st.strain} of ${STRAIN_MAX}`)}${srow(px('file',18),'Complaint file',S.st.evidence)}${srow(px('promise',18),'Decisions',S.log.length)}</div>
+    <div class="actions drop">${S.ending==='relocated'&&S.morning?'<button class="secondary px" data-act="replay">Replay this morning</button>':''}<button class="primary px" data-act="new">A new week</button><button class="secondary px" data-act="history">This week</button><button class="secondary px" data-act="totitle">Title</button></div></section>`;
+}
+
+// ---------- dialogs ----------
+function modal(html){dlg.innerHTML=html;if(!dlg.open)dlg.showModal();}
+function rulesHTML(){return `<header><h2>How to play</h2><button class="close" data-close aria-label="Close">×</button></header>
+  <p>Seven days, six decisions a day. Each card is a situation with two choices. <strong>Swipe the card</strong> left or right, tap a choice, or press <kbd>←</kbd> <kbd>→</kbd>.</p>
+  <p>Every choice shows what it does: ${chip('food',30)} is a gain, ${chip('water',-3)} is a cost, ${`<span class="chip chance" style="--c:var(--water)">${px('water',15)}+10?<span class="odds">50%</span></span>`} might happen.</p>
+  <h3>${px('water',18)} Water</h3><p>The tank holds ${CAP}, one block per unit. Every night ${RESERVE} go to drinking (the pale blocks ${px('lock',14)}), so choices can only spend the white blocks: your free water. Building deliveries are confirmed the night before; tankers and rumours are labelled <em>expected</em>, never promised.</p>
+  <h3>${px('food',18)} ${px('hygiene',18)} ${px('spirits',18)} Needs</h3><p>Food, Hygiene and Spirits run from 0 to 100 (each block is 10). Every night: Food −${-NIGHT.food}, Hygiene −${-NIGHT.hygiene}, Spirits −${-NIGHT.spirits}. A tile turns red under ${LOW}.</p>
+  <h3>${px('strain',18)} Strain</h3><p>Every need under ${LOW} at bedtime adds a strain pip; all three at ${GOOD} or more removes one. At ${STRAIN_MAX} the family needs outside help, once; the next time they move in with relatives.</p>
+  <h3>${px('cash',18)} Credits ${px('errands',18)} Errands</h3><p>Credits buy food and water; Lejla’s repair work brings 2 a day. Queues, paid jobs and civic work use one of your 2 daily errands.</p>
+  <h3>${px('promise',18)} Promises</h3><p>Some choices are promises with a day they’re due. Keep them, or say honestly that you can’t. A promise still open on its day breaks at bedtime (−8 Spirits). Open <strong>Family</strong> to see them, and what everyone remembers.</p>
+  <h3>${px('file',18)} The city</h3><p>The shortage is not your fault. Documenting the leaks builds a complaint file that can get a real repair. Paying the clerk works, today.</p>
+  <h3>Keys</h3><p><kbd>←</kbd>/<kbd>→</kbd> choose · <kbd>Enter</kbd> continue · <kbd>F</kbd> family · <kbd>H</kbd> this week · <kbd>Esc</kbd> or <kbd>P</kbd> pause</p>`;}
+function pauseHTML(){return `<header><h2>Paused</h2><button class="close" data-close aria-label="Close">×</button></header>
+  <div class="menu"><button class="primary px" data-close>Resume</button><button class="secondary px" data-act="rules">How to play</button><button class="secondary px" data-act="history">This week so far</button>
+  ${S.morning?'<button class="secondary px" data-act="replay">Replay this morning</button>':''}<button class="secondary px" data-act="totitle">Save and go to title</button><button class="textbutton" data-act="endrun">End this week (deletes the save)</button></div>
+  <p class="muted" style="margin-top:16px;font-size:13px">${versionLabel()} · week ${S.seed%1000}</p>`;}
+function familyHTML(){
+  const pr=Object.entries(S.promises);
+  return `<header><h2>Family</h2><button class="close" data-close aria-label="Close">×</button></header>
+  ${pr.length?`<h3>${px('promise',18)} Promises</h3>${pr.map(([id,p])=>`<div class="promise"><span>${esc(PROMISES[id].text)} · ${PROMISES[id].who}${p.state==='open'?` · due ${WEEKDAYS[PROMISES[id].due]}`:''}</span><span class="st ${p.state}">${p.state}</span></div>`).join('')}`:''}
+  ${['Samir','Lejla','Iman','Niko','Vesna'].map(n=>{const m=MEMORIES.filter(([w,f])=>w===n&&S.flags[f]).map(x=>x[2]);
+    return `<div class="person">${portrait(n)}<div><strong>${n==='Samir'?'Samir (you)':n}</strong> <span class="muted" style="font-size:13px">${esc(people[n].role)}</span><p class="muted">${esc(people[n].bio)}</p>${m.map(x=>`<p class="mem">${px('spirits',14)}<span>${esc(x)}</span></p>`).join('')}</div></div>`;}).join('')}`;
+}
+function historyHTML(){
+  return `<header><h2>This week</h2><button class="close" data-close aria-label="Close">×</button></header>${S.log.length?S.log.slice().reverse().map(e=>`<div class="entry"><span class="eyebrow">${WEEKDAYS[e.day]} · ${e.speaker==='City'?'The city':esc(e.speaker)}</span><h3>${esc(e.title)}</h3><p>${esc(e.choice)}</p>${fxList(e.fx)}</div>`).join(''):'<p class="muted">No decisions yet.</p>'}`;
+}
+
+// ---------- swipe ----------
+function bindSwipe(os){
+  const el=document.getElementById('card'); if(!el)return;
+  let x0=null,dx=0,id=null; lean=null;
+  const setLean=l=>{if(l===lean)return;lean=l;el.dataset.lean=l??'';document.querySelectorAll('.choice[data-choice]').forEach((b,i)=>b.classList.toggle('hot',i===l));setPreview(l==null?null:os[l].v.fx);};
+  el.addEventListener('pointerdown',e=>{if(e.button>0)return;x0=e.clientX;dx=0;id=e.pointerId;el.setPointerCapture(id);el.classList.add('dragging');});
+  el.addEventListener('pointermove',e=>{if(x0==null||e.pointerId!==id)return;dx=e.clientX-x0;el.style.transform=`translateX(${dx}px) rotate(${dx/22}deg)`;setLean(dx<-30?0:dx>30?1:null);});
+  const up=e=>{if(x0==null)return;el.classList.remove('dragging');const l=dx<-100?0:dx>100?1:null;x0=null;
+    if(l!=null&&os[l].ok){el.style.transform=`translateX(${dx<0?-600:600}px) rotate(${dx/10}deg)`;el.style.opacity='0';setTimeout(()=>pick(l),180);}
+    else{el.style.transform='';setLean(null);}};
+  el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+  document.querySelectorAll('.choice[data-choice]').forEach((b,i)=>{
+    b.addEventListener('mouseenter',()=>setLean(i));b.addEventListener('focus',()=>setLean(i));
+    b.addEventListener('mouseleave',()=>setLean(null));b.addEventListener('blur',()=>setLean(null));});
+}
+function pick(i){const c=currentCard(S),o=c.choices[i];if(!o||!allowed(o,S))return;choose(S,c,o);commit();}
+
+// ---------- input ----------
+function commit(focus=true){if(S&&S.stage!=='ending')save(S);if(S&&S.stage==='ending')clearSave();render();if(focus)document.getElementById('scene')?.focus({preventScroll:true});scrollTo(0,0);}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,[data-close]');if(!t)return;
+  if(t.hasAttribute('data-close')){dlg.close();return;}
+  if(t.dataset.choice!=null){pick(+t.dataset.choice);return;}
+  if(t.dataset.dawn){dawn(S,t.dataset.dawn);commit();return;}
+  if(t.dataset.support){support(S,t.dataset.support);commit();return;}
+  const a=t.dataset.act;if(!a)return;
+  ({continue(){S=load();if(S)commit();},
+    new(){dlg.open&&dlg.close();S=newRun();startDay(S);commit();},
+    rules(){modal(rulesHTML());},
+    quit(){app.innerHTML=`<section class="title"><div><h1 style="font-size:44px">See you tomorrow.</h1><p class="lead">Your week is saved on this device. You can close this tab.</p><div class="menu"><button class="secondary" data-act="totitle">Back to the title</button></div></div></section>`;},
+    next(){if(S.stage==='brief')afterBrief(S);else if(S.stage==='after')advance(S);else if(S.stage==='night')nextMorning(S);commit();},
+    fallback(){const c=currentCard(S);choose(S,c,FALLBACK);commit();},
+    pause(){modal(pauseHTML());},family(){modal(familyHTML());},history(){modal(historyHTML());},
+    replay(){dlg.open&&dlg.close();const m=JSON.parse(S.morning);m.morning=S.morning;S=m;commit();},
+    totitle(){dlg.open&&dlg.close();if(S&&S.stage!=='ending')save(S);S=null;render();},
+    endrun(){dlg.close();clearSave();S=null;render();}}[a]||(()=>{}))();
+});
+document.addEventListener('keydown',e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  const k=e.key;
+  if(dlg.open){return;}                    // Esc closes the dialog natively
+  if(!S||S.stage==='ending')return;
+  if(k==='Escape'||k==='p'||k==='P'){modal(pauseHTML());e.preventDefault();return;}
+  if(k==='f'||k==='F'){modal(familyHTML());return;}
+  if(k==='h'||k==='H'){modal(historyHTML());return;}
+  if(S.stage==='card'){if(k==='ArrowLeft'||k==='1'){pick(0);e.preventDefault();}if(k==='ArrowRight'||k==='2'){pick(1);e.preventDefault();}return;}
+  if((k==='Enter'||k===' ')&&document.querySelector('[data-act="next"]')&&!e.target.closest?.('button')){document.querySelector('[data-act="next"]').click();e.preventDefault();}
+});
+render();
+
+})();
+</script></body></html>
