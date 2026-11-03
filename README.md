@@ -1,13 +1,27 @@
 # Fali Ti Jedan Papir — playable prototype
 
 A bureaucratic roguelike deck-builder about paperwork, patience and "you're missing one paper".
-Web prototype (v24): phone portrait plus a landscape layout for desktop and handheld screens (designed at 1100×690, scales up). Open `index.html` in any browser; on a phone, Share → Add to Home Screen plays it full-screen.
+Web prototype (v30): phone portrait plus a landscape layout for desktop and handheld screens (designed at 1100×690, scales up). Open `index.html` in any browser; on a phone, Share → Add to Home Screen plays it full-screen.
 
-**Version:** the bottom-right of the title screen shows `v24 · build N`. N is the commit number, stamped into `index.html` automatically by `.githooks/pre-commit` on every commit (run `git config core.hooksPath .githooks` once per clone to turn it on). Compare it with the commit count on GitHub to see whether the live page is the latest. Bump `GAME_VERSION` by hand for a new prototype version.
+**Version:** the bottom-right of the title screen shows `v24 · build N`. N is the commit number, stamped into `js/version.js` automatically by `.githooks/pre-commit` on every commit (run `git config core.hooksPath .githooks` once per clone to turn it on). Compare it with the commit count on GitHub to see whether the live page is the latest. Bump `GAME_VERSION` (in `js/version.js`) by hand for a new prototype version.
 
 **Changes and releases:** every version is listed in `CHANGELOG.md` (newest first) and tagged in git (`v24`, `v22`, …), so `git checkout v22` gets that build back. The release steps are at the bottom of the changelog.
 
-**Feedback:** pause menu → Send feedback posts a row (type, message, optional name, version, office, device) to a Google Sheet. Setup steps are at the top of `feedback-apps-script.gs`; paste the deployed web app URL into `FEEDBACK_URL` in `index.html`.
+## Where things live (v30)
+
+The game is a plain web page split into small files, so it still opens straight from disk (double-click `index.html`) and can be hosted anywhere as is. No build step.
+
+| Folder | What's in it | Edit it when you want to… |
+| --- | --- | --- |
+| `data/` | Game content: `cards.js` (documents, action cards, play styles, reward pool), `chapters.js` (the three chapters and their offices), `bosses.js`, `characters.js`, `reforms.js` (difficulty levels), `moods.js`, `places.js` (errands, strange papers), `trinkets.js` (Vitrina, pocket items), `map-nodes.js` (map stops, events), `story.js` (clerk gossip), `art.js` (which picture each thing uses) | add or tune a card, office, mood, character |
+| `js/` | Game code: `run.js` (the office loop), `campaign.js` (chapters, bosses, characters, Favours/Traces), `forms.js`, `map.js`, `citymap.js`, `ui.js` (screens), `input.js`, `render.js`, `puppets.js`, `tutorial.js`, `i18n.js`, `localize.js`, `version.js` | change how something works |
+| `css/game.css` | All styling | change the look |
+| `art/` | Every picture (cards `doc_*`/`act_*`, offices `office_*`/`ext_*`, clerk puppets in `art/pup/`) | swap in new art (keep the file name, or point `data/art.js` at the new one) |
+| `i18n/` | `*.json` translation tables (edit these), `*.js` (made from them: run `python3 i18n/bake.py`) | fix a translation |
+
+Placeholder offices (Health Centre, Grammar School, University Admissions, and all of Old age) borrow an existing clerk and backdrop through `look:` in `data/chapters.js`. When their own art exists, add `office_<Name>`, `ext_<Name>` and a puppet under that name and remove `look`.
+
+**Feedback:** pause menu → Send feedback posts a row (type, message, optional name, version, office, device) to a Google Sheet. Setup steps are at the top of `feedback-apps-script.gs`; paste the deployed web app URL into `FEEDBACK_URL` in `js/menus.js`.
 
 **v24** (includes v23): the route map is one scrolling city drawn like a phone street map, each route a destination plus possible trouble on the way, balanced so no route is clearly better, with a tram shortcut; the Vitrina is a glass cabinet you pack your bag from; new card layout and a straight ±5° hand from Figma. Details in `CHANGELOG.md`; art brief in `ASSETS-map.md`.
 

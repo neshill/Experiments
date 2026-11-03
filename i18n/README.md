@@ -11,4 +11,4 @@ In a translation:
 - Keep HTML tags like `<b>…</b>` and `<br>`.
 
 To fix a line: edit the JSON, run `python3 i18n/check_tr.py bs` (any language code) to check it, then
-`python3 i18n/bake.py` to copy all tables into `index.html`. A sentence missing from a table simply shows in English.
+`python3 i18n/bake.py` to turn the tables into `i18n/*.js`, which the game loads. A sentence missing from a table simply shows in English.

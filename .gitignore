@@ -6,3 +6,6 @@ Claude outputs/
 
 # ...except the home-screen icon, which the game needs next to index.html
 !apple-touch-icon.png
+
+# Game art (v30: pictures live in art/ instead of inside index.html)
+!art/**/*.png
