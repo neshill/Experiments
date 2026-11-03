@@ -486,7 +486,9 @@ function goErrand(){
   closeDay();if(S.screen==='end')return;
   const strange=STRANGE.includes(e.doc),c=mkDoc(e.doc,e.form,moodOn('wetink')?{issued:S.day-1}:{});
   S.stats.detours++;if(strange)S.bag.push(c.uid);else{addToDeck(c);o.hand.push(c.uid)}S.screen='office';
-  S.overlays.push({head:e.place,stamp:L`Obtained`,violet:true,text:e.text+' '+L`By the time you're back, the window is closed. You return the next morning (day ${S.day}). −${S.lastClose} patience, and all your papers are a day older.`+' '+(strange?L`${e.get} is in your bag: hand it over from the form.`:L`${e.get} is in your hand.`)});
+  S.errandAsk=false;
+  S.overlays.push({head:e.place,kicker:L`Errand`+' · '+L`back on day ${S.day}`,stamp:L`Obtained`,violet:true,icon:artHTML({kind:'doc',doc:e.doc,form:e.form}),kind:'paper',text:e.text,
+    chips:[{c:'card',t:'+ '+e.get+' · '+(strange?L`in your bag`:L`in your hand`)},{c:'down',i:'heart',t:'−'+S.lastClose+' '+L`patience (closing time)`},{c:'down',t:L`Your papers are a day older`}]});
   o.intent=rollIntent();startTurn();
 }
 function backToWindow(){const o=S.office,d=cur();o.intent=rollIntent();startTurn();S.screen='office';S.log=L`Next morning, back at ${d.window}. ${clerkName(d)} does not remember you.`}

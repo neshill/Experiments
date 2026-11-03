@@ -34,6 +34,7 @@ document.addEventListener('click',e=>{
   if(S.paused){if(!['resume','pauseMenu','pauseRules','pauseFeedback','fbType','fbSend','music','endRun','endRunYes','pauseCards','pauseOptions','lang'].includes(a))return}
   else{if(S.overlays.length&&a!=='dismiss')return;
   if(S.pocketAsk!=null&&!S.overlays.length&&a!=='pocketUse'&&a!=='pocketNo')return;
+  if(S.errandAsk&&!S.overlays.length&&a!=='errandGo'&&a!=='stay')return;
   if(S.view&&a!=='view')return;}
   if(S.tut&&!tutAllow(a,b)){render();return}
   if(S.redrawing&&!['card','redraw','redrawCancel','dismiss','view','pause','resume','pauseMenu'].includes(a))S.redrawing=null;
@@ -53,7 +54,7 @@ document.addEventListener('click',e=>{
     case 'mapSel':mapSelect(+b.dataset.leg,b.dataset.id==='office'?'office':+b.dataset.id);break;
     case 'mapUnsel':S.mapSel=null;break;
     case 'mapGo':mapGo();break;
-    case 'eventPick':eventPick(b.dataset.k);break;
+    case 'eventPick':{const s=snapRun();eventPick(b.dataset.k);tagStop(s,'event');break}
     case 'reissueAt':{if(uid){C(uid).issued=S.day;S.counterLeft--}if(!uid||S.counterLeft<=0)nodeDone();break}
     case 'counterDone':nodeDone();break;
     case 'pocketAsk':S.pocketAsk=+b.dataset.i;break;
@@ -92,9 +93,9 @@ document.addEventListener('click',e=>{
     case 'redrawCancel':cancelSwap();break;
     case 'fromBag':fromBag(+b.dataset.i);break;
     case 'pay':payAtBank(+b.dataset.i);break;
-    case 'fetch':S.pending=+b.dataset.i;S.target=null;S.confirm=null;S.screen='errand';break;
-    case 'errandGo':goErrand();break;
-    case 'stay':S.screen='office';break;
+    case 'fetch':S.pending=+b.dataset.i;S.target=null;S.confirm=null;S.errandAsk=true;break;
+    case 'errandGo':S.errandAsk=false;goErrand();break;
+    case 'stay':S.errandAsk=false;S.screen='office';break;
     case 'back':backToWindow();break;
     case 'reward':pickReward(uid||null);break;
     case 'relic':S.relics.push(b.dataset.k);nodeDone();break;
@@ -174,7 +175,7 @@ if(typeof document.createElement==='function'){
     ptr=e.pointerType||'mouse';
     if(ptr!=='mouse'||g||e.buttons)return;
     const over=e.target.closest&&e.target.closest('.lane.fan .card[data-uid]');
-    if(!over||S.overlays.length||S.view||S.paused){if(hv)hoverOff();return}
+    if(!over||S.overlays.length||S.view||S.paused||S.errandAsk){if(hv)hoverOff();return}
     const el=cardAt(e.clientX,e.clientY,hv&&hv.isConnected?hv:null)||over;
     if(el===hv)return;
     if(hv&&hv.isConnected)hv.classList.remove('peek');
@@ -249,6 +250,7 @@ if(typeof document.createElement==='function'){
     if(S.paused){if(k==='Escape'||k==='p'||k==='P'){e.preventDefault();S.paused=S.paused==='menu'?null:'menu';render()}return}
     if(S.overlays.length){if(k==='Enter'||k===' '||k==='Escape'){e.preventDefault();S.overlays.shift();render()}return}
     if(S.pocketAsk!=null){if(k==='Escape'){S.pocketAsk=null;render()}return}
+    if(S.errandAsk){if(k==='Escape'){S.errandAsk=false;render()}return}
     if((k==='p'||k==='P')&&inRun){S.paused='menu';render();return}
     if(k==='Escape'){if(S.view)S.view=null;else if(S.target||S.confirm){S.target=null;S.confirm=null}else if(S.redrawing)S.redrawing=null;else if(S.keeping&&!S.tut)S.keeping=null;else if(inRun)S.paused='menu';else if(S.screen==='rules'||S.screen==='options')S.screen='intro';else return;render();return}
     if(k==='m'||k==='M'||k==='c'||k==='C'){const v=/m/i.test(k)?'map':'deck';if(['intro','rules','closed','options','tutdone'].includes(S.screen)||S.tut&&v==='map')return;S.view=S.view===v?null:v;render();return}

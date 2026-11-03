@@ -2,6 +2,11 @@
 
 Newest first. Each version is a git tag (`v24`, `v22`, …) on the last commit of that version, so `git checkout v22` gives you that build exactly. The build number is the commit count, shown on the title screen as `v24 · build N`. Full design notes for every version live in the game design doc's change log.
 
+## v32 — 2026-11-03
+- Stops on the map now show their result as a pop-up that slides up over the map: the stop's picture, what happened, and chips for exactly what changed (patience, Favours, cards, pocket, bag, connections, Vitrina unlocks, next-window hand size).
+- "Go get it" is a pop-up over the window instead of its own screen: the paper's picture, "You get" next to "It costs", and a warning when the closing-time patience would end the run. Coming back shows the same kind of pop-up.
+- Map screen decluttered: one-line header, everything you carry (Vitrina, pocket, bag, today's mood) in one row of small chips, legend moved onto the map, the how-it-works line moved into the hint card, and the city takes the rest of the screen.
+
 ## v31 — 2026-11-03
 Making it a bit easier and clearer after a playtest.
 - **No more time per turn.** Play as many cards as your hand allows; the turns of the day are the only clock (the lights around End turn, the clock on the HUD). Everything that used to give or take time now changes how many cards you draw up to: coffee break, "system down", the kafana and the renovation take a card, the café and Friday give one; the Strict-about-the-queue mood draws 1 less on the first turn; the Bank's system migration draws 1 less for 2 turns. Lunch break now means you can't hand in papers that turn (actions still work). Take a Number keeps the window open 1 more turn today; Friend on the inside does too; Neighbour who is a notary makes notarized copies never too old.

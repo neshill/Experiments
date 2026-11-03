@@ -45,8 +45,28 @@ function mapGo(){const s=S.mapSel,L=curLeg();S.mapSel=null;
   if(S.screen!=='map'||!s||!L||s.leg!==S.officeIdx-1||!mapNext().includes(s.id))return;
   if(s.id==='office')return mapOffice();
   const n=L.nodes[s.id];L.at=s.id;L.trail.push(s.id);newDay();
-  if(n.hz){resolveNode(n.hz);if(S.screen==='end')return}
-  resolveNode(n.k)}
+  const n0=S.overlays.length;
+  if(n.hz){visitStop(n.hz);if(S.screen==='end')return}
+  visitStop(n.k);if(S.overlays[n0])S.overlays[n0].drive=true}
+// v32: a stop's result is a pop-up over the map. What it changed is worked out from before/after,
+// so every stop (and every event choice) shows the same chips: patience, Favours, cards, pocket, bag...
+function visitStop(k){const a=snapRun();resolveNode(k);tagStop(a,k)}
+function snapRun(){return {p:S.patience,f:S.favours||0,deck:S.deck.slice(),bag:S.bag.slice(),pocket:S.pocket.slice(),relics:S.relics.slice(),tired:S.tired||0,un:META.unlocked.slice(),day:S.day,n:S.overlays.length}}
+function cardLabel(c){return c.kind==='doc'?docName(c.doc,c.form):ACTIONS[c.key].name}
+function gainChips(a){const ch=[],dp=S.patience-a.p,df=(S.favours||0)-a.f,cnt=(arr,f)=>{const m=new Map();arr.forEach(x=>{const t=f(x);m.set(t,(m.get(t)||0)+1)});return [...m]};
+  if(dp)ch.push({c:dp>0?'up':'down',i:'heart',t:(dp>0?'+':'−')+Math.abs(dp)+' '+L`patience`});
+  if(df)ch.push({c:df>0?'up':'down',t:(df>0?'+':'−')+Math.abs(df)+' '+L`Favour`});
+  cnt(S.deck.filter(u=>!a.deck.includes(u)),u=>cardLabel(C(u))).forEach(([t,n])=>ch.push({c:'card',t:'+ '+t+(n>1?' ×'+n:'')}));
+  S.bag.filter(u=>!a.bag.includes(u)).forEach(u=>ch.push({c:'card',t:L`In your bag`+': '+cardLabel(C(u))}));
+  S.pocket.slice(a.pocket.length).forEach(k=>ch.push({c:'up',t:L`Pocket`+': '+POCKET[k].name}));
+  S.relics.filter(r=>!a.relics.includes(r)).forEach(r=>ch.push({c:'rare',t:L`Connection`+': '+RELICS[r].name}));
+  META.unlocked.filter(t=>!a.un.includes(t)).forEach(t=>ch.push({c:'rare',t:L`For the Vitrina`+': '+TRINKETS[t].name}));
+  const dt=(S.tired||0)-a.tired;if(dt)ch.push({c:S.tired>0?'down':'up',t:S.tired>0?L`1 card less at the next window`:L`1 card more at the next window`});
+  if(S.day>a.day+0)ch.push({c:'down',t:L`Day ${S.day}`});
+  return ch}
+function tagStop(a,k){const ov=S.overlays[a.n];if(!ov)return;const nd=NODES[k];
+  Object.assign(ov,{stop:true,icon:nodeIcon(k),kind:nd?nd.kind:'event',kicker:nd&&nd.kind==='bad'?L`On the way`+' · '+L`Day ${S.day}`:L`Day ${S.day}`,chips:gainChips(a)});
+  for(let i=a.n+1;i<S.overlays.length;i++)S.overlays[i].stop=true}
 function mapOffice(){const L=curLeg();if(!L||!mapNext().includes('office'))return;L.arrived=true;S.mapSel=null;newDay();enterOffice()}
 // One line about what a stop would do for you right now, so the choice is an informed one.
 function forYouNow(k){

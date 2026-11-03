@@ -117,7 +117,8 @@ function centerCity(smooth){const w=$app.querySelector('.citywrap'),y=w&&w.query
 // The card under the map: what you'd get, what happens on the way, what it means for you now, and Go.
 function mapCard(){
   const s=S.mapSel,nx=mapNext();
-  if(!s)return `<div class="mapcard hint"><span class="pulse-dot"></span>${nx.length===1&&nx[0]==='office'?L`The office is open. Tap it to go in.`:L`Tap a stop to compare. Each route has something for you, and some have trouble on the way.`}</div>`;
+  if(!s){const L0=curLeg(),one=nx.length===1&&nx[0]==='office';
+    return `<div class="mapcard hint"><span class="pulse-dot"></span><span class="mh-t">${one?L`The office is open. Tap it to go in.`:L`Tap a stop to compare. Each route has something for you, and some have trouble on the way.`}<small>${one?L`One more day and you are at the window.`:L`Each stop takes a day, and so does the walk to the office.`+(L0&&L0.tram?' '+L`The tram skips the stop and saves a day.`:'')}</small></span></div>`}
   const Lg=S.map[s.leg],ok=s.leg===S.officeIdx-1&&nx.includes(s.id);
   const back=`<button class="btn quiet" data-act="mapUnsel">${ok?L`Back`:L`OK`}</button>`;
   if(s.id==='office'){const o=OFFICES[s.leg+1],tram=Lg.at<0;
@@ -130,6 +131,26 @@ function mapCard(){
     <ul class="mc-l"><li class="get"><b>${L`Get`}</b>${esc(nd.text)}</li>${hz?`<li class="haz"><b>${L`On the way`}</b>${esc(hz.name)}: ${esc(hz.text)}</li>`:`<li class="ok"><b>${L`On the way`}</b>${L`Nothing. A quiet street.`}</li>`}<li class="you"><b>${L`For you`}</b>${esc(forYouNow(n.k))}</li></ul>${where}</div>
     <div class="mc-b">${ok?`<button class="btn primary" data-act="mapGo">${L`Go here`}</button>`:''}${back}</div></div>`;
 }
+// v32: everything you carry, as one row of small chips above the map (tap a keepsake: the map panel; a pocket item: use it).
+function kitRow(){const d=OFFICES[S.officeIdx],out=[];
+  (S.trinkets||[]).forEach(k=>out.push(`<button class="kchip vit" data-act="view" data-v="map" title="${esc(TRINKETS[k].name+': '+TRINKETS[k].text)}"><span class="ki">${trkIcon(k)}</span><span class="kt"><small>${L`Vitrina`}</small><b>${esc(TRINKETS[k].name)}</b></span></button>`));
+  S.pocket.forEach((k,i)=>out.push(`<button class="kchip pkt" data-act="pocketAsk" data-i="${i}" title="${esc(POCKET[k].text)}"><span class="ki">${pktIcon(k)}</span><span class="kt"><small>${L`Pocket`}</small><b>${esc(POCKET[k].name)}</b></span></button>`));
+  bagDocs().forEach(c=>out.push(`<span class="kchip bag"><span class="kt"><small>${L`In your bag`}</small><b>${esc(DOCS[c.doc].name)}</b></span></span>`));
+  if(d&&S.moods){moodsKnown(S.officeIdx).forEach(k=>out.push(LG(d,()=>`<span class="kchip mood ${MOODS[k].good?'good':''}" title="${esc(L(MOODS[k].text))}"><span class="kt"><small>${esc(clerkName(d))} · ${MOODS[k].good?L`Good mood`:L`Today's mood`}</small><b>${esc(L(MOODS[k].title))}</b><i>${esc(L(MOODS[k].text))}</i></span></span>`)));
+    if(moodHidden(S.officeIdx))out.push(`<span class="kchip mood unknown"><span class="kt"><small>${esc(clerkName(d))} · ${L`Today's mood`}</small><b>?</b><i>${L`One more you'll only see at the window.`}</i></span></span>`)}
+  return out.length?`<div class="kitrow">${out.join('')}</div>`:''}
+// "Go get it": a pop-up over the window. What you get on one side, what it costs on the other.
+function errandAskHTML(){if(!S.errandAsk||S.screen!=='office'||!S.office)return '';const r=S.office.rows[S.pending];if(!r||r.done)return '';
+  const e=errandFor(r),strange=STRANGE.includes(e.doc),cost=closeCost(),fatal=cost>=S.patience;
+  return `<div class="panel ask errask" role="dialog" aria-modal="true" aria-label="${L`Go get: ${esc(e.get)}`}"><div class="panel-in">
+    <span class="kicker">${L`Leave the window`}</span>
+    <div class="ea-top"><span class="ea-art">${artHTML({kind:'doc',doc:e.doc,form:e.form})}</span><div class="ea-tt"><h2>${L`Go get it?`}</h2><b>${esc(e.get)}</b><span>${esc(e.place)}</span></div></div>
+    <div class="ea-trade">
+      <div class="ea-col ea-get"><span class="kicker">${L`You get`}</span><span class="gchip g-card">+ ${esc(e.get)}</span><small>${strange?L`It waits in your bag: hand it over from the form.`:L`In your hand tomorrow morning, along with the cards you hold now. Yours for good.`}</small></div>
+      <div class="ea-col ea-cost"><span class="kicker">${L`It costs`}</span><span class="gchip g-down">${L`The rest of today`}</span><span class="gchip g-down">${ICON.heart}−${cost} ${L`patience (closing time)`}</span><span class="gchip g-down">${L`Your papers are a day older`}</span></div>
+    </div>
+    ${fatal?`<p class="ea-warn">${L`That's all the patience you have left. Going now ends the run.`}</p>`:''}
+    <div class="pm-btns"><button class="btn primary" data-act="errandGo">${L`Go (back tomorrow)`}</button><button class="btn" data-act="stay">${L`Stay in line`}</button></div></div></div>`}
 // What you took from the Vitrina, shown on the map screen (tap: the map panel lists it in full).
 function bagRow(){const b=bagDocs();return b.length?`<div class="vitrow bagrow"><span class="kicker">${L`Strange papers in your bag`}</span>${b.map(c=>`<span class="vitchip"><b>${esc(DOCS[c.doc].name)}</b></span>`).join('')}</div>`:''}
 function moodRow(){const d=OFFICES[S.officeIdx];if(!d||!S.moods)return '';const ks=moodsKnown(S.officeIdx),hid=moodHidden(S.officeIdx);
@@ -141,6 +162,12 @@ function askHTML(){const i=S.pocketAsk;if(i==null||!S.pocket[i])return '';const 
     <div class="pm-btns">${ok?`<button class="btn primary" data-act="pocketUse">${L`Use it`}</button>`:''}<button class="btn" data-act="pocketNo">${ok?L`Not now`:L`OK`}</button></div></div></div>`}
 function overlay(){
   const ov=S.overlays[0];if(!ov)return '';
+  // v32: a receipt-style pop-up (stops on the map, errands): picture, what happened, chips for what changed.
+  // On the map it slides up from the bottom so the city stays in view.
+  if(ov.icon||ov.chips){const sheet=ov.stop&&S.screen==='map',chips=(ov.chips||[]).map(c=>`<span class="gchip g-${c.c}">${c.i==='heart'?ICON.heart:''}${esc(c.t)}</span>`).join('');
+    return `<button class="overlay rcpt ${sheet?'sheetov':''} ${ov.drive?'drive':''}" data-act="dismiss" aria-label="${L`Dismiss`}"><div class="ov-box ${esc(ov.kind||'')}">
+      <div class="rc-top">${ov.icon?`<span class="rc-ic">${ov.icon}</span>`:''}<div class="rc-tt">${ov.kicker?`<span class="kicker">${esc(ov.kicker)}</span>`:''}<b>${esc(ov.head||'')}</b></div>${ov.stamp&&!(ov.stop&&chips)?`<span class="rc-stamp ${ov.kind==='bad'?'red':''}">${esc(ov.stamp)}</span>`:''}</div>
+      <p>${esc(ov.text)}</p>${chips?`<div class="rc-chips">${chips}</div>`:''}<small>${L`Tap to continue`}</small></div></button>`}
   const face=ov.head&&ov.clerk&&S.office?(S.tut?`<span class="ovface pupface" aria-hidden="true">${PUPPY_HEAD}</span>`:`<canvas class="ovface" data-office="${esc(lookOf(cur()))}" width="168" height="186" aria-hidden="true"></canvas>`):'';
   return `<button class="overlay" data-act="dismiss" aria-label="${L`Dismiss`}"><div class="ov-box">
     ${ov.head?`<div class="ov-top">${face}<div class="ov-head">${esc(ov.head)}</div></div>`:''}<div class="ov-stamp ${ov.violet?'violet':''}">${esc(ov.stamp)}</div><p>${esc(ov.text)}</p>${ov.hint?`<p><b>${esc(ov.hint)}</b></p>`:''}<small>${L`Tap to continue`}</small></div></button>`;

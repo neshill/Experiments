@@ -343,10 +343,11 @@ function screen(){
   case 'chapter':return chapterHTML();
   case 'map':{const Lg=curLeg(),nx=cur(),nxt=mapNext();
     const h2=Lg.at<0?L`Pick a stop`:L`On to the ${esc(nx.short)}`;
-    return `<main class="mapmain"><div class="sheet"><span class="kicker">${L`Chapter ${S.chapter+1}`} · ${L`Day ${S.day}`} · ${esc(Lg.name)} · ${L`on the way to the ${esc(nx.full)}`}</span><h2>${h2}</h2>
-      <p class="lead">${Lg.at<0?L`Pick one stop on the way: it takes a day, and so does the walk to the office. Every route gives you something; some cost you on the way.`+(Lg.tram?' '+L`The tram skips the stop and saves a day.`:''):L`One more day and you are at the window.`}</p>
-      ${Lg.at<0?`<div class="maplegend"><span><b>+</b>${L`Helps`}</span><span class="event"><b>?</b>${L`Gamble`}</span><span class="rare"><b>★</b>${L`Rare`}</span><span class="bad"><b>!</b>${L`Trouble on the way`}</span>${Lg.tram?`<span class="tram"><b>T</b>${L`Tram`}</span>`:''}</div>`:''}
-      ${vitRow()}${pocketRow()}${bagRow()}${moodRow()}${mapHTML(true)}${mapCard()}</div></main>`;}
+    // v32: one short header, everything you carry in one row of chips, the city fills the rest
+    return `<main class="mapmain"><div class="sheet"><div class="maphead"><span class="kicker">${L`Chapter ${S.chapter+1}`} · ${L`Day ${S.day}`} · ${esc(Lg.name)}</span><h2>${h2}${Lg.at<0?` <span class="mh-to">→ ${esc(nx.full)}</span>`:''}</h2></div>
+      ${kitRow()}
+      <div class="mapbox">${mapHTML(true)}${Lg.at<0?`<div class="maplegend"><span><b>+</b>${L`Helps`}</span><span class="event"><b>?</b>${L`Gamble`}</span><span class="rare"><b>★</b>${L`Rare`}</span><span class="bad"><b>!</b>${L`Trouble on the way`}</span>${Lg.tram?`<span class="tram"><b>T</b>${L`Tram`}</span>`:''}</div>`:''}</div>
+      ${mapCard()}</div></main>`;}
   case 'counter':{const ds=S.deck.map(C).filter(canReissue);
     return `<main><div class="sheet"><span class="kicker">${L`Citizen service centre`}</span><h2>${L`Re-issue ${S.counterLeft} more`}</h2><p>${L`Tap a document to have it issued again, dated today (day ${S.day}).`}</p>
       <div class="card-row">${ds.length?ds.map(c=>cardHTML(c,{act:'reissueAt'})).join(''):`<p>${L`All your papers are from today. Nothing to do here.`}</p>`}</div>

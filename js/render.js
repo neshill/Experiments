@@ -6,7 +6,7 @@ function render(){
   const keep=lastScreen===S.screen+'|'+S.officeIdx,SC=['main','main>.check'],tops=SC.map(q=>{const el=$app.querySelector(q);return el?el.scrollTop:0});
   const cw=[...$app.querySelectorAll('.citywrap')].map(e=>e.scrollLeft);
   if(S.tut)tutSync();
-  $app.innerHTML=(['intro','rules','closed','vitrina','who','options','tutdone'].includes(S.screen)?'':status())+screen()+panelHTML()+askHTML()+overlay()+pauseHTML()+(S.tut?tutHTML():'');
+  $app.innerHTML=(['intro','rules','closed','vitrina','who','options','tutdone'].includes(S.screen)?'':status())+screen()+panelHTML()+askHTML()+errandAskHTML()+overlay()+pauseHTML()+(S.tut?tutHTML():'');
   if(LANG==='sr')cyrTree($app);
   if(keep)SC.forEach((q,i)=>{const el=$app.querySelector(q);if(el)el.scrollTop=tops[i]});
   $app.querySelectorAll('.citywrap').forEach((e,i)=>{if(cw[i]!=null)e.scrollLeft=cw[i]});
@@ -138,7 +138,7 @@ function nextLine(){
 }
 function gossipStep(){
   if(!S||S.screen!=='office'||!S.office){GB.on=false;GB.line=null;return}
-  if(S.overlays.length||S.view||S.paused){gbLater(gossipStep,700);return}
+  if(S.overlays.length||S.view||S.paused||S.errandAsk){gbLater(gossipStep,700);return}
   const old=$app.querySelector('.stage .bubble');
   if(GB.line){GB.line=null;if(old){old.classList.remove('pop');old.classList.add('out')}gbLater(gossipStep,650+Math.random()*500);return}
   if(old)old.remove();

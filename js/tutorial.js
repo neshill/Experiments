@@ -91,7 +91,7 @@ function tutAllow(a,b){
   if(!ok)S.tut.nudge=Date.now();
   return ok}
 function tutHTML(){
-  const T_=S.tut;if(!T_||S.screen!=='office'||S.overlays.length||S.view||S.paused||S.pocketAsk!=null)return '';
+  const T_=S.tut;if(!T_||S.screen!=='office'||S.overlays.length||S.view||S.paused||S.pocketAsk!=null||S.errandAsk)return '';
   const st=TUT_STEPS[T_.step];if(!st)return '';
   const nudge=T_.nudge&&Date.now()-T_.nudge<600;
   return `<div class="tut-ring" aria-hidden="true"></div><div class="coach ${T_.talk?'talk':''} ${nudge?'nudge':''}" role="status">
