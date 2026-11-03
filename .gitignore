@@ -1,11 +1,3 @@
-# Previews and other files Claude saves here: kept in the Archive folder instead, never committed
+# Deploy-only repo: work files live in ~/Desktop/Projects/<game>/, never here
 Claude outputs/
-*.png
-# macOS folder settings
 .DS_Store
-
-# ...except the home-screen icon, which the game needs next to index.html
-!apple-touch-icon.png
-
-# Game art (v30: pictures live in art/ instead of inside index.html)
-!art/**/*.png
