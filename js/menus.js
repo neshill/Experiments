@@ -76,7 +76,7 @@ function sendFeedback(){
 function groupCards(uids){const m=new Map();uids.map(C).forEach(c=>{const k=c.kind==='doc'?c.doc+'|'+c.form:'a|'+c.key;if(!m.has(k))m.set(k,{c,n:0});m.get(k).n++});
   return [...m.values()].sort((a,b)=>(a.c.kind===b.c.kind?0:a.c.kind==='doc'?-1:1))}
 function cardRow({c,n}){const src=ART[artKey(c)];const nm=c.kind==='doc'?DOCS[c.doc].name:ACTIONS[c.key].name;
-  const sub=c.kind==='doc'?(DOCS[c.doc].single?L`Document`:FORM[c.form]+' · '+ageLabel(c)):(SHADY.has(c.key)?L`Shady action`:L`Action`)+' · '+L`${timeCost(c)} time`+(patCost(c)?' · '+L`−${patCost(c)} patience`:'');
+  const sub=c.kind==='doc'?(DOCS[c.doc].single?L`Document`:FORM[c.form]+' · '+ageLabel(c)):(SHADY.has(c.key)?L`Shady action`:L`Action`)+(patCost(c)?' · '+L`−${patCost(c)} patience`:'');
   return `<li class="crow" style="--c:${CARD_BG[c.kind==='doc'?c.doc:c.key]||'#efe4cb'}">${src?`<img src="${src}" alt="" class="${c.kind==='doc'?c.form:''}">`:'<span class="noimg"></span>'}<span class="cn"><b>${esc(nm)}</b><small>${esc(sub)}</small>${c.kind==='act'?`<em>${esc(ACTIONS[c.key].text)}</em>`:''}</span>${n>1?`<span class="cq">×${n}</span>`:''}</li>`}
 function section(title,uids){return `<h3>${title} <span>${uids.length}</span></h3>${uids.length?`<ul class="clist">${groupCards(uids).map(cardRow).join('')}</ul>`:`<p class="none">${L`Empty.`}</p>`}`}
 function panelHTML(){

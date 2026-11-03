@@ -2,6 +2,15 @@
 
 Newest first. Each version is a git tag (`v24`, `v22`, …) on the last commit of that version, so `git checkout v22` gives you that build exactly. The build number is the commit count, shown on the title screen as `v24 · build N`. Full design notes for every version live in the game design doc's change log.
 
+## v31 — 2026-11-03
+Making it a bit easier and clearer after a playtest.
+- **No more time per turn.** Play as many cards as your hand allows; the turns of the day are the only clock (the lights around End turn, the clock on the HUD). Everything that used to give or take time now changes how many cards you draw up to: coffee break, "system down", the kafana and the renovation take a card, the café and Friday give one; the Strict-about-the-queue mood draws 1 less on the first turn; the Bank's system migration draws 1 less for 2 turns. Lunch break now means you can't hand in papers that turn (actions still work). Take a Number keeps the window open 1 more turn today; Friend on the inside does too; Neighbour who is a notary makes notarized copies never too old.
+- **Draw cards each do something different:** Wait in Line draws until you get a paper the form asks for (3 at most, −1 patience); Polite Smile draws 1 and lets you keep 2 more cards at the end of the turn; Tabbed Folder takes a document (one the form wants, if possible) and then lets you swap any cards; Call Your Cousin, My Friend and Small Talk unchanged.
+- **Redraws are no longer a run-wide counter on screen.** They come from Grandma's shopping bag (new Vitrina keepsake, you start with it: one swap per office, button "Bag swap", key R), Tabbed Folder and the priority ticket (pocket item, now "swap any cards"). Amra's perk loses the 2 extra redraws; Reform 5 "Digitalisation" now closes the window one turn earlier each day.
+- **Go get it takes the rest of the day:** you come back tomorrow with the paper in your hand (and the cards you held). The clerk doesn't act, but closing time hits.
+- **Closing time grows the longer you stay at one office:** −5, then −8, −11… (resets at every office; Working hours +5, Wall calendar −3). Papers still get a day older.
+- New lines are English only for now.
+
 ## v30 — 2026-11-03
 Phase 1 + 2 of the Steam roadmap: a full run is now a whole life, with characters and a difficulty ladder. New offices use placeholder art (they borrow an existing clerk and office until they get their own).
 - **Three chapters:** Youth (student ID: Registry, Health Centre, Grammar School Office, Police, *boss* University Admissions), First job (the old run, salary account; the Bank is now its boss), Old age (first pension: Pension Fund, Health Insurance Fund, Municipal Court, Land Registry, *boss* Pension Commission). Each chapter rolls its own moods, forms, tips and city map; cards, bag, pocket, patience, Favours and Traces carry over. Between chapters a week passes (papers age 7 days), you get the new chapter's papers and recover 25 patience. Later chapters' forms ask a little more. The clerks' running story plays in the First job chapter only.

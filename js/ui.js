@@ -35,7 +35,7 @@ const ICON={
 };
 // v22 placeholders for new art. Real art goes into ART under these keys: trk_<trinket>, pkt_<pocket item>, ext_<map node>, act_<action>.
 const PH=(fill,glyph)=>`<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="${fill}" stroke="#18283a" stroke-width="2"/><text x="20" y="26.5" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="18" fill="#18283a">${glyph}</text></svg>`;
-const TRK_GLYPH={thermos:'☕',stampbox:'¤',notebook:'✎',partycard:'★',folder:'▤',laminator:'▣'};
+const TRK_GLYPH={thermos:'☕',stampbox:'¤',notebook:'✎',partycard:'★',folder:'▤',laminator:'▣',bag:'↻'};
 const PKT_GLYPH={rakija:'🍶',pita:'◍',ticket:'№'};
 const KIND_GLYPH={good:'+',bad:'!',event:'?',rare:'★'},KIND_FILL={good:'#bfe0db',bad:'#f2b4a8',event:'#f4e29f',rare:'#d6cde6'};
 function trkIcon(k){return ART['trk_'+k]?`<img src="${ART['trk_'+k]}" alt="">`:PH('#e8b44b',TRK_GLYPH[k]||'•')}
@@ -63,10 +63,8 @@ function artHTML(c){
 }
 function status(){
   const o=S.screen==='office'||S.screen==='errand'?S.office:null,p=Math.max(0,S.patience/S.maxP*100);
-  const dots=o?Array.from({length:Math.max(3,o.time)},(_,i)=>`<span class="dot ${i<o.time?'on':''}"></span>`).join(''):'';
   if(S.screen==='office'&&o)return `<header class="hud float"><div class="tiles">
       <div class="tile pat" style="color:var(--red)"><span class="lbl">${L`Patience`}</span><span class="val" style="color:var(--ink)">${ICON.heart.replace('class="heart"','class="heart" style="color:#c93f31"')}${S.patience}/${S.maxP}</span><span class="pbar"><i style="width:${p}%"></i></span></div>
-      <div class="tile time" role="img" aria-label="${L`Time: ${o.time} of 3`}"><span class="lbl">${L`Time`}</span><span class="dots">${dots}</span></div>
       <div class="tile day" role="img" aria-label="${L`Day ${S.day}, ${clockStr(o,cur())}. The window closes at 15:00.`}"><span class="lbl">${L`Day ${S.day}`}</span><span class="val">${clockStr(o,cur())}</span></div>
       ${S.pocket.map((k,i)=>`<button class="tile pkt" data-act="pocketAsk" data-i="${i}" aria-label="${L`Pocket`}: ${esc(POCKET[k].name)}" title="${esc(POCKET[k].name)}: ${esc(POCKET[k].text)}"><span class="lbl">${L`Pocket`}</span>${pktIcon(k)}</button>`).join('')}
       ${resChips()}
@@ -75,7 +73,7 @@ function status(){
   return `<header class="hud">
     <div class="tiles">
       <div class="tile" style="color:var(--red)"><span class="lbl">${L`Patience`}</span><span class="val" style="color:var(--ink)">${ICON.heart.replace('class="heart"','class="heart" style="color:#c93f31"')}${S.patience}/${S.maxP}</span><span class="pbar"><i style="width:${p}%"></i></span></div>
-      <div class="tile"><span class="lbl">${o?L`Time`:L`Calendar`}</span><span class="val">${o?`<span class="dots">${dots}</span><span class="tnum">${o.time}/3</span>`:L`Day ${S.day}`}</span></div>
+      <div class="tile"><span class="lbl">${L`Calendar`}</span><span class="val">${L`Day ${S.day}`}</span></div>
       <button class="tile hbtn" data-act="view" data-v="map" aria-label="${L`Run map`}"><span class="lbl">${L`Map`}</span><span class="val">${ICON.map}${S.officeIdx+1}/${OFFICES.length}</span></button>
       <button class="tile hbtn" data-act="view" data-v="deck" aria-label="${L`Your cards`}"><span class="lbl">${L`Cards`}</span><span class="val">${ICON.deck}${S.deck.length}</span></button>
       <button class="tile hbtn menubtn" data-act="pause" aria-label="${L`Settings and pause: rules, music, end run`}" title="${L`Settings`}"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#18283a" fill-rule="evenodd" d="M10.3 1.5h3.4l.5 2.9a8 8 0 0 1 2 .9l2.4-1.7 2.4 2.4-1.7 2.4c.4.6.7 1.3.9 2l2.9.5v3.4l-2.9.5a8 8 0 0 1-.9 2l1.7 2.4-2.4 2.4-2.4-1.7a8 8 0 0 1-2 .9l-.5 2.9h-3.4l-.5-2.9a8 8 0 0 1-2-.9l-2.4 1.7-2.4-2.4 1.7-2.4a8 8 0 0 1-.9-2l-2.9-.5v-3.4l2.9-.5c.2-.7.5-1.4.9-2L3.4 6.4l2.4-2.4 2.4 1.7c.6-.4 1.3-.7 2-.9zM12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2z"/></svg></button>
@@ -92,14 +90,14 @@ function cardHTML(c,{act='card',cls='',style=''}={}){
       ${artHTML(c)}
       <span class="sub ${c.form}">${single?L`Document`:FORM[c.form]}</span>
       <span class="body"><span class="nm">${esc(DOCS[c.doc].name)}</span>${age}<span class="foot">${foot}</span></span>
-      <span class="costs"><span class="cost free">0</span></span>${/\bheard\b/.test(cls)?`<span class="heardmark">${L`Heard`}</span>`:''}</button>`;
+      ${/\bheard\b/.test(cls)?`<span class="heardmark">${L`Heard`}</span>`:''}</button>`;
   }
   const a=ACTIONS[c.key],pc=patCost(c),shady=SHADY.has(c.key),sty=CARD_STYLE[c.key];
-  return `<button class="card act ${shady?'shady':''} ${cls}" style="--c:${CARD_BG[c.key]||'#efe3c6'};${style}" data-act="${act}" data-uid="${c.uid}" aria-label="${esc(pc?L`${a.name}, shady action, costs ${timeCost(c)} time and ${pc} patience`:shady?L`${a.name}, shady action, costs ${timeCost(c)} time`:L`${a.name}, action, costs ${timeCost(c)} time`)}">
+  return `<button class="card act ${shady?'shady':''} ${cls}" style="--c:${CARD_BG[c.key]||'#efe3c6'};${style}" data-act="${act}" data-uid="${c.uid}" aria-label="${esc(pc?L`${a.name}, shady action, costs ${pc} patience`:shady?L`${a.name}, shady action`:L`${a.name}, action`)}">
     ${artHTML(c)}
     <span class="sub ${shady?'shady':sty||''}">${shady?L`Shady`:sty?L(STYLE_NAME[sty]):L`Action`}</span>
     <span class="body"><span class="nm">${esc(a.name)}</span><span class="tx">${esc(a.text)}</span></span>
-    <span class="costs"><span class="cost">${timeCost(c)}</span>${pc?`<span class="pcost">−${pc}${ICON.heart.replace('class="heart"','')}</span>`:''}${a.fav?`<span class="pcost fav">−${a.fav}★</span>`:''}</span></button>`;
+    ${pc||a.fav?`<span class="costs">${pc?`<span class="pcost">−${pc}${ICON.heart.replace('class="heart"','')}</span>`:''}${a.fav?`<span class="pcost fav">−${a.fav}★</span>`:''}</span>`:''}</button>`;
 }
 function handCls(c){
   const h=isHeardCard(c)?' heard':'';
@@ -263,8 +261,8 @@ function officeView(){
     <p class="log sr-only" aria-live="polite">${esc(S.log)}</p>
   </main>
   <footer class="dock">
-    ${o.lunch&&!tg&&!S.keeping?`<div class="banner"><span>${L`Lunch break: the window is shut this turn. Only free cards work.`}</span></div>`:''}
-    ${S.redrawing?`<div class="banner swapbar"><span>${L`Redraw: tap the cards you want to swap (${S.redrawing.length} picked), then tap Swap. Free, no time. ${S.redraws} [[1:redraw|redraws]] left this run.`}</span><button data-act="redrawCancel">${L`Back`}</button></div>`:''}
+    ${o.lunch&&!tg&&!S.keeping?`<div class="banner"><span>${L`Lunch break: the window is shut this turn. No papers, only actions.`}</span></div>`:''}
+    ${S.redrawing?`<div class="banner swapbar"><span>${L`Swap: tap the cards you want to swap (${S.redrawing.length} picked), then tap Swap.`}</span><button data-act="redrawCancel">${L`Back`}</button></div>`:''}
     ${tg?`<div class="banner"><span>${tgtMsg}</span><button data-act="cancel">${L`Cancel`}</button></div>`:''}
     ${S.keeping?`<div class="banner keepbar"><span>${L`End of turn: tap up to ${keepMax()} cards to keep (${S.keeping.length}/${keepMax()}). The rest are discarded and you draw back up to ${HAND_SIZE}. Keep none to redraw all.`}${o.hand.some(u=>isHeardCard(C(u)))?' '+L`Cards marked HEARD will probably be asked for here.`:''}</span><button data-act="keepCancel">${L`Back`}</button></div>`:''}
     ${S.confirm?`<div class="banner warn"><span>${L`This line takes an original or a certified copy. If you hand over the original, the clerk keeps it.`}</span><span class="bb"><button class="solid" data-act="confirmYes">${L`Hand it over`}</button><button data-act="cancel">${L`Keep it`}</button></span></div>`:''}
@@ -272,7 +270,7 @@ function officeView(){
       <div class="lane fan">${fanHTML(o.hand)}</div>
       <button class="pilebtn draw" data-act="view" data-v="deck" aria-label="${L`Draw pile, ${o.draw.length} cards`}"><b>${o.draw.length}</b><span>${L`Draw`}</span></button>
       <button class="pilebtn used" data-act="view" data-v="deck" aria-label="${L`Used pile, ${o.discard.length+o.exhaust.length} cards`}"><b>${o.discard.length+o.exhaust.length}</b><span>${L`Used`}</span></button>
-      ${S.tut?'':`<button class="pilebtn redraw ${S.redrawing?'on':''}" data-act="redraw" ${S.redraws>0&&!S.keeping?'':'disabled'} aria-label="${L`Redraw: swap cards for new ones. ${S.redraws||0} left this run.`}"><i aria-hidden="true">↻</i>${S.redrawing&&S.redrawing.length?'':`<b>${S.redraws||0}</b>`}<span>${S.redrawing?(S.redrawing.length?L`Swap ${S.redrawing.length}`:L`Cancel`):L`Redraw`}</span></button>`}
+      ${S.redrawing||canBagSwap()?`<button class="pilebtn redraw ${S.redrawing?'on':''}" data-act="redraw" ${!S.keeping?'':'disabled'} aria-label="${S.redrawing?L`Swap the picked cards for new ones`:L`Grandma's shopping bag: swap cards for new ones, once per office`}"><i aria-hidden="true">↻</i><span>${S.redrawing?(S.redrawing.length?L`Swap ${S.redrawing.length}`:L`Cancel`):L`Bag swap`}</span></button>`:''}
       <button class="pilebtn map" data-act="view" data-v="map" aria-label="${L`Run map, office ${S.officeIdx+1} of ${OFFICES.length}`}">${ICON.map}<span>${L`Map`}</span></button>
       <button class="pilebtn gear" data-act="pause" aria-label="${L`Settings and pause: rules, music, your cards, end run`}" title="${L`Settings`}"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#18283a" fill-rule="evenodd" d="M10.3 1.5h3.4l.5 2.9a8 8 0 0 1 2 .9l2.4-1.7 2.4 2.4-1.7 2.4c.4.6.7 1.3.9 2l2.9.5v3.4l-2.9.5a8 8 0 0 1-.9 2l1.7 2.4-2.4 2.4-2.4-1.7a8 8 0 0 1-2 .9l-.5 2.9h-3.4l-.5-2.9a8 8 0 0 1-2-.9l-2.4 1.7-2.4-2.4 1.7-2.4a8 8 0 0 1-.9-2l-2.9-.5v-3.4l2.9-.5c.2-.7.5-1.4.9-2L3.4 6.4l2.4-2.4 2.4 1.7c.6-.4 1.3-.7 2-.9zM12 8.4a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2z"/></svg></button>
       ${endBtnHTML(o,d)}
@@ -312,18 +310,16 @@ function screen(){
     return `<main><div class="sheet"><span class="kicker">${L`Leave the window`}</span><h2>${L`Go get: ${esc(e.get)}`}</h2>
       <p>${esc(e.place)}.</p>
       <div class="costlist">
-        <div><b>${L`Costs`}</b><span>${L`The rest of your turn. ${esc(clerkName(d))} still takes [[his|her]] turn while you are away, and the clock ticks.`}</span></div>
-        <div><b>${L`You get`}</b><span>${L`${esc(e.get)}, added to your cards for good. It will be in your hand next turn.`}</span></div>
-        <div><b>${L`Before`}</b><span>${L`You choose up to 3 cards to keep, as at the end of any turn.`}</span></div>
+        <div><b>${L`Costs`}</b><span>${L`The rest of today. By the time you're back the window is closed: −${closeCost()} patience, and every paper you own gets a day older.`}</span></div>
+        <div><b>${L`You get`}</b><span>${L`${esc(e.get)}, added to your cards for good. It's in your hand tomorrow morning, along with the cards you hold now.`}</span></div>
       </div>
-      <div class="btnrow"><button class="btn primary" data-act="errandGo">${L`Go (lose your turn)`}</button><button class="btn quiet" data-act="stay">${L`Stay in line`}</button></div></div></main>`;}
+      <div class="btnrow"><button class="btn primary" data-act="errandGo">${L`Go (back tomorrow)`}</button><button class="btn quiet" data-act="stay">${L`Stay in line`}</button></div></div></main>`;}
   case 'errandDone':return `<main><div class="sheet"><span class="kicker">${L`Errand`}</span><h2>${esc(S.errand.place)}</h2><p>${esc(S.errand.text)}</p>
       <span class="big-stamp">${L`Obtained`}</span><p>${L`${esc(S.errand.get)} is in your cards.`}</p>
       <button class="btn primary" data-act="back">${L`Back to the window`}</button></div></main>`;
   case 'reward':{const d=OFFICES[S.officeIdx],nx=OFFICES[S.officeIdx+1];
     return `<main><div class="sheet"><span class="big-stamp">${L`Approved`}</span><h2>${esc(d.goal)}</h2>
       <p>${S.chapterEnd?LG(d,()=>L`${esc(clerkName(d))} stamps it, signs it, and stamps it again. Chapter ${S.chapter+1} is done.`):LG(d,()=>L`${esc(clerkName(d))} hands over your ${esc(DOCS[d.reward].name)} (original). It joins your cards. Next: pick a route to the ${esc(nx.full)}.`)}</p>
-      <p class="redrawnote">${L`+1 redraw. You have ${S.redraws}.`}</p>
       <span class="kicker">${L`You learned something. Pick one action:`}</span>
       <div class="card-row">${S.choices.map(u=>cardHTML(C(u),{act:'reward'})).join('')}</div>
       <button class="btn quiet" data-act="reward" data-uid="0">${L`Skip`}</button></div></main>`;}
@@ -384,13 +380,13 @@ function rulesBody(){return `      <p>${L`<b>A run is a life in three chapters</
       <p>${L`Chapter 2 in detail:`} ${L`You got the job. Your employer pays salaries only into a local bank account, and your first payday is soon. The bank wants your Employment Registration. The employment bureau wants a Tax Number. The tax office wants a Certificate of Residence. The police want a Citizenship Certificate. The registry wants your birth certificate. You have 80 patience.`}</p>
       <div class="route">${OFFICES.map((x,i)=>`<figure><img src="${ART['ext_'+lookOf(x)]}" alt=""><figcaption>${i+1}. ${esc(x.short)}<small>${esc(x.goal)}</small></figcaption></figure>`).join('')}</div>
       <ul class="rules">
-        <li>${L`Your cards (your deck) are <b>documents</b> and <b>actions</b>. Each turn you draw back up to 5. At the end of every turn you choose up to 3 cards to keep; the rest are discarded. Keep none to redraw a fresh 5.`}</li>
-        <li>${L`Handing in a <b>document</b> is free. <b>Actions</b> show their time cost in the dark circle. You get 3 time a turn.`}</li>
+        <li>${L`Your cards (your deck) are <b>documents</b> and <b>actions</b>. Each turn you draw back up to 5. At the end of every turn you choose up to 3 cards to keep; the rest are discarded. Keep none to draw a fresh 5.`}</li>
+        <li>${L`There is no limit on cards per turn: play everything that helps. The clock is the <b>turns</b>: when the window closes for the day (the lights around End turn), you lose patience (5, then 8, then 11… the longer you stay at one office) and every paper gets a day older.`}</li>
         <li>${L`Shady actions (dashed border) also cost <b>patience</b>, shown with a red heart. Patience is your health. At zero you give up.`}</li>
         <li>${L`Copies, stamps and photos are kept by the clerk. Originals come back, unless the line says "original or certified copy" and you hand over the original.`}</li>
-        <li>${L`Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. Strange papers never go into your cards: the ones you find (one at the start, some rewards, your aunt's drawer) wait in your <b>bag</b>, and you hand them over straight from the form. If you don't have it, tap <b>Go get it</b> or bribe it.`}</li>
+        <li>${L`Sometimes, just when one line is left, the clerk says <b>fali ti jedan papir</b> and asks for a strange paper. Strange papers never go into your cards: the ones you find (one at the start, some rewards, your aunt's drawer) wait in your <b>bag</b>, and you hand them over straight from the form. If you don't have it, bribe it or tap <b>Go get it</b>: an errand takes the rest of the day, so you're back tomorrow with the paper (closing-time patience, papers a day older).`}</li>
         <li>${L`<b>Every run, the forms are different.</b> Each office still asks for the paper the office before gave you; the rest of the form, the rules clerks suddenly remember and their strange papers are rolled when the run starts.`}</li>
-        <li>${L`<b>Redraws.</b> You start a run with 3. During your turn, tap <b>Redraw</b>, pick any cards and swap them for new ones. It costs no time. You get one back after every office and at the café or kafana (6 at most). Key: R.`}</li>
+        <li>${L`<b>Swapping cards.</b> Grandma's shopping bag (in the Vitrina) lets you swap any cards in your hand for new ones once per office: tap <b>Bag swap</b> (key R). Tabbed Folder and the priority ticket do it too.`}</li>
         <li>${L`<b>My Friend Went Last Week</b> tells you something the clerk will ask for later: a rule they will suddenly remember, or their strange paper. Tips show up on the form in pencil and mark matching cards in your hand <b>Heard</b>, so you know what to keep. If the clerk asks for something you heard about, it costs you no patience. When an office has no secrets left, you hear about the next one.`}</li>
         <li>${L`Fees take a fee stamp. No stamp? Pay at the bank instead, but it costs the rest of your turn.`}</li>
         <li>${L`<b>Controls.</b> Touch: tap a card to play, hold to look, slide up to play what you're looking at. Mouse: hover to look, click to play. Keys: 1–9 play a card, Space ends the turn, Esc cancels or pauses, P pause, M map, C cards. The ⚙ button pauses the game.`}</li>

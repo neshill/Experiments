@@ -52,7 +52,7 @@ function mapOffice(){const L=curLeg();if(!L||!mapNext().includes('office'))retur
 function forYouNow(k){
   const docs=S.deck.map(C).filter(c=>c.kind==='doc');
   switch(k){
-    case 'cafe':case 'kafana':return L`Your patience: ${S.patience}/${S.maxP}.`+' '+L`Redraws: ${S.redraws||0}.`;
+    case 'cafe':case 'kafana':return L`Your patience: ${S.patience}/${S.maxP}.`;
     case 'kiosk':{const st=docs.filter(c=>STAMPS.includes(c.doc)).length,ph=docs.filter(c=>c.doc==='photo').length;return L`You have ${st} [[0:fee stamp|fee stamps]] and ${ph} [[1:photo|photos]].`}
     case 'copyshop':{const n=docs.filter(isOriginalCopyable).length;return n?L`${n} [[0:original|originals]] you could copy.`:L`You have no originals to copy.`}
     case 'counter':{const n=docs.filter(canReissue).length,old=docs.filter(c=>canReissue(c)&&docAge(c)>=4).length;return n?(old?L`${n} of your papers could be re-issued, ${old} of them 4+ days old.`:L`${n} of your papers could be re-issued.`):L`All your papers are fresh.`}
@@ -69,8 +69,8 @@ function nodeDone(){if(S.screen!=='end')S.screen='map'}
 function resolveNode(k){
   const n=NODES[k],h=n.name;S.screen='map';
   switch(k){
-    case 'cafe':heal(10);gainRedraw();say(h,L`+10 patience`,L`A coffee, a glass of water, and nobody asks you for a paper.`+' '+L`+1 redraw.`);break;
-    case 'kafana':heal(20);gainRedraw();gainFavour(1);S.tired=1;say(h,L`+20 patience`,L`Ćevapi, one rakija that became three, and a lot of opinions about the government. Tomorrow you start a little slow: 1 less time on your first turn.`+' '+L`+1 redraw.`+' '+L`+1 Favour.`);break;
+    case 'cafe':heal(10);S.tired=-1;say(h,L`+10 patience`,L`A coffee, a glass of water, and nobody asks you for a paper.`+' '+L`You draw 1 card more on your first turn at the next window.`);break;
+    case 'kafana':heal(20);gainFavour(1);S.tired=1;say(h,L`+20 patience`,L`Ćevapi, one rakija that became three, and a lot of opinions about the government. Tomorrow you start a little slow: 1 card less on your first turn.`+' '+L`+1 Favour.`);break;
     case 'kiosk':STAMPS.forEach(x=>addToDeck(mkDoc(x)));addToDeck(mkDoc('photo'));say(h,L`Stocked up`,L`One fee stamp of each kind, and four photos in which you look like you are being arrested. One joins your cards.`);break;
     case 'copyshop':S.screen='copyshop';break;
     case 'counter':S.screen='counter';S.counterLeft=2;break;
@@ -80,7 +80,7 @@ function resolveNode(k){
     case 'drawer':{const pool=STRANGE.filter(x=>!ownedDocs().some(c=>c.doc===x)&&OFFICES.slice(S.officeIdx).some(o=>o.ft1p===x));const x=pool.length?rnd(pool):rnd(STRANGE);
       S.bag.push(mkDoc(x,'original',{issued:S.day-3}).uid);say(h,L`Found`,L`Between old phone bills and a 1987 calendar: your ${DOCS[x].name}. It goes in your bag, ready for the clerk who asks for it.`);break}
     case 'bus':loseP(6);if(S.screen==='end')return;say(h,L`−6 patience`,L`The timetable says every 12 minutes. The timetable is a work of fiction.`);break;
-    case 'reno':loseP(5);if(S.screen==='end')return;S.tired=1;say(h,L`−5 patience`,L`The neighbour is "almost done" with the bathroom. He has been almost done since March. 1 less time on your first turn at the next window.`);break;
+    case 'reno':loseP(5);if(S.screen==='end')return;S.tired=1;say(h,L`−5 patience`,L`The neighbour is "almost done" with the bathroom. He has been almost done since March. 1 card less on your first turn at the next window.`);break;
     case 'flood':{loseP(2);if(S.screen==='end')return;const ds=S.deck.map(C).filter(c=>dated(c)&&!c.noexp);
       if(ds.length){const c=rnd(ds);c.issued=S.day-30;say(h,L`Smudged`,L`Water from upstairs drips onto your ${docName(c.doc,c.form)}. The date is unreadable, so it counts as old. Re-issue it before anyone asks for a fresh one. −2 patience.`)}
       else say(h,L`−2 patience`,L`Water everywhere, but your papers are laminated. Small victories.`);break}
@@ -116,5 +116,5 @@ function usePocket(i){const k=S.pocket[i];if(!k)return;const p=POCKET[k],o=S.scr
   S.pocket.splice(i,1);
   if(k==='pita'){heal(8);say(L`From your pocket`,p.name,L`Still warm, somehow. +8 patience.`)}
   if(k==='rakija'){o.skipN=(o.skipN||0)+2;say(L`Under the counter`,p.name,L`${clerkName(cur())} pretends not to see it, and puts it away very quickly. The next 2 actions are skipped.`)}
-  if(k==='ticket'){o.time+=2;say(L`From your pocket`,p.name,L`Someone else's priority number. +2 time this turn.`)}
+  if(k==='ticket'){startSwap('ticket');S.log=L`Someone else's priority number. Tap the cards you want to swap, then Swap.`}
 }

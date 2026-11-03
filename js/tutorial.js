@@ -31,7 +31,7 @@ function tutStart(){
   const later=[mk('stamp',mkDoc('stamp_mun')),mk('smile',mkAct('smile')),mk('wait',mkAct('wait')),mk('rulebook',mkAct('rulebook'))];
   const d=TUT_OFFICE;
   S.office={rows:d.rows.map(([doc,form,max])=>({doc,form,max,done:false})),rulesLeft:d.rules.slice(),ft1pFired:false,ft1pRolled:true,
-    turnsLeft:d.turns,turn:0,draw:[...later.slice().reverse(),...first.slice().reverse()],hand:[],discard:[],exhaust:[],time:3,bonusTime:0,timePenalty:0,
+    turnsLeft:d.turns,turn:0,draw:[...later.slice().reverse(),...first.slice().reverse()],hand:[],discard:[],exhaust:[],
     intent:null,skipIntent:false,skipN:0,story:0,usedGossip:[]};
   S.screen='office';S.target=null;S.confirm=null;S.log=L`Žućko looks up from the counter and wags his tail.`;
   S.office.intent=rollIntent();startTurn();
@@ -54,11 +54,11 @@ const TUT_STEPS=[
   {t:()=>L`Woof! I mean: welcome. I'm Žućko, the temporary worker. The real clerk is on sick leave until 2031, so today this window is mine. Let me show you how it works.`,at:()=>'.stage .pupwrap'},
   {t:()=>L`This is the form. Every line is a paper the clerk wants from you. Tick off every line and you get what you came for.`,at:()=>'.check'},
   {t:()=>L`This is your Patience. Clerks wear it down: sighs, coffee breaks, rules they suddenly remember. At zero you give up and the run is over.`,at:()=>'.tile.pat'},
-  {t:()=>L`And this is your Time: 3 dots every turn. Actions cost time (the number in the dark circle on a card). Handing in a document costs nothing.`,at:()=>'.tile.time'},
+  {t:()=>L`This is the clock. There's no limit on how many cards you play in a turn: play everything that helps. But every turn moves the clock, and at 15:00 the window closes. Then it costs you patience, and every paper gets a day older.`,at:()=>'.tile.day'},
   {t:()=>L`These are your cards. Tap your ID Card to hand it in. (Hold a card to see it up close.)`,at:()=>tutCard(S.tut.u.id),
     done:()=>S.office.rows[tutRow('id')].done,allow:(a,uid)=>a==='card'&&uid===S.tut.u.id},
   {t:()=>L`Received! I looked at your original and gave it back: originals come back to your cards. Copies, stamps and photos the clerk keeps.`,at:()=>'.rows li:first-child'},
-  {t:()=>S.target?L`Now tap your Birth Certificate. The copy goes straight into your hand.`:L`The next line wants a COPY of your Birth Certificate, and you only have the original. Tap Photocopy (it costs 1 time).`,
+  {t:()=>S.target?L`Now tap your Birth Certificate. The copy goes straight into your hand.`:L`The next line wants a COPY of your Birth Certificate, and you only have the original. Tap Photocopy.`,
     at:()=>S.target?tutCard(S.tut.u.birth):tutCard(S.tut.u.pc),done:()=>!!tutCopyUid()||S.office.rows[tutRow('birth')].done,
     allow:(a,uid)=>a==='cancel'||a==='card'&&(uid===S.tut.u.pc||uid===S.tut.u.birth)},
   {t:()=>L`There's your copy. Hand it in.`,at:()=>tutCard(tutCopyUid()),done:()=>S.office.rows[tutRow('birth')].done,allow:(a,uid)=>a==='card'&&uid===tutCopyUid()},
@@ -68,7 +68,7 @@ const TUT_STEPS=[
   {t:()=>L`Before your turn ends, you can keep up to 3 cards for the next one. The rest go to the Used pile. Tap the Small Envelope to keep it, then tap Keep.`,at:()=>'.lane.fan',
     done:()=>S.office.turn>1,allow:a=>a==='card'||a==='end'},
   {t:()=>L`"Ah, I almost forgot!" See? A new line on the form: a Photo 3×4. In a real run, the card My Friend Went Last Week can warn you before a clerk does this.`,at:()=>`.rows li:nth-child(${tutRow('photo')+1})`},
-  {t:()=>L`New turn, new cards: 3 time again, and a Municipal Fee Stamp in your hand. Hand it in for the fee line.`,at:()=>tutCard(S.tut.u.stamp),
+  {t:()=>L`New turn, new cards: a Municipal Fee Stamp is in your hand. Hand it in for the fee line.`,at:()=>tutCard(S.tut.u.stamp),
     done:()=>S.office.rows[tutRow('fee_mun')].done,allow:(a,uid)=>a==='card'&&uid===S.tut.u.stamp},
   {t:()=>S.target?L`Now tap the Photo 3×4 line on the form. Nobody saw anything.`:L`No photo on you? There's another way. Cards with a dashed border are shady: they also cost Patience (the red heart). Tap the Small Envelope.`,
     at:()=>S.target?`.rows li:nth-child(${tutRow('photo')+1})`:tutCard(S.tut.u.env),done:()=>S.screen!=='office',

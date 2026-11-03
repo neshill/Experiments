@@ -23,7 +23,7 @@ function mkAct(key){return reg({uid:S.uid++,kind:'act',key})}
 function addToDeck(c){S.deck.push(c.uid);return c}
 function hasRelic(k){return S.relics.includes(k)}
 function hasTrinket(k){return (S.trinkets||[]).includes(k)}
-const keepMax=()=>hasTrinket('folder')?4:KEEP_MAX;
+const keepMax=()=>(hasTrinket('folder')?4:KEEP_MAX)+(S.office&&S.office.keepBonus||0);
 // ---------- v22: days and freshness ----------
 const dated=c=>c.kind==='doc'&&!DOCS[c.doc].single;          // documents with a date (stamps and photos don't age)
 function docAge(c){return Math.max(0,S.day-(c.issued??S.day))}
@@ -53,7 +53,8 @@ function addPocket(k){if(S.pocket.length>=POCKET_MAX){say(L`Pockets full`,POCKET
 function cur(){return S.tut?TUT_OFFICE:OFFICES[S.officeIdx]}
 const clerkName=d=>d.title?L`${d.title} ${d.clerk}`:d.clerk;
 function C(uid){return S.cards[uid]}
-function timeCost(c){if(c.kind==='doc')return 0;if(c.key==='notary'&&hasRelic('notaryneighbor'))return 1;return ACTIONS[c.key].time}
+// v31: time per turn is gone; kept as a stub so old callers read 0.
+function timeCost(c){return 0}
 function patCost(c){if(c.kind==='doc')return 0;if(c.key==='coffee'&&moodOn('coffee'))return 0;
   if(c.key==='cousin'&&isChar('fixer')&&(S.favours||0)>0)return 0;
   if(c.key==='envelope'&&hasTrinket('dmbill')&&!S.dmUsed)return 0;
@@ -75,7 +76,7 @@ function staleFor(r){return !r.done&&!isFeeRow(r)&&pileCards().some(c=>c.kind===
 function keeps(c,r){return c.form!=='original'||!!DOCS[c.doc].single||r.form==='alt'}
 
 function newRun(){
-  S={v:12,chapter:0,char:META.char||'student',reform:0,favours:0,traces:0,bag:[],redraws:REDRAW_START,redrawing:null,citySeed:Math.floor(Math.random()*2**31),mapSel:null,keeping:null,paused:null,screen:'intro',patience:80,maxP:80,relics:[],trinkets:[],pocket:[],day:1,tired:0,partyUsed:false,unlockedNow:[],ended:false,
+  S={v:12,chapter:0,char:META.char||'student',reform:0,favours:0,traces:0,bag:[],redrawing:null,swapSrc:null,citySeed:Math.floor(Math.random()*2**31),mapSel:null,keeping:null,paused:null,screen:'intro',patience:80,maxP:80,relics:[],trinkets:[],pocket:[],day:1,tired:0,partyUsed:false,unlockedNow:[],ended:false,
      cards:{},deck:[],uid:1,officeIdx:0,office:null,map:null,
      overlays:[],target:null,confirm:null,log:'',choices:null,result:null,pending:null,stats:{turns:0,detours:0,bribes:0,paid:0},
      ftPlan:[],heard:[]};
@@ -87,7 +88,7 @@ function buildRun(){
   S.char=ch;S.reform=Math.min(META.level||0,reformOpen(ch));
   S.trinkets=META.equipped.filter(k=>META.unlocked.includes(k)).slice(0,META.slots);
   S.maxP=curChar().patience+(hasTrinket('medal')?10:0)-(reformOn(1)?10:0);S.patience=S.maxP;
-  S.redraws=REDRAW_START+(curChar().redraws||0)-(reformOn(5)?1:0);S.favours=curChar().favours||0;S.traces=0;
+  S.favours=curChar().favours||0;S.traces=0;
   setChapter(0);rollChapter();
   startingDeck(ch);chapterPapers();chapterPerks();
   // Starting papers were issued a few days before the run starts.
@@ -109,7 +110,7 @@ function beginRun(){
 function enterOffice(){
   const d=cur();
   S.office={rows:d.rows.map(([doc,form,max])=>({doc,form,max,done:false})),rulesLeft:d.rules.slice(),ft1pFired:false,
-    turnsLeft:0,turn:0,draw:shuffle(S.deck),hand:[],discard:[],exhaust:[],time:3,bonusTime:0,timePenalty:S.tired||0,
+    turnsLeft:0,turn:0,draw:shuffle(S.deck),hand:[],discard:[],exhaust:[],handBonus:Math.max(0,-(S.tired||0)),handPenalty:Math.max(0,S.tired||0),closings:0,bagUsed:false,
     intent:null,skipIntent:false,skipN:0,story:0,usedGossip:[]};
   S.tired=0;
   S.screen='office';S.target=null;S.confirm=null;S.office.turnsLeft=officeTurns();
@@ -132,14 +133,15 @@ const certOk=x=>!x.done&&x.form==='copy'&&!isFeeRow(x)&&!DOCS[x.doc].single&&!x.
 const staleOk=x=>!x.done&&!isFeeRow(x)&&!DOCS[x.doc].single&&x.doc!=='id'&&!x.ft1p&&(x.max==null||x.max>0);
 // The line a clerk's "stricter" move hits: the one shown in the preview, or another one if that line got done meanwhile.
 function intentRow(it,f){const o=S.office;let r=o.rows[it.row];if(!r||!f(r)){const rs=o.rows.filter(f);r=rs.length?rnd(rs):null}return r}
-function officeTurns(){return Math.max(2,cur().turns-(moodOn('early')?1:0))}
+function officeTurns(){return Math.max(2,cur().turns-(moodOn('early')?1:0)-(reformOn(5)&&!S.tut?1:0))}
 function startTurn(){
   const o=S.office;o.turn++;S.stats.turns++;
   const mig=o.migrate>0?(o.migrate--,1):0;
-  o.time=Math.max(0,3+o.bonusTime-o.timePenalty-mig-(o.turn===1&&moodOn('ticket')?1:0)+(o.turn===1&&moodOn('friday')?1:0));o.bonusTime=0;o.timePenalty=0;
+  // v31: no time. What used to give or take time now changes how many cards you draw up to this turn.
+  const hs=Math.max(2,HAND_SIZE+(o.handBonus||0)-(o.handPenalty||0)-mig-(o.turn===1&&moodOn('ticket')?1:0)+(o.turn===1&&moodOn('friday')?1:0));o.handBonus=0;o.handPenalty=0;
   o.lunch=o.turn===3&&moodOn('lunch');
-  if(o.lunch){o.time=0;S.overlays.push({head:L`11:00`,stamp:L`Lunch break`,violet:true,text:L`A sign goes up: "Pauza". The window is shut this turn. Only free cards (0 time) work.`})}
-  drawN(Math.max(0,HAND_SIZE-o.hand.length));if(S.tut)tutEnsure();rollGossip();
+  if(o.lunch)S.overlays.push({head:L`11:00`,stamp:L`Lunch break`,violet:true,text:L`A sign goes up: "Pauza". The window is shut this turn: you can't hand in papers, but you can still play actions.`});
+  drawN(Math.max(0,hs-o.hand.length));if(S.tut)tutEnsure();rollGossip();
 }
 function drawN(n){
   const o=S.office;
@@ -210,8 +212,7 @@ function tgtOk(tg,c){if(tg.type==='original')return isOriginalCopyable(c);if(tg.
 
 function canPlay(c){
   const o=S.office;
-  if(timeCost(c)>o.time)return false;
-  if(c.kind==='doc')return !!rowFor(c);
+  if(c.kind==='doc')return !o.lunch&&!!rowFor(c);
   if(patCost(c)>=S.patience)return false;
   switch(c.key){
     case 'photocopy':if(moodOn('nocopier'))return false;return handHas(isOriginalCopyable);
@@ -223,7 +224,7 @@ function canPlay(c){
     case 'argue':return !!argueRow();
     case 'friend':return !!nextTip();
     case 'citelaw':return (S.moods[S.officeIdx]||[]).some(k=>!sigMood(k)&&!(o.cancelled||[]).includes(k));
-    case 'tabbed':return o.draw.some(u=>C(u).kind==='doc')||o.discard.some(u=>C(u).kind==='doc');
+    case 'tabbed':return true;
     case 'callfavour':return (S.favours||0)>=3&&!moodOn('noenvelope')&&o.rows.some(r=>!r.done);
     case 'knowsme':return (S.favours||0)>=2&&o.rows.some(r=>!r.done);
     case 'bigenvelope':return !moodOn('noenvelope')&&o.rows.some(r=>!r.done);
@@ -234,7 +235,7 @@ function canPlay(c){
   return true;
 }
 function whyNot(c){
-  if(timeCost(c)>S.office.time)return L`Not enough time left this turn.`;
+  if(c.kind==='doc'&&S.office.lunch)return L`Lunch break: the window is shut. Papers next turn.`;
   if(c.kind==='doc'&&wetInk(c)&&S.office.rows.some(r=>!r.done&&r.doc===c.doc))return L`"The ink is still wet." ${DOCS[c.doc].name} is dated today, and today that doesn't count here.`;
   if(c.kind==='doc'&&c.form==='copy'&&moodOn('originals')&&S.office.rows.some(r=>!r.done&&r.doc===c.doc))return L`"A copy? Today? No." Only a certified copy counts here.`;
   if(c.kind==='doc')return L`Nobody here asked for ${docName(c.doc,c.form)}.`;
@@ -248,7 +249,6 @@ function whyNot(c){
   if(c.key==='argue')return L`There is no new rule to argue about.`;
   if(c.key==='friend')return L`Your friend has told you everything there is to know.`;
   if(c.key==='citelaw')return L`There is no mood here the law can cancel.`;
-  if(c.key==='tabbed')return L`No documents left in your draw pile.`;
   if((c.key==='callfavour'||c.key==='bigenvelope')&&moodOn('noenvelope'))return L`Not today. [[He|She]] just came back from the director's office.`;
   if(c.key==='callfavour')return L`You need at least 3 Favours.`;
   if(c.key==='knowsme')return L`You need at least 2 Favours.`;
@@ -269,27 +269,30 @@ function handIn(c,r){
 function useAction(c,tgt){
   const o=S.office,d=cur(),a=ACTIONS[c.key];
   const pc=patCost(c);if(c.key==='cousin'&&isChar('fixer')&&!pc)gainFavour(-1);if(c.key==='envelope'&&hasTrinket('dmbill'))S.dmUsed=true;
-  o.time-=timeCost(c);removeFromHand(c.uid);loseP(pc);if(S.screen==='end')return;
+  removeFromHand(c.uid);loseP(pc);if(S.screen==='end')return;
   if(TRACE_COST[c.key])addTraces(TRACE_COST[c.key]);
   if(a.burn)S.deck=S.deck.filter(u=>u!==c.uid);else (a.once?o.exhaust:o.discard).push(c.uid);
   switch(c.key){
-    case 'wait':drawN(3);loseP(1);S.log=L`The queue moves. Barely.`;break;
+    case 'wait':{let n=0;while(n<3){const b=o.hand.length;drawN(1);if(o.hand.length===b)break;n++;const x=C(o.hand[o.hand.length-1]);if(x.kind==='doc'&&rowFor(x))break}
+      loseP(1);S.log=L`The queue moves. Barely. You dig until something useful turns up.`;break}
     case 'breath':S.patience=Math.min(S.maxP,S.patience+3);S.log=L`In for four. Out for four.`;break;
-    case 'smile':drawN(2);S.log=L`${clerkName(d)} does not smile back. You use the moment to dig through your papers.`;break;
+    case 'smile':drawN(1);o.keepBonus=(o.keepBonus||0)+2;S.log=L`${clerkName(d)} does not smile back. You use the moment to dig through your papers.`;break;
     case 'rulebook':if(RULEISH.has(o.intent.type)){o.skipIntent=true;S.log=L`You quote the regulation, article and paragraph. [[He|She]] lets it go.`}else{o.guard=true;S.log=L`You keep the rulebook open on the counter.`}break;
     case 'photocopy':{const sp=o.stampCopies>0?(o.stampCopies--,true):false;const n=addToDeck(mkDoc(tgt.doc,sp?'certified':'copy',{issued:sp?S.day:tgt.issued,noexp:tgt.noexp}));o.hand.push(n.uid);S.log=L`Copy of ${DOCS[tgt.doc].name} added to your hand. It stays in your cards.`;break}
     case 'backdoor':{const n=addToDeck(mkDoc(tgt.doc,'certified'));o.hand.push(n.uid);S.log=L`The notary owes you one. Certified copy of ${DOCS[tgt.doc].name}, dated today, no questions.`;break}
-    case 'notary':tgt.form='certified';tgt.issued=S.day;S.log=L`Your copy of ${DOCS[tgt.doc].name} is now certified, dated today.`;break;
+    case 'notary':tgt.form='certified';tgt.issued=S.day;if(hasRelic('notaryneighbor'))tgt.noexp=true;S.log=L`Your copy of ${DOCS[tgt.doc].name} is now certified, dated today.`;break;
     case 'reissue':tgt.issued=S.day;S.log=L`A fresh ${DOCS[tgt.doc].name}, dated today. Same paper, new date, new fee.`;break;
     case 'backdate':tgt.noexp=true;S.log=L`Someone adjusts the date on your ${DOCS[tgt.doc].name}. It will never be too old again.`;break;
     case 'envelope':tgt.done=true;tgt.bribed=true;o.fresh=o.rows.indexOf(tgt);S.stats.bribes++;S.log=L`A small envelope changes hands. Your wallet feels lighter. Your conscience too, somehow.`;return afterRows();
     case 'coffee':o.skipIntent=true;if(moodOn('coffee'))drawN(1);S.log=L`${clerkName(d)} accepts the coffee. "Just this once."`;break;
     case 'cousin':o.skipIntent=true;drawN(2);S.log=L`Your cousin knows a guy who knows [[his|her]] supervisor.`;break;
     case 'argue':{const r=argueRow();o.rows.splice(o.rows.indexOf(r),1);loseP(4);S.log=L`You win the argument. It costs you.`;if(S.screen==='end')return;return afterRows()}
-    case 'number':o.bonusTime+=2;S.log=L`Ticket 247. Now serving: 231.`;break;
+    case 'number':o.turnsLeft++;S.log=L`Ticket 247. Now serving: 231. The window stays open one turn longer for you today.`;break;
     case 'friend':drawN(1);hearTip();break;
     case 'citelaw':{const ks=(S.moods[S.officeIdx]||[]).filter(k=>!sigMood(k));o.cancelled=[...(o.cancelled||[]),...ks];S.log=L`You cite the law, article and paragraph. Today's mood no longer applies to you.`;break}
-    case 'tabbed':{let n=0;for(const pile of [o.draw,o.discard])for(let i=pile.length-1;i>=0&&n<2;i--)if(C(pile[i]).kind==='doc'){o.hand.push(pile.splice(i,1)[0]);n++}S.log=L`Colour-coded tabs. You find exactly what you need.`;break}
+    case 'tabbed':{let got=false;const want=x=>x.kind==='doc'&&!!rowFor(x);
+      for(const f of [want,x=>x.kind==='doc'])for(const pile of [o.draw,o.discard])for(let i=pile.length-1;i>=0&&!got;i--)if(f(C(pile[i]))){o.hand.push(pile.splice(i,1)[0]);got=true}
+      S.redrawing=[];S.swapSrc='tabbed';S.log=L`Colour-coded tabs. Now tap the cards you want to swap, then Swap.`;break}
     case 'stamppad':o.stampCopies=(o.stampCopies||0)+2;S.log=L`You ink your own stamp pad. Do not ask where you got it.`;break;
     case 'completefile':o.completeFile=true;o.fileTicks=0;S.log=L`Everything in order, in plastic sleeves. The clerk is unsettled.`;break;
     case 'smalltalk':gainFavour(1);drawN(1);S.log=L`You ask about the clerk's son in Germany. You now owe each other.`;break;
@@ -353,8 +356,13 @@ function requestEndTurn(){
   S.keeping=[];
 }
 function toggleSwap(uid){const k=S.redrawing,i=k.indexOf(uid);if(i>=0)k.splice(i,1);else k.push(uid)}
-function doRedraw(){const o=S.office,sel=S.redrawing.filter(u=>o.hand.includes(u));S.redrawing=null;if(!sel.length||!(S.redraws>0))return;
-  o.hand=o.hand.filter(u=>!sel.includes(u));S.redraws--;S.stats.redraws=(S.stats.redraws||0)+1;drawN(sel.length);o.discard.push(...sel);
+// v31: swapping cards comes from Grandma's shopping bag (once per office), Tabbed Folder or the priority ticket.
+const canBagSwap=()=>!!S.office&&!S.tut&&hasTrinket('bag')&&!S.office.bagUsed;
+function startSwap(src){S.redrawing=[];S.swapSrc=src;S.target=null;S.confirm=null}
+function cancelSwap(){S.redrawing=null;S.swapSrc=null}
+function doRedraw(){const o=S.office,sel=S.redrawing.filter(u=>o.hand.includes(u)),src=S.swapSrc;S.redrawing=null;S.swapSrc=null;if(!sel.length)return;
+  if(src==='bag'){if(!canBagSwap())return;o.bagUsed=true}
+  o.hand=o.hand.filter(u=>!sel.includes(u));S.stats.redraws=(S.stats.redraws||0)+1;drawN(sel.length);o.discard.push(...sel);
   S.log=L`You dig through your bag and swap ${sel.length} [[0:card|cards]].`}
 function toggleKeep(uid){const k=S.keeping,i=k.indexOf(uid);if(i>=0)k.splice(i,1);else if(k.length<keepMax())k.push(uid)}
 function afterRows(){
@@ -368,13 +376,13 @@ function afterRows(){
     o.ft1pFired=true;S.stats.ft1p=(S.stats.ft1p||0)+1;o.rows.push({doc:d.ft1p,form:'original',ft1p:true});
     S.overlays.push({stamp:'Fali ti jedan papir',text:told?L`"You're missing one paper." ${clerkName(d)} also needs your ${DOCS[d.ft1p].name}. Exactly like your friend said.`:L`"You're missing one paper." ${clerkName(d)} also needs your ${DOCS[d.ft1p].name}. You have never heard of this document.`,
       hint:L`Tap "Go get it" next to it on the form, or slip [[him|her]] a Small Envelope.`});
-    if(hasRelic('insider')){drawN(2);o.time+=1;S.log=L`Your friend inside slips you a tip.`}
+    if(hasRelic('insider')){drawN(2);o.turnsLeft++;S.log=L`Your friend inside slips you a tip. The window stays open one turn longer today.`}
   }
 }
 function endTurn(keep){
   const o=S.office,d=cur();
-  S.target=null;S.confirm=null;S.keeping=null;S.redrawing=null;
-  keep=(keep||[]).filter(u=>o.hand.includes(u)).slice(0,keepMax());
+  S.target=null;S.confirm=null;S.keeping=null;S.redrawing=null;S.swapSrc=null;
+  keep=(keep||[]).filter(u=>o.hand.includes(u)).slice(0,keepMax());o.keepBonus=0;
   o.discard.push(...o.hand.filter(u=>!keep.includes(u)));o.hand=keep;
   if(o.pendingPaper){o.hand.push(o.pendingPaper);o.pendingPaper=null}
   const it=o.intent;
@@ -392,7 +400,7 @@ function endTurn(keep){
       else{loseP(1);ann={head,stamp:L`New rule`,violet:true,text:L`"Ah, I almost forgot." You also need: ${docName(doc,form)}. It's on the form now. −1 patience.`}}
       break}
     case 'reject':{const rs=o.rows.filter(r=>r.done&&!r.ft1p&&!r.bribed&&!r.paid);if(rs.length){const r=rnd(rs);r.done=false;ann={head,stamp:L`Un-ticked`,violet:true,text:(isFeeRow(r)?L`"This fee stamp is from the old series."`:L`"This ${DOCS[r.doc].name} is the old format."`)+' '+L`That item is no longer ticked. Hand in another one.`}}else ann={head,stamp:L`Nothing`,violet:true,text:L`${who} looks for a problem and, for once, finds none.`};break}
-    case 'break':{const t=hit(it.dmg);o.timePenalty=1;ann={head,stamp:L`−${t} patience`,text:L`"Back in fifteen minutes." It takes forty. You also get 1 less time next turn.`};break}
+    case 'break':{const t=hit(it.dmg);o.handPenalty=1;ann={head,stamp:L`−${t} patience`,text:L`"Back in fifteen minutes." It takes forty. You also draw 1 card less next turn.`};break}
     case 'phone':ann={head,stamp:L`Nothing`,violet:true,text:L`A long phone call about a cousin's wedding. You wait. Nothing else happens.`};break;
     case 'certify':{const r=intentRow(it,certOk);if(r){r.form='certified';r.stricter=true;
       ann={head,stamp:L`Stricter`,violet:true,text:L`"A plain copy? No, no. ${DOCS[r.doc].name}, certified." That line now needs a certified copy.`}}
@@ -403,21 +411,23 @@ function endTurn(keep){
     case 'yawn':{const t=hit(it.dmg);ann={head,stamp:L`−${t} patience`,text:L`Žućko yawns so wide that his hat falls off. He puts it back on, very officially.`};break}
     case 'tail':ann={head,stamp:L`Nothing`,violet:true,text:L`Žućko chases his own tail around the swivel chair. Three times. Then he sits down as if nothing happened.`};break;
     case 'askaround':{const t=hit(2*(S.traces||0));addTraces(-1);ann={head,stamp:L`−${t} patience`,text:L`${who} makes a phone call about you, looking straight at you. Someone has been talking. One Trace fades.`};break}
-    case 'system':o.timePenalty=1;ann={head,stamp:L`System down`,violet:true,text:L`The screen freezes. Everyone waits for "the IT guy". You get 1 less time next turn.`};break;
+    case 'system':o.handPenalty=1;ann={head,stamp:L`System down`,violet:true,text:L`The screen freezes. Everyone waits for "the IT guy". You draw 1 card less next turn.`};break;
   }
   ann.clerk=true;
   S.log=`${ann.stamp}: ${ann.text}`;
   if(S.screen==='end')return;
   ann.itype=it.type;S.overlays.push(ann);
   o.turnsLeft--;
-  if(o.turnsLeft<=0){
-    const close=Math.max(0,(reformOn(6)?10:5)-(hasTrinket('calendar')?3:0));S.stats.closings=(S.stats.closings||0)+1;
-    o.turnsLeft=officeTurns();o.turn=0;loseP(close);if(S.screen==='end')return;newDay();
-    S.overlays.push({head:L`End of the day`,stamp:L`Closed`,violet:true,text:L`The window closes at 15:00 sharp. Come back tomorrow (day ${S.day}). −${close} patience. Ticked items still count, but all your papers are a day older.`});
+  if(o.turnsLeft<=0){closeDay();if(S.screen==='end')return;
+    S.overlays.push({head:L`End of the day`,stamp:L`Closed`,violet:true,text:L`The window closes at 15:00 sharp. Come back tomorrow (day ${S.day}). −${S.lastClose} patience. Ticked items still count, but all your papers are a day older.`+' '+L`Another day here will cost ${closeCost()}.`});
   }
   if(S.screen==='end')return;
   o.intent=rollIntent();startTurn();
 }
+// v31: closing time grows the longer you linger at one office: −5, −8, −11… (Working hours +5, wall calendar −3).
+function closeCost(){const o=S.office;return Math.max(0,5+3*((o&&o.closings)||0)+(reformOn(6)?5:0)-(hasTrinket('calendar')?3:0))}
+function closeDay(){const o=S.office,close=closeCost();S.lastClose=close;S.stats.closings=(S.stats.closings||0)+1;o.closings=(o.closings||0)+1;
+  o.turnsLeft=officeTurns();o.turn=0;loseP(close);if(S.screen==='end')return;newDay()}
 function officeDone(){
   if(S.tut)return tutFinish();
   const d=cur();S.target=null;S.confirm=null;
@@ -428,9 +438,9 @@ function officeDone(){
   addTraces(-1); // people forget a little between offices
   if(isBoss(d)){
     if(lastChapter()){S.screen='end';S.result='win';runEnded();return}
-    chapterCleared();S.chapterEnd=true;gainRedraw();
+    chapterCleared();S.chapterEnd=true;
     S.screen='reward';S.choices=rewardCards(3);return}
-  addToDeck(mkDoc(d.reward,'original'));gainRedraw();
+  addToDeck(mkDoc(d.reward,'original'));
   const notOwned=STRANGE.filter(x=>!ownedDocs().some(c=>c.doc===x)&&OFFICES.slice(S.officeIdx+1).some(o=>o.ft1p===x));
   const docPick=notOwned.length&&Math.random()<0.6?mkDoc(rnd(notOwned)):mkDoc(rnd(futureWants().length?futureWants():[...STAMPS,'photo','birth','utility']));
   S.screen='reward';S.choices=[...rewardCards(2),docPick.uid];
@@ -467,13 +477,16 @@ function errandFor(r){
   const getForm=r.form==='alt'||(r.form==='copy'&&moodOn('originals'))?'certified':r.form;
   return {...PLACES[key]||PLACES.any,get:docName(r.doc,getForm),doc:r.doc,form:getForm};
 }
-// An errand costs the rest of your turn: the clerk acts while you are away. The paper is in your hand next turn.
+// v31: an errand takes the rest of the day. You come back tomorrow with the paper: closing time hits
+// (patience, growing each day) and every paper you own is a day older. The clerk doesn't act: you weren't there.
 function goErrand(){
   const o=S.office,r=o.rows[S.pending];if(!r||r.done){S.screen='office';return}
   const e=errandFor(r);
+  S.target=null;S.confirm=null;S.keeping=null;S.redrawing=null;S.swapSrc=null;
+  closeDay();if(S.screen==='end')return;
   const strange=STRANGE.includes(e.doc),c=mkDoc(e.doc,e.form,moodOn('wetink')?{issued:S.day-1}:{});
-  S.stats.detours++;if(strange)S.bag.push(c.uid);else{addToDeck(c);o.pendingPaper=c.uid}S.screen='office';
-  S.overlays.push({head:e.place,stamp:L`Obtained`,violet:true,text:e.text+' '+(strange?L`${e.get} is in your bag: hand it over from the form. While you were away, the window kept working.`:L`${e.get} will be in your hand next turn. While you were away, the window kept working.`)});
-  requestEndTurn();
+  S.stats.detours++;if(strange)S.bag.push(c.uid);else{addToDeck(c);o.hand.push(c.uid)}S.screen='office';
+  S.overlays.push({head:e.place,stamp:L`Obtained`,violet:true,text:e.text+' '+L`By the time you're back, the window is closed. You return the next morning (day ${S.day}). −${S.lastClose} patience, and all your papers are a day older.`+' '+(strange?L`${e.get} is in your bag: hand it over from the form.`:L`${e.get} is in your hand.`)});
+  o.intent=rollIntent();startTurn();
 }
 function backToWindow(){const o=S.office,d=cur();o.intent=rollIntent();startTurn();S.screen='office';S.log=L`Next morning, back at ${d.window}. ${clerkName(d)} does not remember you.`}

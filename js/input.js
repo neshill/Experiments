@@ -88,8 +88,8 @@ document.addEventListener('click',e=>{
     case 'cancel':S.target=null;S.confirm=null;break;
     case 'end':if(S.keeping)endTurn(S.keeping);else requestEndTurn();break;
     case 'keepCancel':S.keeping=null;break;
-    case 'redraw':if(S.redrawing){if(S.redrawing.length)doRedraw();else S.redrawing=null}else if(S.redraws>0&&!S.keeping){S.redrawing=[];S.target=null;S.confirm=null}break;
-    case 'redrawCancel':S.redrawing=null;break;
+    case 'redraw':if(S.redrawing){if(S.redrawing.length)doRedraw();else cancelSwap()}else if(canBagSwap()&&!S.keeping)startSwap('bag');break;
+    case 'redrawCancel':cancelSwap();break;
     case 'fromBag':fromBag(+b.dataset.i);break;
     case 'pay':payAtBank(+b.dataset.i);break;
     case 'fetch':S.pending=+b.dataset.i;S.target=null;S.confirm=null;S.screen='errand';break;
@@ -254,7 +254,7 @@ if(typeof document.createElement==='function'){
     if(k==='m'||k==='M'||k==='c'||k==='C'){const v=/m/i.test(k)?'map':'deck';if(['intro','rules','closed','options','tutdone'].includes(S.screen)||S.tut&&v==='map')return;S.view=S.view===v?null:v;render();return}
     if(S.view||S.screen!=='office')return;
     if(k===' '||k==='e'||k==='E'){e.preventDefault();if(S.tut&&!tutAllow('end')){render();return}if(S.keeping)endTurn(S.keeping);else requestEndTurn();render();return}
-    if((k==='r'||k==='R')&&!S.tut){if(S.redrawing){if(S.redrawing.length)doRedraw();else S.redrawing=null}else if(S.redraws>0&&!S.keeping)S.redrawing=[];render();return}
+    if((k==='r'||k==='R')&&!S.tut){if(S.redrawing){if(S.redrawing.length)doRedraw();else cancelSwap()}else if(canBagSwap()&&!S.keeping)startSwap('bag');render();return}
     if(/^[1-9]$/.test(k)){const el=document.querySelectorAll('.lane.fan .card[data-uid]')[+k-1];if(el){if(g)clear();hoverOff();el.dispatchEvent(new MouseEvent('click',{bubbles:true}))}}
   });
   document.addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('.card'))e.preventDefault()});

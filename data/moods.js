@@ -10,13 +10,13 @@ const MOODS={
   camera:{title:'Knows the camera is on.',text:'Shady cards cost double patience here.',hurts:'shady'},
   noenvelope:{title:'Just had a talk with the director.',text:"Small Envelope can't be played here.",hurts:'shady'},
   early:{title:'Wants to leave early.',text:'The window closes one turn earlier each day.',hurts:'all'},
-  lunch:{title:'Hungry. Lunch is at 11.',text:'On the 3rd turn of each day the window is shut: no time, only free cards.',hurts:'all'},
-  ticket:{title:'Strict about the queue.',text:'First turn of each day: 1 less time.',hurts:'all',mild:true},
+  lunch:{title:'Hungry. Lunch is at 11.',text:"On the 3rd turn of each day the window is shut: you can't hand in papers, only play actions.",hurts:'all'},
+  ticket:{title:'Strict about the queue.',text:'First turn of each day: draw 1 card less.',hurts:'all',mild:true},
   nosleep:{title:"Didn't sleep.",text:'Sighs and coffee breaks hit 2 harder.',hurts:'all',mild:true},
   memo:{title:'Got a new memo.',text:'Remembers new rules twice as often.',hurts:'all'},
   coffee:{title:'Dying for a coffee.',text:'Coffee for the Clerk costs no patience here and draws 1.',good:true},
   prepared:{title:'Loves a tidy file.',text:'Every line you tick with a document: +2 patience.',good:true},
   birthday:{title:"It's [[his|her]] birthday.",text:'Sighs and coffee breaks hit 2 softer.',good:true},
-  friday:{title:'Friday feeling.',text:'+1 time on the first turn of each day.',good:true}
+  friday:{title:'Friday feeling.',text:'First turn of each day: draw 1 card more.',good:true}
 };
 const MOOD_COUNT=[1,1,1,1,2],MOOD_CLASH=[['early','lunch'],['camera','noenvelope'],['camera','coffee'],['nosleep','birthday'],['ticket','friday']];

@@ -12,13 +12,15 @@ const TRINKETS={
   flask:{name:"Grandpa's flask",text:'Start every chapter with a bottle of rakija in your pocket.',how:'Finish chapter 2.'},
   medal:{name:'Medal for Labour',text:'+10 maximum patience.',how:'Get your first pension (win a run).'},
   dmbill:{name:'Old Deutschmark note',text:'The first Small Envelope of each chapter costs no patience.',how:'Hand over 8 envelopes, all runs together.'},
-  bookmark:{name:'Bookmark from the law library',text:'Start every run with Cite the Law.',how:'Beat a boss as Amra.'}
+  bookmark:{name:'Bookmark from the law library',text:'Start every run with Cite the Law.',how:'Beat a boss as Amra.'},
+  // v31: redraws are no longer a run-wide supply on screen. They come from this bag, Tabbed Folder and the priority ticket.
+  bag:{name:"Grandma's shopping bag",text:'Once per office, swap any cards in your hand for new ones.',how:'You start with it.'}
 };
-const START_TRINKETS=['thermos'];
+const START_TRINKETS=['thermos','bag'];
 // Pocket items: single-use, like potions. You hold up to 2.
 const POCKET={
   rakija:{name:'Bottle of rakija',text:'The clerk skips their next 2 actions.',office:true},
   pita:{name:"Grandma's pita",text:'Recover 8 patience.'},
-  ticket:{name:'Priority ticket',text:'+2 time this turn.',office:true}
+  ticket:{name:'Priority ticket',text:'Swap any cards in your hand for new ones.',office:true}
 };
 const POCKET_MAX=2;

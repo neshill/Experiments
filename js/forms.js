@@ -62,9 +62,7 @@ function futureWants(){const out=[];OFFICES.slice(S.officeIdx+1).forEach(d=>[...
 // Strange papers never go into your cards: they wait in your bag and are handed over straight from the form.
 const bagDocs=()=>(S.bag||[]).map(C);
 const bagHas=doc=>bagDocs().some(c=>c.doc===doc);
-// Redraws: a run-wide supply. Mid-turn, swap any cards for new ones, free.
-const REDRAW_START=3,REDRAW_MAX=6;
-function gainRedraw(){S.redraws=Math.min(REDRAW_MAX,(S.redraws||0)+1)}
+// v31: the run-wide redraw supply is gone (see canBagSwap/startSwap in js/run.js).
 // Is mood k on at the window you are at? (never in the practice office)
 function moodOn(k){return !!(S&&!S.tut&&S.office&&S.moods&&(S.moods[S.officeIdx]||[]).includes(k)&&!(S.office.cancelled||[]).includes(k))}
 // The moods you can know about for office idx: all of them once you are there; on the way, the Bank's second one stays hidden unless you heard it.

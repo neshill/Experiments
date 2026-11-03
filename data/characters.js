@@ -5,7 +5,7 @@
 const CHARACTERS={
   student:{name:'Amra',role:'The Student',style:'book',patience:80,
     blurb:'Top of her class. Has read every regulation, twice, and highlighted the important parts.',
-    perk:'Highlighter',perkText:'At every office you hear in advance the first thing the clerk will "almost forget". Starts with 2 extra redraws.',redraws:2,
+    perk:'Highlighter',perkText:'At every office you hear in advance the first thing the clerk will "almost forget". Starts with a Tabbed Folder.',
     add:['notary','rulebook','tabbed'],remove:['envelope'],unlock:null},
   fixer:{name:'Braco',role:'The Fixer',style:'conn',patience:80,favours:1,
     blurb:'Knows everyone. Everyone owes him. He owes everyone.',

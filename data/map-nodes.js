@@ -1,8 +1,8 @@
 // ---------- v22: the map between offices ----------
 // Every step on the map is one day. Good stops help, bad ones hurt, ? is a small choice.
 const NODES={
-  cafe:{kind:'good',name:'Café across the street',text:'Sit down. Have a coffee. Recover 10 patience.'},
-  kafana:{kind:'good',name:'Kafana',text:'Recover 20 patience. Tomorrow you start with 1 less time.'},
+  cafe:{kind:'good',name:'Café across the street',text:'Sit down. Have a coffee. Recover 10 patience. Draw 1 card more on your first turn at the next window.'},
+  kafana:{kind:'good',name:'Kafana',text:'Recover 20 patience and +1 Favour. Tomorrow you draw 1 card less on your first turn.'},
   kiosk:{kind:'good',name:'Kiosk & photo booth',text:'Get one fee stamp of each kind and 1 Photo 3×4.'},
   copyshop:{kind:'good',name:'Copy shop',text:'Pick an original. Get 2 copies of it.'},
   counter:{kind:'good',name:'Citizen service centre',text:'Re-issue up to 2 documents: they are dated today.'},
@@ -10,7 +10,7 @@ const NODES={
   shred:{kind:'good',name:'Clean out your cards',text:'Throw away one card.'},
   drawer:{kind:'good',name:"Your aunt's drawer",text:'She keeps every paper ever issued. Take one strange paper.'},
   bus:{kind:'bad',name:"The bus doesn't come",text:'You wait 50 minutes in the rain. −6 patience.'},
-  reno:{kind:'bad',name:"Neighbour's renovation",text:'Drilling from 7:00. −5 patience, and 1 less time on your first turn tomorrow.'},
+  reno:{kind:'bad',name:"Neighbour's renovation",text:'Drilling from 7:00. −5 patience, and 1 card less on your first turn tomorrow.'},
   flood:{kind:'bad',name:'Burst pipe upstairs',text:'Water on your papers. One document is smudged and counts as old. −2 patience.'},
   inlaw:{kind:'bad',name:'Mother-in-law visits',text:'−8 patience. She leaves you a pita.'},
   strike:{kind:'bad',name:'Post office strike',text:'Nobody tells you until you get there. −5 patience.'},
@@ -31,8 +31,8 @@ const EVENTS={
     a:{label:'Take it to the police',text:'Recover 8 patience. Good karma.'},b:{label:'Leave it at the kiosk',text:'Nothing happens.'}}
 };
 const RELICS={
-  notaryneighbor:{name:'Neighbor who is a notary',text:'Notarize costs 1 time.'},
+  notaryneighbor:{name:'Neighbor who is a notary',text:'Notarized copies never get too old.'},
   policeuncle:{name:'Uncle in the police',text:'Shady actions cost 1 less patience.'},
   thickskin:{name:'Thick skin',text:'Clerk sighs and coffee breaks cost you 1 less patience.'},
-  insider:{name:'Friend on the inside',text:'When a clerk says FT1P, draw 2 and gain 1 time.'}
+  insider:{name:'Friend on the inside',text:'When a clerk says FT1P, draw 2 and the window stays open 1 more turn today.'}
 };

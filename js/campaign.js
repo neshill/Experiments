@@ -80,7 +80,6 @@ function chapterCleared(){
 function startNextChapter(){
   const heal_=reformOn(7)?10:25;
   setChapter(S.chapter+1);S.day+=7;heal(heal_);
-  S.redraws=Math.max(S.redraws||0,REDRAW_START-(reformOn(5)?1:0));
   rollChapter();chapterPapers();chapterPerks();
   S.lastHeal=heal_;
   enterOffice();
