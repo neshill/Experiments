@@ -925,3 +925,13 @@ main.mapmain~.overlay.rcpt:not(.drive){animation:none}
 .ea-warn{margin:0;padding:8px 10px;border-radius:6px;background:var(--red);color:#fff;font-weight:700;font-size:13.5px}
 .panel.errask .pm-btns{display:flex;gap:8px}.panel.errask .pm-btns .btn{flex:1}
 @media (max-width:380px){.ea-trade{grid-template-columns:1fr}}
+
+/* v33: play-data ask on the title screen (js/analytics.js), same paper card as the tutorial invite */
+.an-ask{position:fixed;z-index:5;left:50%;transform:translateX(-50%);bottom:calc(36px + env(safe-area-inset-bottom,0px));width:min(440px,calc(100% - 32px));box-sizing:border-box;
+  background:var(--paper-2);border:2.5px solid var(--ink);border-radius:14px;padding:11px 13px 12px;box-shadow:0 4px 0 var(--ink),0 12px 30px rgba(0,0,0,.4);animation:tutFade .4s .2s both}
+.an-ask>b{display:block;font-family:var(--f-display);font-weight:800;font-size:19px;text-transform:uppercase;line-height:1.05}
+.an-ask p{margin:5px 0 9px;font-size:14px;line-height:1.4}
+.an-ask .btnrow{margin:0;gap:8px}
+.an-ask .btn{padding:7px 14px;font-size:14px}
+.an-note{margin:6px 0 0;font-size:13px;line-height:1.4;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.an-ask{animation:none}}

@@ -5,6 +5,8 @@ Web prototype (v30): phone portrait plus a landscape layout for desktop and hand
 
 **Version:** the bottom-right of the title screen shows `v24 · build N`. N is the commit number, stamped into `js/version.js` automatically by `.githooks/pre-commit` on every commit (run `git config core.hooksPath .githooks` once per clone to turn it on). Compare it with the commit count on GitHub to see whether the live page is the latest. Bump `GAME_VERSION` (in `js/version.js`) by hand for a new prototype version.
 
+**Working copy and publishing:** this folder (`~/Desktop/Projects/FT1P`) is the working copy and its own git repo: edit and commit here (the pre-commit hook stamps the build number). Work files stay here: `Claude outputs/`, source art in `assets-*/`, the `ASSETS-*.md` briefs, `ft1p_icon.png`, `feedback-apps-script.gs`, and the translation sources in `i18n/` (`*.json`, `bake.py`, `check_tr.py`). To publish, run `./deploy.sh`: it copies only the playable files (`index.html`, icon, music, `art/`, `css/`, `data/`, `js/`, `i18n/*.js`, README, CHANGELOG) to `games/ft1p/` in the Experiments repo (github.com/neshill/Experiments), then commit and push there. Never edit the game inside the Experiments repo. History up to v32 came over from the Experiments repo, where FT1P used to sit at the root.
+
 **Changes and releases:** every version is listed in `CHANGELOG.md` (newest first) and tagged in git (`v24`, `v22`, …), so `git checkout v22` gets that build back. The release steps are at the bottom of the changelog.
 
 ## Where things live (v30)

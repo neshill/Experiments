@@ -2,6 +2,12 @@
 
 Newest first. Each version is a git tag (`v24`, `v22`, …) on the last commit of that version, so `git checkout v22` gives you that build exactly. The build number is the commit count, shown on the title screen as `v24 · build N`. Full design notes for every version live in the game design doc's change log.
 
+## v33 — 2026-11-06
+- **Play data (opt-in).** The title screen asks once: "Help test the game?" With a yes, the game sends anonymous play events to Mixpanel plus a screen recording (session replay), so playtests show where people hesitate, mis-tap or quit without anyone writing it up. Options (title and pause menu) has a switch to turn it off or on again. Typed text (the feedback form) is never recorded.
+- Events: Session Start, Screen (time on each screen, seconds to the first tap, taps and dead taps), Tap (every button), Card Tap (including blocked taps and why), Run Start/End, Office Enter/Done, Turn End, Map Stop, Errand, Reward Pick, Tutorial steps, Feedback Sent, Dead Tap (taps on things that do nothing), JS Error, Leave/Return.
+- All of it lives in `js/analytics.js`, which watches the game from the outside (no game rules changed). The Mixpanel library is a pinned copy in `js/vendor/`. Copies opened from this computer send nothing unless the address ends in `?track`. Empty `ANALYTICS_TOKEN` to turn it off for a build.
+- New lines are English only for now.
+
 ## v32 — 2026-11-03
 - Stops on the map now show their result as a pop-up that slides up over the map: the stop's picture, what happened, and chips for exactly what changed (patience, Favours, cards, pocket, bag, connections, Vitrina unlocks, next-window hand size).
 - "Go get it" is a pop-up over the window instead of its own screen: the paper's picture, "You get" next to "It costs", and a warning when the closing-time patience would end the run. Coming back shows the same kind of pop-up.
