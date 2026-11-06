@@ -1,10 +1,14 @@
 # Redukcija — Game Design Document
 
-Last updated 3 Nov 2026 · Mirza Sadovic
+Last updated 6 Nov 2026 · Mirza Sadovic
 
 This file is the game design document. It lives next to the game in the Redukcija folder and is versioned with it in git. **Every change to the game also updates this file:** the current-build section, the change log, and any section the change touches.
 
 ## Prototype v5.0 — current build
+
+**v5.0.2 (6 Nov 2026):** about half the reading. Card situations are one or two short sentences (about 11 words on average, was 21), responses one line (about 7 words, was 14). Story that needs no decision is a **note**: a card you tap through, played before the morning screen (day 1: the notice, your household and story, the building; then official notices, a new event, days that passed). The morning is the day, the strip and a short *Today* list; the night lost its paragraphs. Mechanics, arrows and balance unchanged.
+
+**v5.0.1 (6 Nov 2026):** the decision is one card. Its bottom is split into the two choices (left choice on the left half, right on the right), the result plays on the same card, and every choice label is four words or fewer. Rules, numbers and card text are otherwise unchanged. See *The decision card*.
 
 v5.0 is the first step of `PROPOSAL-v5.md` (*v5.0: the new core*). The game is no longer one authored week: the city announces a water reduction, you get a rolled household through it, the city extends it, and if you reach the end the next run is a bigger household. Code lives in this folder (`index.html`, one file), tagged `v5.0` in git. The authored week of v4.4 (Almir's family, 42 cards) is tagged `v4.4`; its design is in this file at that tag.
 
@@ -49,6 +53,8 @@ Every night Face also drifts a quarter of the way back to 50 (keeping up an act 
 
 | Version | Date | Build | What changed |
 | --- | --- | --- | --- |
+| v5.0.2 | 6 Nov 2026 | 13 | **The text cut.** All 79 cards rewritten shorter, with the detail that makes each one personal kept (situations ~11 words on average, was ~21; responses ~7, was ~14; the same number of text variants, so the dice and the balance are unchanged; `sim.js` and `dominance.js` give the same results). **Notes (decisionless cards):** a card with an eyebrow, one big line, an optional smaller line, portraits where people are introduced, and *Tap to continue* (also Enter, Space or →). They play before the morning screen: on day 1 the reduction notice, your household with the story context and circumstances, and the four neighbours (this replaces the long day-1 panel); official notices (*Extended to Sunday: 2 more days.*), a new event, and days that passed in a time jump. **Morning:** the day, the strip, then *Today*: the delivery, any event as name and rule, the radio. **Night:** the explanation paragraph is gone (it's in *How to play*); shorter night lines and time-jump line. Context, circumstance and event lines shortened; official notice texts shortened (and *1 days* fixed). Why: Mirza's note of 6 Nov (too much reading; story without a decision on interstitial cards). |
+| v5.0.1 | 6 Nov 2026 | 12 | **One card.** The tray of two choice buttons under the card and the hint line are gone: the card's bottom is split into two halves, the left choice on the left and the right choice on the right, each with its label and arrow chips. Swipe the card, or tap a half; leaning or hovering darkens that half, fades the other and previews on the HUD as before. Pictograms leave the choices (they stay on the result and in *This run*). **The result** keeps the card's shape: the choice, the exact changes, the response, and a *Tap to continue* strip where the choices were; *Saved on this device* only shows if saving fails. **Labels:** 40 of 158 choice labels shortened to four words or fewer so they fit a half at phone width (one, *Miss it for the tanker*, keeps five). Why: Mirza's note of 6 Nov: too much reading, and the left/right decision should live inside one card, not three separate pieces. The text cut itself is the next step (v5.0.2). |
 | v5.0 (publishing) | 3 Nov 2026 | 11 | Workflow only; the game is unchanged. This folder (`~/Desktop/Projects/Redukcija`) is now the one working copy, and the Experiments repo is a deploy target only. New `deploy.sh` copies just the playable files (`index.html`, `apple-touch-icon.png`, `audio/`, README, CHANGELOG, GDD) to `games/redukcija/` in Experiments; work files (Claude outputs, screenshots, prompts, tools, style tests, proposals, ChatGPT originals) stay here. README publishing notes rewritten to match. Why: keep drafts and tools out of the live site and stop the game being edited in two places. |
 | v5.0 | 3 Nov 2026 | 10 | **The new core** from `PROPOSAL-v5.md`. **Run:** one water reduction, announced for a fixed number of days and extended by the city (about 4 runs in 5 at least once; a second time at level 2 about a third of the time; a burst main can add more); reaching the end is a clear. **Levels 1–2** (single person, couple); clearing moves you up, failing replays the level with a new household. **Four two-edged meters** (Water, Spirits, Face, Money, 0–100, start 50) replace water, Food, Hygiene, Spirits, credits, errands and strain; eight edge endings (top edges only from level 2). **Arrows on the chips** (▲ 6–10, ▲▲ 12–18) instead of numbers; exact numbers stay on the bars. **5 cards a day** from a bag (conditions, weights, cooldowns, name slots, variants), with story beats placed in time and scheduled consequences first. **Time jumps** from day 4, every other night, never over a story beat. **Rolled households**: names and looks, 3 story contexts (the wedding, the exam, just moved in), 4 circumstances (top floor, ground floor, night shift, works from home). **Neighbours**: 4 archetypes (the retired driver, the elder upstairs, the gossip, the spiteful one), each with a hidden feeling, memories, favours and revenge 1–5 days later, and cards that react to your meters (lots of water draws a report, lots of fun looks elitist, low Face gets gossiped about, spare money brings loan requests). **The city's people** recur in every run: Mr Begić at counter A17, Zoran the foreman, Spokesman Kovač, Mira the tanker driver, Lana from City TV. **Events**: heatwave, tanker strike, election week, burst main. **Card layout**: the speaker's portrait on a band coloured by place (home, stairwell, street, office), the text, then two choices with a pictogram each (16 pictograms) and arrow chips. **Morning**: a strip of the reduction's days (days the city added are hatched), the official notice when it changes, the delivery, the event, the radio (reassuring, then defensive, then silent); day 1 introduces the household, the story and the building. **Night**: *Running low* and, from level 2, *Running high*. **Endings**: a picture for each of the eight edges and for getting through; *Endings found* on the title. **Tools**: `sim.js` reports clear rate and the ending per level and play style, card frequency, repeats within a run and across 5 runs, and cards that never come up; `dominance.js` checks arrows. Save format v3 (a v4 week in progress starts over). |
 | v4.4 | 3 Nov 2026 | 9 | New look. **Illustrated scenes:** the voxel renderer is replaced by flat vector illustration drawn in code as SVG (soft shapes, no outlines, short light and dark hatching strokes for texture), after reference illustrations. **Humans again:** the animals are gone; everyone is drawn by one person builder (hair, clothes, poses, what they hold). **Muted palette everywhere:** cream paper, brick, sand, sage, slate blue, charcoal; resource colours muted but still distinct. **No more pixel UI:** rounded corners, soft shadows, smooth icons, pill-shaped chips; motion eased instead of stepped. The scene frames the people (a camera that zooms to who is there) instead of always showing the whole room; sitting people sit side-on at the table. Morning and night themes retinted. Story, rules and numbers unchanged. |
@@ -61,6 +67,16 @@ Every night Face also drifts a quarter of the way back to 50 (keeping up an act 
 | v2 | 30 Oct 2026 | 2 | Visual pass: light neutral pixel style (notched corners, hard shadows, dithering), one colour + pixel icon per resource, water tank as 40 blocks, need tiles with 10 blocks and LOW state, cost chips (filled gain / framed cost / dashed chance), blinking preview, portrait slots, Barlow Condensed + Atkinson Hyperlegible. |
 | v1 | 30 Oct 2026 | 1 | First Claude version: swipe cards with live preview, strain instead of Health, two supply schedules, seeded tanker, tracked promises (sea, Sara), Family memories, complaint file, FT1P-style shell. Rebalanced from 400 simulated weeks per play style. |
 | v0 | 25 Oct 2026 | — | ChatGPT concept: design doc 0.1 and a 7-day button prototype, 42 cards. Kept in the folder for reference. |
+
+## Locked decisions
+
+Decisions Mirza has made. Don't reopen them without a new reason from playtest.
+
+| Date | Decision |
+| --- | --- |
+| 6 Nov 2026 | **The decision is one card** with its bottom split into the two choices (direction B of three: A was Reigns-style choices on lean only, C two rows inside the card). The result plays on the same card. |
+| 6 Nov 2026 | **Text budget:** a card's situation is one or two short sentences (aim ~15 words), a response one line (aim ~10 words) or none. The morning is the day, the strip and *Today*; everything else that tells story without a choice is a note. |
+| 6 Nov 2026 | **Less reading, same emotion.** Choice labels are four words or fewer. Story that needs no decision goes on decisionless cards (tap to continue) rather than into card text. |
 
 ## Pitch & pillars
 
@@ -194,12 +210,13 @@ One speaker, one short situation, two things you could *do*. Top to bottom:
 
 1. **The speaker:** a band coloured by place (home sand, stairwell sage, street pale blue, office grey; the place name sits top right on wider screens) with their portrait (a head-and-shoulders crop from the person builder), the eyebrow (time of day and *2 of 5*, or the story context for a beat), their name and role (neighbours: archetype and floor).
 2. **The title and the text.** Name slots (`{partner}`, `{driver}`, `{spiteful.he}`…), 1–3 variants on some cards, and lines that only appear when a story tag is set (what you told the gossip, whether the city extended, how many complaints you've filed).
-3. **Two choices**, each a pictogram of the action, the label, a ← / → key cap and **arrow chips**: a gain filled with the meter's colour (*Water ▲*), a cost white and framed (*Spirits ▼▼*). Promise chips in amber (*Promise*, *Keeps promise*), *Breaks promise* in red, *End date −1* in slate.
+3. **Two choices, as the card's two bottom halves** (v5.0.1): the left choice on the left half with a ←, the right choice on the right half with a →, each with its label (four words or fewer) and **arrow chips**: a gain filled with the meter's colour (*Water ▲*), a cost white and framed (*Spirits ▼▼*). Promise chips in amber (*Promise*, *Keeps promise*), *Breaks promise* in red, *End date −1* in slate.
 
 **The 16 pictograms** (`PICT`): pour · boil · wash · cook · queue · carry · share · refuse · smile ("it's fine") · complain · record · pay · hide · knock · wait · leave.
 
 - **Swipe, tap, hover, keys** as before. Leaning or hovering previews on the HUD: the bars that would move get a frame, an arrow badge by their name and a soft band over the range the meter could land in (6–10 or 12–18 away), so you see roughly where it goes without an exact number.
-- **After the decision:** the same band and portrait, the choice with its pictogram, the exact changes as chips (the HUD bars animate the same numbers), notes for promises and end-date changes, then the response. The whole card is the Continue button (*What happens next* if a meter hit an edge).
+- **Swipe or tap a half.** Leaning or hovering darkens that half and fades the other. The pictogram of each action shows on the result and in *This run*, not on the choice.
+- **After the decision:** the same card: band and portrait, the choice with its pictogram, the exact changes as chips (the HUD bars animate the same numbers), notes for promises and end-date changes, then the response. The bottom strip where the choices were says *Tap to continue* (*What happens next* if a meter hit an edge, *Put the day to bed* after the last card); the whole card is the button.
 - **No disabled options:** with two-edged meters every option is always allowed; the edges are the limit.
 - **Arrows, to try:** the first playtest has to check that a bad outcome still feels traceable to the choices.
 
@@ -248,13 +265,13 @@ Portrait phone first, one screen; landscape at 900 px and wider moves the HUD in
 
 - **Top bar:** day tile (*3/7*: today out of the current end date, the weekday, *Back after Sun*, with *they say* once the city has extended); Home button (badge = open promises); sound; pause.
 - **HUD:** four bars in a 2×2 grid (a column in landscape), each with the exact number (*58/100*), a dark notch at 20, and a hatched danger zone at the bottom 20%; from level 2 also a notch at 80 and a zone at the top. The foot says what tonight does (*tonight −8*, Face *drifts to 50*), or a *Low* (red) / *High* (amber) tag. Changes animate as in v4.3 (a loss leaves a red chunk that drains, a gain fills in, the number counts and floats up).
-- **Stage:** five progress ticks, the card (portrait band, title, text), the two choices under it in the tray, one hint line.
+- **Stage:** five progress ticks and one card: portrait band, title, text, and the two choices as its bottom halves (v5.0.1; no tray, no hint line).
 - **Morning and night** keep their v4.3 looks. The morning adds the reduction strip and the official notice; the night has *Running low · running high* and the overnight bars, and the time-jump line when days pass.
 - **Pictures:** only the title (a rolled household under the AQUA RESIDENCES billboard) and the endings have illustrated scenes now. Cards use portraits and pictograms, so each new card costs only text.
 
 ### Interaction
 
-- Touch: swipe the card, or tap a choice. Mouse: hover to preview, click to choose.
+- Touch: swipe the card, or tap one of its halves. Mouse: hover a half to preview, click to choose.
 - Keys: ← / → or 1 / 2 choose, Enter continue, F household, H this run so far, Esc or P pause, M sound on/off.
 - No timers, no fast input anywhere. Saves after every decision; *Replay this morning* restores the day's start (the run's dice are part of the save, so it replays the same).
 

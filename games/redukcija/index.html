@@ -488,6 +488,34 @@ body[data-theme="night"] .jumpline{color:#c9c3ef}
   .title .ladder{grid-column:2}
 }
 @media (min-width:430px){.placetag{display:flex}.phead .who{padding-right:70px}}
+/* v5.0.1: one card. The bottom of the card is split into the two choices; leaning darkens one half and fades the other.
+   The result keeps the same shape: its bottom strip says Tap to continue. */
+.pcard.one{padding-bottom:0;overflow:hidden}
+.halves{display:grid;grid-template-columns:1fr 1fr;margin:16px -16px 0;border-top:1.5px solid var(--line)}
+.half{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:9px;padding:13px 14px 15px;min-height:96px;transition:background .15s,color .15s,opacity .15s}
+.half.r{border-left:1.5px solid var(--line);align-items:flex-end;text-align:right}
+.half .hl{display:flex;gap:6px;align-items:baseline;font:700 18px/1.15 var(--f-text)}
+.half .ha{color:var(--muted);font-weight:700}
+.half.r .chips{justify-content:flex-end}
+.half:focus-visible{outline:3px solid var(--water);outline-offset:-3px}
+.half.hot,.half:hover{background:var(--ink);color:#fff}
+.half.hot .ha,.half:hover .ha{color:#fff}
+.half.hot .chip.cost,.half:hover .chip.cost{background:#fff}
+.halves:has(.hot) .half:not(.hot){opacity:.35}
+.resultcard.one .cta{justify-content:center;margin:16px -16px 0;padding:15px 16px 16px;border-top:1.5px solid var(--line);color:var(--muted);font-size:16px}
+.resultcard.one .cta .arrow{width:auto;height:auto;background:none;color:inherit;font-size:16px;animation:none}
+.resultcard.one:hover .cta{color:var(--go-dark)}
+/* v5.0.2: notes, the decisionless cards */
+.notecard{text-align:center}
+.nbody{display:flex;flex-direction:column;align-items:center;gap:12px;padding:30px 6px 8px}
+.nbig{font:700 28px/1.15 var(--f-num);letter-spacing:.01em;text-wrap:balance}
+.nsmall{font-size:17px;line-height:1.45;color:var(--muted);text-wrap:balance}
+.nrule{font:700 14px/1.3 var(--f-num);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.nppl{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 16px}
+.nppl .who{display:flex;flex-direction:column;align-items:center;gap:4px;font:700 15px/1 var(--f-num)}
+.nppl .portrait.mini{width:52px;height:52px}
+.notecard .stamp{display:inline-block;font:800 12px/1 var(--f-num);letter-spacing:.12em;text-transform:uppercase;color:var(--strain);border:2px solid var(--strain);border-radius:6px;padding:4px 7px 3px;transform:rotate(-3deg)}
+.notecard.ext .nbig{color:var(--strain)}
 </style></head><body><div id="app"></div><dialog id="dialog"></dialog>
 <script>
 (()=>{
@@ -561,26 +589,26 @@ const MAXLEVEL=2;
 
 // ---------- story contexts: one per run, the spine of its emotional arc. Beats are placed in time (A = announced end). ----------
 const CONTEXTS={
-  wedding:{name:'The wedding',line:'Your sibling {sib} is getting married on {wedDay}, the day after the water is supposed to come back.',
+  wedding:{name:'The wedding',line:'{sib}, your sibling, marries on {wedDay}: the day after the water comes back.',
     beats:A=>[['x_wed_1',2],['x_wed_2',Math.max(3,A-2)],['x_wed_3',A],['x_wed_4',A+1]]},
-  exam:{name:'The exam',line:'Your licensing exam is on {examDay}, the last day of the reduction. You have been studying for a year.',
+  exam:{name:'The exam',line:'Your licensing exam is on {examDay}, the last day. A year of studying.',
     beats:A=>[['x_exam_1',1],['x_exam_2',Math.max(2,A-3)],['x_exam_3',A-1],['x_exam_4',A]]},
-  newhere:{name:'Just moved in',line:'You moved in nine days ago. The boxes are still in the hall and nobody in the building knows your name.',
+  newhere:{name:'Just moved in',line:'You moved in nine days ago. Nobody here knows your name.',
     beats:A=>[['x_new_1',1],['x_new_2',3],['x_new_3',Math.max(4,A-1)],['x_new_4',A]]},
 };
 // ---------- circumstances: 1–2 per run; they change the mechanics ----------
 const CIRCS={
-  top:{name:'Top floor',line:'Fifth floor, no lift. The lowest pressure in the building, and every container comes up the stairs.',rule:'Deliveries 3 smaller · carrying costs Spirits'},
-  ground:{name:'Ground floor',line:'Ground floor, next to the entrance. First to get the water, first to be asked for it.',rule:'Deliveries 3 bigger · neighbours ask more often'},
+  top:{name:'Top floor',line:'Fifth floor, no lift. Every container comes up the stairs.',rule:'Deliveries 3 smaller · carrying costs Spirits'},
+  ground:{name:'Ground floor',line:'Ground floor, by the entrance. First to get water, first to be asked.',rule:'Deliveries 3 bigger · neighbours ask more often'},
   nightshift:{name:'Night shift',line:'You work nights at the bakery. You sleep through the morning queues.',rule:'+3 Money a night · queueing costs Spirits'},
-  wfh:{name:'Works from home',line:'You work from home. The camera sees the kitchen, and the kitchen shows everything.',rule:'+2 Money a night · video-call cards'},
+  wfh:{name:'Works from home',line:'You work from home. The camera sees the kitchen.',rule:'+2 Money a night · video-call cards'},
 };
 // ---------- events: multi-day states that make related cards likelier ----------
 const EVENTS={
   heat:{name:'Heatwave',len:[3,4],line:'A heatwave. Thirty-six in the shade, and the shade is rationed too.',rule:'Water −3 more each night'},
   strike:{name:'Tanker strike',len:[2,3],line:'The tanker drivers are on strike. They haven’t been paid since spring.',rule:'No building deliveries'},
-  election:{name:'Election week',len:[3,3],line:'Election week. Suddenly everyone in a suit is very interested in your street.',rule:'The city wants you to look fine'},
-  burst:{name:'Burst main',len:[1,1],line:'A main has burst on Titova street. Water is running down the hill into the drains.',rule:'May extend the reduction'},
+  election:{name:'Election week',len:[3,3],line:'Election week. Suddenly everyone in a suit loves your street.',rule:'The city wants you to look fine'},
+  burst:{name:'Burst main',len:[1,1],line:'A main has burst on Titova street. Water runs downhill into the drains.',rule:'May extend the reduction'},
 };
 
 // ---------- the radio: reassuring, then defensive, then silent ----------
@@ -593,258 +621,259 @@ const RADIO={
 // ---------- the bag ----------
 const CARDS=[
 // ===== routine: meals, washing, laundry, the toilet bucket =====
-card('r_porridge','routine','you','home','A pot is a commitment','Porridge needs a pot, and a pot needs washing. The bakery on the corner has a queue, but it’s a short one.',
-  opt('Cook porridge.','cook',{water:-1,spirits:1},'It’s warm and it’s yours. You leave the pot soaking in yesterday’s rinse water.'),
-  opt('Buy a pastry.','pay',{money:-1,face:1},'You eat it on the bench outside. People see a person having a nice morning.'),{cd:3}),
-card('r_shirt','routine','you','home','One clean shirt',['You have one clean shirt left, and a meeting tomorrow.','The last clean shirt. Tomorrow people will be looking at you.'],
-  opt('Wash a shirt in the sink.','wash',{water:-1,face:1},'It dries on the back of a chair. In the morning you look like someone who has running water.'),
-  opt('Wear it inside out.','hide',{face:-1,spirits:1},'Nobody says anything. One person looks at your seams for a long time.'),{cd:3}),
-card('r_bucket','routine','you','home','The bucket',['The toilet needs a bucket of water to flush. The grey water from the dishes is right there.','The bathroom has started to smell like a decision.'],
-  opt('Flush it properly.','pour',{water:-1,spirits:1},'It works. You stand there for a moment, grateful for plumbing in general.'),
-  opt('Wait until evening.','wait',{spirits:-1,face:-1},'You keep the door shut. When someone knocks, you meet them in the hall.'),{cd:2,w:1.3}),
-card('r_dishes','routine','you','home','The pile','The dishes have become a structure. You could wash them all, or buy paper plates and pretend it’s a picnic.',
-  opt('Wash everything.','wash',{water:-1,spirits:1},'A clean kitchen. For an hour it feels like an ordinary day.'),
-  opt('Buy paper plates.','pay',{money:-1},'The bin fills up fast. The plates bend under anything with sauce.'),{cd:3}),
-card('r_coffee','routine','you','home','Coffee',['The kettle is the only thing in the kitchen that still seems happy.','You could make coffee at home, or go to the café on the corner and sit under the umbrella like a person with nothing to worry about.'],
+// v5.0.2: situations are one or two short sentences, responses one line. Keep the detail that makes it personal.
+card('r_porridge','routine','you','home','A pot is a commitment','Porridge needs a pot. A pot needs washing.',
+  opt('Cook porridge.','cook',{water:-1,spirits:1},'Warm, and yours. The pot soaks in rinse water.'),
+  opt('Buy a pastry.','pay',{money:-1,face:1},'You eat it on the bench, looking fine.'),{cd:3}),
+card('r_shirt','routine','you','home','One clean shirt',['One clean shirt left. A meeting tomorrow.','The last clean shirt. Tomorrow people will look.'],
+  opt('Sink-wash a shirt.','wash',{water:-1,face:1},'By morning you look like someone with running water.'),
+  opt('Wear it inside out.','hide',{face:-1,spirits:1},'Someone studies your seams for a long time.'),{cd:3}),
+card('r_bucket','routine','you','home','The bucket',['The toilet needs a bucket to flush. The dishwater is right there.','The bathroom smells like a decision.'],
+  opt('Flush it properly.','pour',{water:-1,spirits:1},'It works. You feel grateful for plumbing.'),
+  opt('Wait until evening.','wait',{spirits:-1,face:-1},'You keep the door shut. Visitors stay in the hall.'),{cd:2,w:1.3}),
+card('r_dishes','routine','you','home','The pile','The dishes have become a structure.',
+  opt('Wash everything.','wash',{water:-1,spirits:1},'For an hour, it’s an ordinary day.'),
+  opt('Buy paper plates.','pay',{money:-1},'They bend under anything with sauce.'),{cd:3}),
+card('r_coffee','routine','you','home','Coffee',['The kettle is the only happy thing in the kitchen.','Coffee at home, or the café on the corner, looking carefree?'],
   opt('Boil the kettle.','boil',{water:-1,spirits:1},'The kitchen smells like a morning should.'),
-  opt('Go to the café.','pay',{money:-1,face:1},'You wave at someone from the building. You look fine. You are, for twenty minutes.'),{cd:3}),
-card('r_plants','routine','you','home','The plants','The basil on the windowsill has given up. The monstera is thinking about it.',
-  opt('Water them.','pour',{water:-1,spirits:1},'They perk up by evening. Something in this flat is thriving.'),
-  opt('Let them go.','refuse',{spirits:-1},'You move them out of sight. That doesn’t help as much as you hoped.'),{once:true}),
-card('r_lunch','routine','you','home','Lunch money',['There’s bread and nothing to put on it.','Lunch, or the money for lunch. Not both.'],
-  opt('Skip lunch.','wait',{spirits:-1,money:1},'You drink a glass of water instead. Then you remember what it cost.'),
-  opt('Buy a proper lunch.','pay',{money:-1,spirits:1},'Soup at the canteen, with a bread roll. You almost fall asleep afterwards.'),{cd:2}),
-card('r_mirror','routine','you','stair','The lift mirror','The lift is working, which means the mirror is working. You haven’t washed your hair in four days and it shows.',
-  opt('Wash at the depot tap.','wash',{face:1,spirits:-1},'Cold water in public, under a sign that says DRINKING ONLY. A child watches with great interest.'),
-  opt('Wear a cap.','hide',{face:-1},'The cap says you have given up a little. You have, a little.'),{when:s=>s.day>=3,cd:4}),
-card('r_fridge','routine','you','home','The fridge is turning',s=>`The cheese has opinions. The chicken is ${s.day>=6?'past':'nearly past'} saving. Cooking it all takes water; throwing it out takes money.`,
-  opt('Cook it all and share it.','cook',{water:-1,spirits:1},'You knock on {elder}’s door with a plate. {elder.He} eats standing in the doorway, talking about the old days.',{disp:{elder:1},mem:{elder:'You brought a plate of chicken.'}}),
-  opt('Throw it out and restock.','pay',{money:-1,face:1},'The bin bag goes down at night, quietly. The fridge smells of nothing again.'),{when:s=>s.day>=4,once:true}),
-card('r_lastshirt','routine','you','home','Nothing clean','Time has caught up with the wardrobe. There is nothing clean left that you would wear in front of people.',
-  opt('Do a small load by hand.','wash',{water:-2,face:1},'Your knuckles are raw. The balcony looks like a flag parade.'),
-  opt('Buy a cheap shirt.','pay',{money:-2,face:1},'It’s the wrong blue. It’s clean, which is the right blue.'),{when:s=>s.day>=5,once:true}),
-card('r_heat_wash','routine','you','home','Sticky','The heat sits on your skin like a wet coat. Everyone on the tram is suffering politely.',
-  opt('A cold sponge bath.','wash',{water:-1,spirits:1,face:1},'You stand in the bath with a sponge and a bowl, like a statue in a fountain that has been switched off.'),
-  opt('Sit by the open window.','wait',{spirits:-1},'The street smells of hot tar and other people’s laundry.'),{w:.3,boost:{heat:6},cd:2}),
-card('r_heat_sleep','routine','you','home','Too hot to sleep','It’s two in the morning and the sheet is stuck to you. Below, somebody is running a fan that sounds like a plane.',
-  opt('A wet towel on the fan.','pour',{water:-1,spirits:1},'The room cools a degree. You fall asleep counting litres.'),
-  opt('Go up to the roof.','leave',{spirits:1,face:-1},'Half the building is up there in their vests. The gossip from the third floor takes a photograph.'),{w:.2,boost:{heat:6},cd:3}),
+  opt('Go to the café.','pay',{money:-1,face:1},'You look fine. You are, for twenty minutes.'),{cd:3}),
+card('r_plants','routine','you','home','The plants','The basil has given up. The monstera is thinking about it.',
+  opt('Water them.','pour',{water:-1,spirits:1},'Something in this flat is thriving.'),
+  opt('Let them go.','refuse',{spirits:-1},'You move them out of sight. It doesn’t help.'),{once:true}),
+card('r_lunch','routine','you','home','Lunch money',['Bread, and nothing to put on it.','Lunch, or the money for lunch. Not both.'],
+  opt('Skip lunch.','wait',{spirits:-1,money:1},'A glass of water instead. Then you remember its cost.'),
+  opt('Buy a proper lunch.','pay',{money:-1,spirits:1},'Soup and a roll. You nearly fall asleep.'),{cd:2}),
+card('r_mirror','routine','you','stair','The lift mirror','Four days without washing your hair. The lift mirror noticed.',
+  opt('Wash at the depot.','wash',{face:1,spirits:-1},'Cold water under a sign: DRINKING ONLY.'),
+  opt('Wear a cap.','hide',{face:-1},'The cap says you’ve given up a little.'),{when:s=>s.day>=3,cd:4}),
+card('r_fridge','routine','you','home','The fridge is turning',s=>`The chicken is ${s.day>=6?'past':'nearly past'} saving.`,
+  opt('Cook it, share it.','cook',{water:-1,spirits:1},'{elder} eats it in the doorway, telling old stories.',{disp:{elder:1},mem:{elder:'You brought a plate of chicken.'}}),
+  opt('Bin it, restock.','pay',{money:-1,face:1},'The bin bag goes down at night, quietly.'),{when:s=>s.day>=4,once:true}),
+card('r_lastshirt','routine','you','home','Nothing clean','Nothing clean left you’d wear in front of people.',
+  opt('Hand-wash a load.','wash',{water:-2,face:1},'Raw knuckles. The balcony is a flag parade.'),
+  opt('Buy a cheap shirt.','pay',{money:-2,face:1},'Wrong blue. Clean, which is the right blue.'),{when:s=>s.day>=5,once:true}),
+card('r_heat_wash','routine','you','home','Sticky','The heat sits on you like a wet coat.',
+  opt('A cold sponge bath.','wash',{water:-1,spirits:1,face:1},'A statue in a switched-off fountain.'),
+  opt('Sit by the window.','wait',{spirits:-1},'Hot tar and other people’s laundry.'),{w:.3,boost:{heat:6},cd:2}),
+card('r_heat_sleep','routine','you','home','Too hot to sleep','Two in the morning. The sheet is stuck to you.',
+  opt('Wet towel, fan.','pour',{water:-1,spirits:1},'You fall asleep counting litres.'),
+  opt('Sleep on the roof.','leave',{spirits:1,face:-1},'Half the building is up there. Someone takes a photo.'),{w:.2,boost:{heat:6},cd:3}),
 // with a partner
-card('r_hair','routine','partner','home','Hair',['“I want to wash my hair. Properly. Not a cup over the head.” {partner} is holding the big jug already.','{partner} hasn’t said anything about {partner.his} hair for three days, which is how you know.'],
-  opt('Give {partner.him} the jug.','pour',{water:-2,spirits:2},'{partner} comes out with a towel turban and puts music on. The whole flat feels lighter.'),
-  opt('Dry shampoo from the chemist.','pay',{money:-1,spirits:-1},'“It smells like a hotel,” {partner.he} says. “A bad one.”'),{when:couple,cd:3}),
-card('r_dinner','routine','partner','home','Lentils','{partner} holds up the lentils. “They need soaking and they need a pot. Or there’s the grill on the corner.”',
-  opt('Lentils, and the pot.','cook',{water:-1,spirits:1},'It takes all afternoon. The kitchen smells like a home that isn’t waiting for anything.'),
-  opt('Takeaway from the grill.','pay',{money:-2,spirits:1},'You eat on the balcony with your fingers. It almost feels like a holiday.'),{when:couple,cd:3}),
-card('r_notebook','routine','partner','home','The tally','{partner} finds your water tally next to the shopping list. “Keep the numbers. Just don’t make me ask permission to wash my hands.”',
-  opt('Make the plan together.','share',{spirits:1},'You move the notebook into the middle of the table. Two handwritings by evening.',{tag:'sharedPlan',mem:{partner:'You made the water plan together.'}}),
-  opt('Keep the numbers yourself.','hide',{spirits:-1,money:1},'It works out to a saving. {partner} stops asking, which isn’t the same as agreeing.'),{when:couple,once:true}),
-card('r_bath','routine','partner','home','A real bath',s=>lateIn(s)?'“I want a bath.” {partner} says it flatly. “Not a wash. A bath.”':'“When the water comes back, I’m having a bath for a whole hour.” {partner} is only half joking.',
-  opt('Share a basin bath tonight.','wash',{water:-2,spirits:2},'Two people, one basin, one kettle of hot water. It is ridiculous and it is the best evening this week.',{mem:{partner:'The basin bath.'}}),
-  opt('Promise one when it’s back.','wait',{spirits:-1},'“On {endDay},” {partner} says, and writes it on the calendar in pen.'),{when:s=>couple(s)&&s.day>=3,cd:5}),
-card('r_tired','routine','partner','home','Tired',s=>lateIn(s)?'“I’m tired.” That’s all.':'{partner} is asleep at the table at seven in the evening. There’s a queue tomorrow at five.',
-  opt('Take the early queue yourself.','queue',{water:1,spirits:-1},'You let {partner.him} sleep. The queue is long and quiet and full of other people’s partners.'),
-  opt('Skip the queue, rest together.','wait',{spirits:1,water:-1},'You both sleep until eight. The containers stay empty, and so does the argument.'),{when:s=>couple(s)&&s.day>=3,cd:4}),
-card('r_laundry','routine','partner','home','The laundry mountain','“North sock, south towel, the disputed trousers.” {partner} surveys the pile. “A small load would change everything.”',
-  opt('Wash the small load.','wash',{water:-2,face:1,spirits:1},'The balcony is full of shirts. The neighbours can see you are winning.'),
-  opt('Laundromat across town.','pay',{money:-2,face:1},'It’s the other side of the river. The machines work. The people there look at your bag like it’s a confession.'),{when:couple,cd:4}),
+card('r_hair','routine','partner','home','Hair',['“I want to wash my hair. Properly.” {partner} is holding the jug.','{partner} hasn’t mentioned {partner.his} hair in three days. That’s how you know.'],
+  opt('Give {partner.him} the jug.','pour',{water:-2,spirits:2},'A towel turban, music on. The flat feels lighter.'),
+  opt('Buy dry shampoo.','pay',{money:-1,spirits:-1},'“It smells like a hotel. A bad one.”'),{when:couple,cd:3}),
+card('r_dinner','routine','partner','home','Lentils','{partner} holds up the lentils. “Or the grill on the corner?”',
+  opt('Lentils, and the pot.','cook',{water:-1,spirits:1},'A kitchen that isn’t waiting for anything.'),
+  opt('Takeaway from the grill.','pay',{money:-2,spirits:1},'Balcony, fingers. Almost a holiday.'),{when:couple,cd:3}),
+card('r_notebook','routine','partner','home','The tally','{partner} finds your water tally. “Just don’t make me ask to wash my hands.”',
+  opt('Make the plan together.','share',{spirits:1},'Two handwritings in the notebook by evening.',{tag:'sharedPlan',mem:{partner:'You made the water plan together.'}}),
+  opt('Keep the numbers yourself.','hide',{spirits:-1,money:1},'{partner} stops asking. That isn’t agreeing.'),{when:couple,once:true}),
+card('r_bath','routine','partner','home','A real bath',s=>lateIn(s)?'“I want a bath. Not a wash. A bath.”':'“When it’s back, I’m having an hour-long bath.” {partner} half jokes.',
+  opt('Share a basin bath.','wash',{water:-2,spirits:2},'Ridiculous. The best evening this week.',{mem:{partner:'The basin bath.'}}),
+  opt('Promise one later.','wait',{spirits:-1},'“On {endDay},” {partner} says, writing it in pen.'),{when:s=>couple(s)&&s.day>=3,cd:5}),
+card('r_tired','routine','partner','home','Tired',s=>lateIn(s)?'“I’m tired.” That’s all.':'{partner} is asleep at the table at seven. The queue is at five.',
+  opt('Queue early yourself.','queue',{water:1,spirits:-1},'You let {partner.him} sleep. The queue is long and quiet.'),
+  opt('Skip it, rest together.','wait',{spirits:1,water:-1},'Empty containers. No argument.'),{when:s=>couple(s)&&s.day>=3,cd:4}),
+card('r_laundry','routine','partner','home','The laundry mountain','“A small load would change everything,” {partner} says to the pile.',
+  opt('Wash the small load.','wash',{water:-2,face:1,spirits:1},'Shirts on the balcony. The neighbours see you winning.'),
+  opt('Laundromat across town.','pay',{money:-2,face:1},'People look at your bag like a confession.'),{when:couple,cd:4}),
 
 // ===== work and family: “say it’s fine” or “say how it is” =====
-card('w_colleague','routine','you','office','How are you managing?','A colleague stops at your desk. “How are you managing, with the water?” Behind them, the whole office is listening.',
-  opt('“Fine, really.”','smile',{face:1,spirits:-1},'“You’re so strong,” they say. You are so tired.'),
-  opt('“Honestly? Badly.”','complain',{face:-1,water:1},'The office goes quiet. Then someone says they have a spare container in their car.'),{cd:4}),
-card('w_mother','routine','you','home','Your mother calls','“Are you eating? Are you washing? I saw on TV it’s fine there now.” Your mother lives two hours away, where the taps work.',
-  opt('“We’re fine, Mama.”','smile',{face:1,spirits:-1},'She’s relieved. You hang up and sit with the phone for a while.'),
-  opt('Tell her how it is.','complain',{spirits:1,money:1,face:-1},'She’s quiet. Then she sends money, and a message about it that is three paragraphs long.'),{once:true}),
-card('w_overtime','routine','you','office','Overtime','Your manager has a deadline and an air-conditioned office. “I need someone until nine. Paid, obviously.”',
-  opt('Stay late.','wait',{money:1,spirits:-1},'You wash your hands in the office bathroom four times. Nobody notices.'),
-  opt('Go home on time.','leave',{spirits:1,face:-1},'“Of course,” says your manager, in the voice that means it is not of course.'),{cd:3}),
-card('w_gym','routine','you','street','The gym has showers','The gym on the boulevard has showers and a sign: MEMBERS ONLY. A month costs what a month costs.',
-  opt('Buy a month.','pay',{money:-2,face:1,water:1},'You do one sad lap on the treadmill and a long, glorious shower.',{tag:'gym'}),
-  opt('Walk past.','refuse',{money:1,spirits:-1},'Someone comes out with wet hair, glowing. You keep walking.'),{once:true}),
-card('w_dinner','routine','you','street','Dinner across the river','Friends from across the river, where the water works, invite you to dinner. “Come early. Bring a towel, we’re not joking.”',
-  opt('Go, with a towel.','leave',{spirits:1,face:1,money:-1},'Hot water. Clean plates. Your friends don’t ask about it, which is kind, and a little strange.'),
-  opt('Make an excuse.','refuse',{spirits:-1,money:1},'You say you’re busy. You spend the evening counting the containers again.'),{cd:5}),
-card('w_circ_call','circ','you','home','Camera on','The team call starts in five minutes. Everyone has their camera on. Your hair has its own weather system.',
-  opt('Camera on, big smile.','smile',{face:1,spirits:-1},'You smile for forty minutes. The boss says you seem “really on top of things”.'),
-  opt('“My camera is broken.”','hide',{face:-1},'There’s a pause on the call. Nobody believes it. Nobody believes theirs either.'),{when:s=>circ(s,'wfh'),cd:2,w:1.5}),
-card('w_circ_kitchen','circ','you','home','The kitchen behind you','A colleague squints at your screen. “Are those… water containers? Behind you? Is everything all right?”',
-  opt('“Home-brew project.”','smile',{face:1,spirits:-1},'Everyone laughs. Someone asks for the recipe. You promise to send it.'),
-  opt('Turn the camera to show them.','record',{face:-1,spirits:1},'Twenty-two containers, live, on a call with head office. Someone forwards a screenshot to the city.',{inc:{complaint:1}}),{when:s=>circ(s,'wfh'),once:true}),
-card('w_circ_shift','circ','you','street','After the shift','You finish the night shift at six. The depot queue started at four. You smell of bread and you can barely see.',
-  opt('Join the queue anyway.','queue',{water:2,spirits:-2},'You fall asleep standing up and wake at the front. The driver gives you an extra half container for the bread smell.'),
-  opt('Go home and sleep.','wait',{spirits:1,water:-1},'You sleep until two. The queue is gone, and so is the water.'),{when:s=>circ(s,'nightshift'),cd:2,w:1.5}),
-card('w_circ_bread','circ','you','office','Yesterday’s bread','The bakery owner hands you a bag of yesterday’s loaves. “Take them. And if you hear of anyone selling water, I’ll pay.”',
-  opt('Take the bread.','share',{spirits:1,money:1},'Bread for three days. You give a loaf to {driver}.',{disp:{driver:1}}),
-  opt('Sell him two containers.','pay',{water:-2,money:2},'He pays well. You walk home feeling like someone you would not trust.',{tag:'soldWater'}),{when:s=>circ(s,'nightshift'),once:true}),
-card('w_circ_stairs','circ','you','stair','Five floors','Twenty litres, five floors, no lift. On the third landing you stop and think about whether you really need knees.',
-  opt('Carry two at once.','carry',{water:1,spirits:-1},'You make it. You lie on the floor of the hall for a while.'),
-  opt('Pay the boy downstairs.','pay',{money:-1,water:1},'He runs up with them two at a time, whistling. You hate him a little.'),{when:s=>circ(s,'top'),cd:3,w:1.5}),
-card('w_circ_door','circ','driver','stair','By the entrance','You’re right by the entrance, so you’re first to hear the tanker, and first to be asked. {driver} leans on your doorbell.',
-  opt('Share your delivery.','share',{water:-1,face:1},'The word goes round: the ground floor are good people.',{disp:{driver:1,elder:1}}),
-  opt('Keep the door shut.','refuse',{face:-1,water:1},'You hear people pass, slowly, outside your door.',{disp:{driver:-1}}),{when:s=>circ(s,'ground'),cd:3,w:1.5}),
+card('w_colleague','routine','you','office','How are you managing?','“How are you managing, with the water?” The whole office is listening.',
+  opt('“Fine, really.”','smile',{face:1,spirits:-1},'“You’re so strong.” You are so tired.'),
+  opt('“Honestly? Badly.”','complain',{face:-1,water:1},'Silence. Then: “I’ve a spare container in the car.”'),{cd:4}),
+card('w_mother','routine','you','home','Your mother calls','“I saw on TV it’s fine there now.” Your mother’s taps work.',
+  opt('“We’re fine, Mama.”','smile',{face:1,spirits:-1},'She’s relieved. You sit with the phone a while.'),
+  opt('Tell her the truth.','complain',{spirits:1,money:1,face:-1},'She sends money, with three paragraphs.'),{once:true}),
+card('w_overtime','routine','you','office','Overtime','“I need someone until nine. Paid, obviously.” The office has air conditioning.',
+  opt('Stay late.','wait',{money:1,spirits:-1},'You wash your hands four times. Nobody notices.'),
+  opt('Go home on time.','leave',{spirits:1,face:-1},'“Of course,” in the voice that means not of course.'),{cd:3}),
+card('w_gym','routine','you','street','The gym has showers','The gym has showers. MEMBERS ONLY.',
+  opt('Buy a month.','pay',{money:-2,face:1,water:1},'One sad lap. One glorious shower.',{tag:'gym'}),
+  opt('Walk past.','refuse',{money:1,spirits:-1},'Someone comes out with wet hair, glowing.'),{once:true}),
+card('w_dinner','routine','you','street','Dinner across the river','Friends across the river invite you. “Bring a towel. We’re not joking.”',
+  opt('Go, with a towel.','leave',{spirits:1,face:1,money:-1},'Hot water. They kindly don’t ask.'),
+  opt('Make an excuse.','refuse',{spirits:-1,money:1},'You count the containers again.'),{cd:5}),
+card('w_circ_call','circ','you','home','Camera on','Team call in five minutes. Cameras on. Your hair has its own weather.',
+  opt('Camera on, big smile.','smile',{face:1,spirits:-1},'“You seem really on top of things.”'),
+  opt('“My camera is broken.”','hide',{face:-1},'Nobody believes it. Nobody believes theirs either.'),{when:s=>circ(s,'wfh'),cd:2,w:1.5}),
+card('w_circ_kitchen','circ','you','home','The kitchen behind you','“Are those… water containers? Behind you?”',
+  opt('“Home-brew project.”','smile',{face:1,spirits:-1},'Everyone laughs. Someone asks for the recipe.'),
+  opt('Show them the kitchen.','record',{face:-1,spirits:1},'Twenty-two containers, live. Someone sends it to the city.',{inc:{complaint:1}}),{when:s=>circ(s,'wfh'),once:true}),
+card('w_circ_shift','circ','you','street','After the shift','Six am, off the night shift. The depot queue started at four.',
+  opt('Join the queue anyway.','queue',{water:2,spirits:-2},'You wake at the front. Extra water, for the bread smell.'),
+  opt('Go home and sleep.','wait',{spirits:1,water:-1},'You wake at two. The queue and the water are gone.'),{when:s=>circ(s,'nightshift'),cd:2,w:1.5}),
+card('w_circ_bread','circ','you','office','Yesterday’s bread','The baker hands you yesterday’s loaves. “If anyone sells water, I’ll pay.”',
+  opt('Take the bread.','share',{spirits:1,money:1},'Bread for three days. A loaf for {driver}.',{disp:{driver:1}}),
+  opt('Sell him two containers.','pay',{water:-2,money:2},'He pays well. You wouldn’t trust you.',{tag:'soldWater'}),{when:s=>circ(s,'nightshift'),once:true}),
+card('w_circ_stairs','circ','you','stair','Five floors','Twenty litres, five floors, no lift.',
+  opt('Carry two at once.','carry',{water:1,spirits:-1},'You make it. You lie on the hall floor.'),
+  opt('Pay the boy downstairs.','pay',{money:-1,water:1},'He runs up whistling. You hate him a little.'),{when:s=>circ(s,'top'),cd:3,w:1.5}),
+card('w_circ_door','circ','driver','stair','By the entrance','First to hear the tanker, first to be asked. {driver} rings.',
+  opt('Share your delivery.','share',{water:-1,face:1},'Word goes round: the ground floor are good people.',{disp:{driver:1,elder:1}}),
+  opt('Keep the door shut.','refuse',{face:-1,water:1},'People pass your door, slowly.',{disp:{driver:-1}}),{when:s=>circ(s,'ground'),cd:3,w:1.5}),
 
 // ===== neighbours =====
-card('n_driver_tip','neighbour','driver','stair','A place in line','{driver} calls from the stairs. “Tanker at the tram depot. I’ve seen it, not heard about it from somebody’s cousin.”',
-  opt('Go with {driver.him}.','queue',{water:2,spirits:-1},'{driver} talks about the old tram route all the way home. You realise {driver.he} carried the heavier one.',{disp:{driver:1}}),
-  opt('Take a paid job instead.','pay',{money:1},'You pass the tanker on the way to work. For once, the rumour was true.'),{cd:3,w:1.4}),
-card('n_driver_kettle','neighbour','driver','home','One kettle','{driver} knocks with an empty bottle half hidden behind {driver.his} leg. “Just enough for tea. My sister is calling. I like having something to do with my hands.”',
-  opt('Fill the bottle.','share',{water:-1,spirits:1},'“I’ll bring it back.” You say {driver.he} can keep the bottle. “I meant the favour.”',{disp:{driver:1},sched:['n_driver_favour',2,4],mem:{driver:'You filled {driver.his} bottle for tea.'}}),
-  opt('Say you’re counting every cup.','refuse',{face:-1},'{driver.He} nods before you finish. “I know.” {driver.He} stays to ask how you are.',{disp:{driver:-1}}),{once:true}),
-card('n_driver_favour','neighbour','driver','stair','A full bottle','{driver} is at your door with your bottle, full, and a second one. “My sister came by. And the tanker is on Mostarska at noon. You didn’t hear it from me.”',
-  opt('Take both.','share',{water:2},'You start to say thank you properly. “Good,” {driver.he} says. “Then we’ve established that water is useful.”'),
-  opt('Take one, send one upstairs.','carry',{water:1,spirits:1},'You take the second bottle up to {elder}. {driver} pretends not to see.',{disp:{elder:1,driver:1}}),{sched:true}),
-card('n_elder_carry','neighbour','elder','stair','The stairs','{elder} is on the landing with two empty containers and a face that hasn’t decided whether to ask. {elder.He} lives on the {elder.floor}.',
-  opt('Carry them up.','carry',{spirits:-1,face:1},'{elder.He} counts every step out loud and thanks you at each landing.',{disp:{elder:1},sched:['n_elder_vouch',2,4],mem:{elder:'You carried {elder.his} water up the stairs.'}}),
-  opt('“I can’t today.”','refuse',{face:-1},'{elder.He} says it’s fine. {elder.He} is still on the landing an hour later.',{disp:{elder:-1}}),{cd:4,w:1.3}),
-card('n_elder_vouch','neighbour','elder','stair','A good word','{elder} has been talking about you in the queue. “The one who carried my water,” {elder.he} says, loudly, to anyone. {elder.He} presses a jar of roasted peppers into your hands.',
-  opt('Take the peppers.','share',{spirits:1,money:1},'Dinner for two nights, and a reputation you didn’t ask for.'),
-  opt('Ask {elder.him} to keep them.','refuse',{face:2},'{elder.He} is offended for exactly one second, then delighted. The story improves in the retelling.'),{sched:true}),
-card('n_elder_heat','neighbour','elder','stair','A closed door','{elder}’s door has been shut all day in the heat. Behind it, a fan is buzzing. Nobody has seen {elder.him} since yesterday.',
-  opt('Knock with a cold bottle.','knock',{water:-1,spirits:1},'{elder.He} opens in a vest, embarrassed and very pleased. You sit in the doorway and drink it together.',{disp:{elder:1},mem:{elder:'You knocked in the heatwave.'}}),
-  opt('Leave {elder.him} in peace.','wait',{spirits:-1},'The fan keeps buzzing all night. You listen to it through the floor.'),{w:.2,boost:{heat:5},once:true}),
-card('n_gossip_ask','neighbour','gossip','stair','At the mailboxes','{gossip} catches you at the mailboxes. “So how are you managing, really? You can tell me.”',
-  opt('“Wonderfully, actually.”','smile',{face:1},'{gossip.His} eyebrows go up. You can almost hear the story being written.',{tag:'toldGossipFine',sched:['n_gossip_spread',1,3]}),
-  opt('Tell {gossip.him} the truth.','complain',{spirits:1,face:-1},'{gossip.He} listens with great sympathy and very good attention to detail.',{tag:'toldGossipTruth',sched:['n_gossip_spread',1,3],disp:{gossip:1}}),{once:true}),
-card('n_gossip_spread','neighbour','gossip','stair','It got around',s=>has(s,'toldGossipFine')?'By Thursday the building knows you are managing “wonderfully”. Someone asks if you are getting water from a cousin at the depot.':'By Thursday the building knows you are “falling apart, poor thing”. Two people bring you soup. One of them brings a camera.',
-  opt('Laugh it off.','smile',{face:1,spirits:-1},'You laugh. Everyone laughs. Nobody believes the laugh.'),
-  opt('Have it out with {gossip}.','complain',{face:-1,spirits:1},'{gossip} is hurt and fascinated. That will be in the next instalment.',{disp:{gossip:-1}}),{sched:true}),
-card('n_gossip_low','neighbour','gossip','stair','People are talking','{gossip} stops talking when you come into the stairwell. Then starts again, more quietly.',
-  opt('Bring {gossip.him} a coffee.','share',{money:-1,face:1},'You get the full story, and a new part in it: the one who is coping after all.',{disp:{gossip:1}}),
-  opt('Walk past.','wait',{face:-1},'Behind you, the voices pick up exactly where they left off.'),{when:s=>s.m.face<38,w:2.2,cd:3}),
-card('n_gossip_trade','neighbour','gossip','stair','Inside information','{gossip} lowers {gossip.his} voice. “I know when the next tanker comes to our street. I’ll tell you, if you tell me why {spiteful} was crying on the stairs.”',
-  opt('Trade.','share',{water:1,face:-1},'You don’t know why {spiteful} was crying, so you guess. The tanker comes. So does your guess, back to {spiteful}.',{disp:{spiteful:-1}}),
-  opt('Decline.','refuse',{spirits:1},'“Suit yourself.” {gossip.He} tells someone else, louder.'),{once:true,when:s=>s.day>=2}),
-card('n_spite_queue','neighbour','spiteful','street','The queue','You have been in the depot queue for an hour. {spiteful} walks past the whole line and stands in front of you. “I was here before. I went home for my bag.”',
-  opt('Let it go.','wait',{water:-1,face:1},'You say nothing. Two people behind you say nothing, approvingly.'),
-  opt('Call it out.','complain',{face:-1,water:1},'The line agrees with you, loudly. {spiteful} goes to the back with a look that will keep.',{disp:{spiteful:-1},sched:['n_spite_revenge',2,5]}),{cd:4}),
-card('n_spite_report','neighbour','spiteful','stair','5 am',s=>`{spiteful} has seen you filling containers at five in the morning. “${s.m.water>70?'That’s a lot of water for one flat.':'Funny time to be filling things.'} The city has a number for this, you know.”`,
-  opt('Give {spiteful.him} a container.','share',{water:-2},'{spiteful.He} takes it without thanks. The number stays undialled. For now.',{disp:{spiteful:1}}),
-  opt('Tell {spiteful.him} to mind {spiteful.his} business.','refuse',{face:-1},'{spiteful.He} smiles. That’s worse.',{disp:{spiteful:-1},sched:['n_spite_inspector',1,3]}),{when:s=>s.m.water>=60,w:s=>s.m.water>70?3:1.2,cd:3}),
-card('n_spite_revenge','neighbour','spiteful','street','An accident','Your full container is lying on its side by the entrance. The lid is off. {spiteful} is standing nearby, holding a broom. “Somebody knocked it over. Terrible.”',
-  opt('Say nothing.','wait',{water:-2,face:1},'You pick it up. A little is left. You carry the little upstairs.'),
-  opt('Say what you saw.','complain',{water:-1,face:-2,spirits:1},'It’s a scene. The whole stairwell comes out. Nobody is on anybody’s side.',{disp:{spiteful:-1}}),{sched:true}),
-card('n_spite_inspector','neighbour','spiteful','home','An anonymous tip','An inspector is at your door with a clipboard. “We had an anonymous tip about excess storage.” Across the landing, a door is open a crack.',
-  opt('Show him your containers.','pour',{water:-2},'He “redistributes” two of them. He doesn’t say where to.'),
-  opt('Pay him to forget it.','pay',{money:-2,face:-1},'He takes the money like a man taking a bus ticket. Across the landing, the door clicks shut.',{tag:'paidInspector'}),{sched:true}),
-card('n_spite_elitist','neighbour','spiteful','stair','Nice for some','{spiteful} heard you laughing through the wall last night. “Nice for some,” {spiteful.he} says on the stairs. “Some of us can’t afford to be happy.”',
-  opt('Invite {spiteful.him} in for coffee.','share',{spirits:-1,water:-1},'{spiteful.He} comes in and looks at everything. Then {spiteful.he} tells you about {spiteful.his} daughter in Germany.',{disp:{spiteful:1},mem:{spiteful:'You invited {spiteful.him} in for coffee.'}}),
-  opt('Close the door.','refuse',{face:-1},'Through the door: “Elitists.” Then footsteps, slow, so you hear every one.',{disp:{spiteful:-1}}),{when:s=>s.m.spirits>=64,w:s=>s.m.spirits>74?3:1.2,cd:3}),
-card('n_money_loan','neighbour','driver','stair','A small loan',s=>`{driver} doesn’t look at you when ${s.m.money>70?'{driver.he} asks. “I hear you’re doing all right.':'{driver.he} asks. “Only until the pension comes.'} Could you lend me something for the week?”`,
-  opt('Lend it.','share',{money:-2},'{driver.He} writes it in a little book, with the date. You know you will see it again.',{disp:{driver:1},mem:{driver:'You lent {driver.him} money until the pension.'}}),
+card('n_driver_tip','neighbour','driver','stair','A place in line','“Tanker at the tram depot. I’ve seen it myself.”',
+  opt('Go with {driver.him}.','queue',{water:2,spirits:-1},'{driver.He} carried the heavier one, you realise later.',{disp:{driver:1}}),
+  opt('Take a paid job.','pay',{money:1},'You pass the tanker on the way. For once, true.'),{cd:3,w:1.4}),
+card('n_driver_kettle','neighbour','driver','home','One kettle','{driver} holds an empty bottle half behind {driver.his} leg. “Just enough for tea.”',
+  opt('Fill the bottle.','share',{water:-1,spirits:1},'“I’ll bring it back.” “The bottle?” “The favour.”',{disp:{driver:1},sched:['n_driver_favour',2,4],mem:{driver:'You filled {driver.his} bottle for tea.'}}),
+  opt('“We count every cup.”','refuse',{face:-1},'“I know.” {driver.He} stays to ask how you are.',{disp:{driver:-1}}),{once:true}),
+card('n_driver_favour','neighbour','driver','stair','A full bottle','{driver} returns your bottle, full, plus a second. “Tanker on Mostarska at noon.”',
+  opt('Take both.','share',{water:2},'“Good. We’ve established water is useful.”'),
+  opt('Take one, share one.','carry',{water:1,spirits:1},'The second goes up to {elder}.',{disp:{elder:1,driver:1}}),{sched:true}),
+card('n_elder_carry','neighbour','elder','stair','The stairs','{elder} is on the landing with two empty containers. {elder.He} doesn’t ask.',
+  opt('Carry them up.','carry',{spirits:-1,face:1},'{elder.He} thanks you at every landing.',{disp:{elder:1},sched:['n_elder_vouch',2,4],mem:{elder:'You carried {elder.his} water up the stairs.'}}),
+  opt('“I can’t today.”','refuse',{face:-1},'An hour later, {elder.he}’s still there.',{disp:{elder:-1}}),{cd:4,w:1.3}),
+card('n_elder_vouch','neighbour','elder','stair','A good word','“The one who carried my water!” {elder} presses roasted peppers on you.',
+  opt('Take the peppers.','share',{spirits:1,money:1},'Two dinners, and a reputation.'),
+  opt('“Keep them, please.”','refuse',{face:2},'Offended for one second, then delighted.'),{sched:true}),
+card('n_elder_heat','neighbour','elder','stair','A closed door','{elder}’s door has been shut all day in the heat. Nobody’s seen {elder.him}.',
+  opt('Bring a cold bottle.','knock',{water:-1,spirits:1},'You drink it together in the doorway.',{disp:{elder:1},mem:{elder:'You knocked in the heatwave.'}}),
+  opt('Leave {elder.him} in peace.','wait',{spirits:-1},'You hear the fan through the floor all night.'),{w:.2,boost:{heat:5},once:true}),
+card('n_gossip_ask','neighbour','gossip','stair','At the mailboxes','“So how are you managing, really? You can tell me.”',
+  opt('“Wonderfully, actually.”','smile',{face:1},'You can hear the story being written.',{tag:'toldGossipFine',sched:['n_gossip_spread',1,3]}),
+  opt('Tell {gossip.him} the truth.','complain',{spirits:1,face:-1},'Great sympathy. Great attention to detail.',{tag:'toldGossipTruth',sched:['n_gossip_spread',1,3],disp:{gossip:1}}),{once:true}),
+card('n_gossip_spread','neighbour','gossip','stair','It got around',s=>has(s,'toldGossipFine')?'The building says you’re managing “wonderfully”. A cousin at the depot, maybe?':'The building says you’re “falling apart, poor thing”. Soup arrives. So does a camera.',
+  opt('Laugh it off.','smile',{face:1,spirits:-1},'Everyone laughs. Nobody believes the laugh.'),
+  opt('Confront {gossip}.','complain',{face:-1,spirits:1},'Hurt and fascinated. Next instalment.',{disp:{gossip:-1}}),{sched:true}),
+card('n_gossip_low','neighbour','gossip','stair','People are talking','{gossip} stops talking when you come in. Then starts again, quieter.',
+  opt('Bring {gossip.him} a coffee.','share',{money:-1,face:1},'The story gets a new part: you’re coping.',{disp:{gossip:1}}),
+  opt('Walk past.','wait',{face:-1},'The voices pick up behind you.'),{when:s=>s.m.face<38,w:2.2,cd:3}),
+card('n_gossip_trade','neighbour','gossip','stair','Inside information','“Next tanker time, if you tell me why {spiteful} was crying.”',
+  opt('Trade.','share',{water:1,face:-1},'You guess. The tanker comes. So does your guess, to {spiteful}.',{disp:{spiteful:-1}}),
+  opt('Decline.','refuse',{spirits:1},'“Suit yourself.” {gossip.He} asks someone louder.'),{once:true,when:s=>s.day>=2}),
+card('n_spite_queue','neighbour','spiteful','street','The queue','An hour in the queue. {spiteful} steps in front of you. “I was here before.”',
+  opt('Let it go.','wait',{water:-1,face:1},'The people behind you approve, silently.'),
+  opt('Call it out.','complain',{face:-1,water:1},'The line backs you. {spiteful}’s look will keep.',{disp:{spiteful:-1},sched:['n_spite_revenge',2,5]}),{cd:4}),
+card('n_spite_report','neighbour','spiteful','stair','5 am',s=>`{spiteful} saw you filling containers at five. “${s.m.water>70?'That’s a lot of water for one flat.':'Funny time to fill things.'} The city has a number for this.”`,
+  opt('Give {spiteful.him} a container.','share',{water:-2},'No thanks. The number stays undialled. For now.',{disp:{spiteful:1}}),
+  opt('“Mind your business.”','refuse',{face:-1},'{spiteful.He} smiles. That’s worse.',{disp:{spiteful:-1},sched:['n_spite_inspector',1,3]}),{when:s=>s.m.water>=60,w:s=>s.m.water>70?3:1.2,cd:3}),
+card('n_spite_revenge','neighbour','spiteful','street','An accident','Your full container lies open by the entrance. {spiteful} holds a broom. “Terrible.”',
+  opt('Say nothing.','wait',{water:-2,face:1},'You carry the little that’s left upstairs.'),
+  opt('Say what you saw.','complain',{water:-1,face:-2,spirits:1},'A scene. Nobody is on anybody’s side.',{disp:{spiteful:-1}}),{sched:true}),
+card('n_spite_inspector','neighbour','spiteful','home','An anonymous tip','An inspector: “A tip about excess storage.” Across the landing, a door is ajar.',
+  opt('Show him your containers.','pour',{water:-2},'He “redistributes” two. He doesn’t say where.'),
+  opt('Pay him off.','pay',{money:-2,face:-1},'Like buying a bus ticket. The door across clicks shut.',{tag:'paidInspector'}),{sched:true}),
+card('n_spite_elitist','neighbour','spiteful','stair','Nice for some','“Heard you laughing last night. Nice for some.”',
+  opt('Invite {spiteful.him} in.','share',{spirits:-1,water:-1},'{spiteful.He} tells you about {spiteful.his} daughter in Germany.',{disp:{spiteful:1},mem:{spiteful:'You invited {spiteful.him} in for coffee.'}}),
+  opt('Close the door.','refuse',{face:-1},'“Elitists.” Then slow footsteps.',{disp:{spiteful:-1}}),{when:s=>s.m.spirits>=64,w:s=>s.m.spirits>74?3:1.2,cd:3}),
+card('n_money_loan','neighbour','driver','stair','A small loan',s=>`{driver} doesn’t look at you. “${s.m.money>70?'I hear you’re doing all right.':'Only until the pension comes.'} Could you lend me something?”`,
+  opt('Lend it.','share',{money:-2},'{driver.He} writes it in a little book, with the date.',{disp:{driver:1},mem:{driver:'You lent {driver.him} money until the pension.'}}),
   opt('“Things are tight.”','refuse',{face:-1},'“Of course,” {driver.he} says. “Of course.”',{disp:{driver:-1}}),{when:s=>s.m.money>=58,w:s=>s.m.money>70?2.5:1,once:true}),
-card('n_spite_money','neighbour','spiteful','stair','Where’s it from?','{spiteful} watches you come in with shopping. “New bags every day. Some people seem to be doing very well out of all this.”',
-  opt('“Want to borrow some?”','pay',{money:-2},'{spiteful.He} takes it, suspicious of the kindness. The rumour doesn’t stop, but it slows.',{disp:{spiteful:1}}),
-  opt('Laugh.','smile',{face:-1},'Laughing was a mistake. By evening the building has a theory about your cousin at the depot.',{disp:{spiteful:-1}}),{when:s=>s.m.money>=65,w:s=>s.m.money>75?3:1,cd:4}),
-card('n_meeting','neighbour','gossip','stair','The building meeting','There’s a building meeting about “fair use of shared water”. {spiteful} has a chart. {gossip} has popcorn.',
-  opt('Volunteer for the rota.','carry',{spirits:-1,face:1},'You are now responsible for the stairwell bucket. Everyone is very grateful and very relieved it isn’t them.',{disp:{elder:1,spiteful:1},tag:'rota'}),
-  opt('Stay home.','wait',{spirits:1,face:-1},'The meeting decides things about you in your absence. You hear about them from {gossip}.',{disp:{spiteful:-1}}),{when:s=>s.day>=3,once:true}),
-card('n_ask_container','neighbour','elder','stair','Just one','{elder} is at your door. “Just one container. My grandson is coming and I want the flat to look nice.”',
-  opt('Give {elder.him} one.','share',{water:-1,spirits:1},'The grandson comes. {elder.He} brings him down to meet you, which is the point.',{disp:{elder:1}}),
+card('n_spite_money','neighbour','spiteful','stair','Where’s it from?','“New bags every day. Some people are doing well out of this.”',
+  opt('“Want to borrow some?”','pay',{money:-2},'Suspicious of the kindness. The rumour slows.',{disp:{spiteful:1}}),
+  opt('Laugh.','smile',{face:-1},'By evening: a theory about your cousin at the depot.',{disp:{spiteful:-1}}),{when:s=>s.m.money>=65,w:s=>s.m.money>75?3:1,cd:4}),
+card('n_meeting','neighbour','gossip','stair','The building meeting','A meeting on “fair use of shared water”. {spiteful} has a chart. {gossip} has popcorn.',
+  opt('Volunteer for the rota.','carry',{spirits:-1,face:1},'The stairwell bucket is yours now. Everyone’s relieved.',{disp:{elder:1,spiteful:1},tag:'rota'}),
+  opt('Stay home.','wait',{spirits:1,face:-1},'They decide things about you. {gossip} tells you which.',{disp:{spiteful:-1}}),{when:s=>s.day>=3,once:true}),
+card('n_ask_container','neighbour','elder','stair','Just one','“Just one container. My grandson is coming.”',
+  opt('Give {elder.him} one.','share',{water:-1,spirits:1},'{elder.He} brings the grandson down to meet you.',{disp:{elder:1}}),
   opt('“We don’t have enough.”','refuse',{face:-1},'{elder.He} nods and tries the next door.',{disp:{elder:-1}}),{cd:4,w:s=>circ(s,'ground')?1.6:.8}),
 
 // ===== the city, and the people inside it =====
-card('c_fee','city','clerk','office','An administrative shortcut','At the depot, {clerk} slides your form back. “Standard allocation is next week. Priority handling is extra.” Behind him, a sign says ALL HOUSEHOLDS EQUAL.',
-  opt('Pay for priority.','pay',{money:-2,water:2},'The stamp lands before the money leaves your hand. You fold the receipt very small.',{tag:'paidFee'}),
-  opt('Keep your place in line.','wait',{face:1,spirits:-1},'“Next week, then.” You ask for that in writing. He points at the sign.',{tag:'refusedFee'}),{cd:4,w:1.2}),
-card('c_clerk_side','city','clerk','office','His side','{clerk} rubs his eyes. “You think I have water? My daughter has an exam tomorrow and she’s washing her hair in the sink with a saucepan.”',
-  opt('Give him a bottle.','share',{water:-1,spirits:1},'He looks at it for a long time. “I can’t take this.” He takes it. Your form is at the top of the pile tomorrow.',{tag:'clerkKind'}),
-  opt('“That’s not my problem.”','complain',{face:-1},'“No,” he says. “It’s nobody’s problem. That’s the problem.”',{tag:'clerkCold'}),{when:s=>s.day>=2,once:true}),
-card('c_clerk_petty','city','clerk','office','Lost in the system','{clerk} can’t find your form. “It’s possible it was never submitted.” You watched him stamp it.',
-  opt('Fill it in again.','wait',{spirits:-1},'He stamps it again, with the same face. You take a photograph of the stamp this time.'),
-  opt('Ask for the supervisor.','complain',{face:-1},'The supervisor is on holiday. You file a complaint about the form, which is also a form.',{inc:{complaint:1}}),{when:s=>has(s,'clerkCold')||s.m.face<40,cd:4}),
-card('c_leak','city','driver','street','Water nobody gets','A pipe is leaking behind the depot fence. {driver} has a photograph. “We carry it up the stairs while they let it run into a drain.”',
-  opt('Document the leak.','record',{spirits:-1},'You find three old complaints about the same pipe. The oldest is from before you moved here.',{tag:'leakSeen',inc:{complaint:1}}),
-  opt('Fill your containers from it.','pour',{water:2,face:-1},'It’s cold and clean and free. A man in a car photographs you doing it.'),{once:true}),
-card('c_crew','city','foreman','street','The wrong valve',s=>cnt(s,'complaint')>=2?'The crew is digging at the wrong valve again. You have photographs, dates and complaint numbers. {foreman} looks at your folder for a long time. “All right. Show me.”':'The crew is digging at the wrong valve. {foreman} knows it. “The work order says here,” he says. “I have a mortgage. Show me where, if you want, but I can’t sign for it.”',
-  opt('Walk the crew to the leak.','knock',{spirits:-1},s=>cnt(s,'complaint')>=2?'{foreman} matches your photographs to the pipe and signs for a repair. “This should have been done months ago.”':'{foreman} finds the leak and writes the right address on the wrong form. At least someone has it written down.',
+card('c_fee','city','clerk','office','An administrative shortcut','“Priority handling is extra.” Behind {clerk}: ALL HOUSEHOLDS EQUAL.',
+  opt('Pay for priority.','pay',{money:-2,water:2},'You fold the receipt very small.',{tag:'paidFee'}),
+  opt('Hold your place.','wait',{face:1,spirits:-1},'You ask for it in writing. He points at the sign.',{tag:'refusedFee'}),{cd:4,w:1.2}),
+card('c_clerk_side','city','clerk','office','His side','{clerk} rubs his eyes. “My daughter washes her hair with a saucepan.”',
+  opt('Give him a bottle.','share',{water:-1,spirits:1},'“I can’t take this.” He takes it.',{tag:'clerkKind'}),
+  opt('“That’s not my problem.”','complain',{face:-1},'“It’s nobody’s problem. That’s the problem.”',{tag:'clerkCold'}),{when:s=>s.day>=2,once:true}),
+card('c_clerk_petty','city','clerk','office','Lost in the system','“Your form may never have been submitted.” You watched him stamp it.',
+  opt('Fill it in again.','wait',{spirits:-1},'This time you photograph the stamp.'),
+  opt('Ask for the supervisor.','complain',{face:-1},'On holiday. You fill in a complaint form.',{inc:{complaint:1}}),{when:s=>has(s,'clerkCold')||s.m.face<40,cd:4}),
+card('c_leak','city','driver','street','Water nobody gets','A pipe leaks behind the depot fence. “We carry it upstairs. They let it run.”',
+  opt('Document the leak.','record',{spirits:-1},'Three old complaints about this pipe.',{tag:'leakSeen',inc:{complaint:1}}),
+  opt('Fill your containers.','pour',{water:2,face:-1},'Free and clean. A man photographs you.'),{once:true}),
+card('c_crew','city','foreman','street','The wrong valve',s=>cnt(s,'complaint')>=2?'The crew digs at the wrong valve again. {foreman} eyes your folder. “All right. Show me.”':'The crew digs at the wrong valve. {foreman} knows. “I can’t sign for it.”',
+  opt('Show them the leak.','knock',{spirits:-1},s=>cnt(s,'complaint')>=2?'{foreman} signs for a repair. “Months late.”':'The right address, on the wrong form.',
     s=>cnt(s,'complaint')>=2?{tag:'repaired',end:-1,mem:{foreman:'You showed him the right pipe, with the paperwork.'}}:{inc:{complaint:1},tag:'crewShown'}),
-  opt('Go to work.','pay',{money:1},'When you come back the trench is filled in. Nobody knows if that’s good.'),{when:s=>s.day>=3&&!has(s,'repaired'),cd:3}),
-card('c_crew_thirsty','city','foreman','street','The crew is thirsty','{foreman}’s crew has been digging since six. There’s no water in the van either. Nobody thought of that.',
-  opt('Bring them water.','share',{water:-1,spirits:1},'They drink it standing in the trench. {foreman} remembers your door.',{tag:'crewFriend',mem:{foreman:'You brought the crew water.'}}),
-  opt('Not your job.','refuse',{face:-1},'They dig slower in the afternoon. You can see it from the window.'),{when:s=>s.day>=2,once:true}),
-card('c_tanker','city','tanker','street','The last five hundred litres','{tanker} has five hundred litres left and three streets waiting. “I have to choose,” she says. “Do you want to tell me why it should be yours?”',
-  opt('Ask for your street.','knock',{water:2,face:-1},'You make the case, badly. She chooses your street. Two other streets watch her drive past.'),
-  opt('Say {elder}’s street needs it more.','share',{spirits:1,face:1},'She nods and turns the wheel. {elder} is in that queue. You hear about it for days.',{disp:{elder:1},tag:'tankerFair'}),{when:s=>s.day>=2,cd:5}),
-card('c_mic','city','official','street','Everything is under control','{official} is at a microphone on the corner. “The situation is fully under control. Supply is reduced, not interrupted.” The camera turns to the crowd.',
-  opt('Clap with everyone.','smile',{face:1,spirits:-1},'You clap. You are on the evening news, clapping.'),
-  opt('Shout “Under whose control?”','complain',{face:-2,spirits:1},'It gets a laugh. It also gets your face on the evening news, mid-shout.',{tag:'heckled',inc:{complaint:1}}),{cd:5,boost:{election:3}}),
-card('c_reporter','city','reporter','street','For the evening news','{reporter} from City TV has a camera and a smile. “How is your household coping? We’re looking for a positive story.”',
-  opt('“We’re managing fine.”','smile',{face:2,spirits:-1},'They use it. Your mother calls to say you looked very well.'),
-  opt('“Come and see our bathroom.”','record',{face:-2},'They film the bathroom. They don’t use it. Someone at the station sends it to someone who does.',{tag:'filmedBathroom',inc:{complaint:1}}),{cd:5,boost:{election:2}}),
-card('c_resolved','city','radio','stair','Ticket closed','A notice on the building door: ISSUE RESOLVED. The tap is dry. The form allows a new complaint, but not a reply to the old one.',
-  opt('File it again.','complain',{spirits:-1},'You attach the photographs and the old reference numbers. This time you copy the whole building.',{inc:{complaint:1}}),
-  opt('Let it go.','wait',{face:1},'Nobody likes a troublemaker. You are not a troublemaker. You are just thirsty.'),{when:s=>s.day>=2,cd:4}),
-card('c_tips','city','radio','home','Helpful advice',['The radio has tips: “Citizens can save water by showering with a friend.”','The radio has tips: “Remember, a damp cloth is a shower in miniature.”'],
-  opt('Laugh at the radio.','smile',{spirits:1,face:-1},'You laugh out loud, alone in the kitchen. Someone through the wall laughs too.'),
-  opt('Write to the station.','complain',{spirits:-1},'You write a polite letter. You read it back. You make it less polite. You send it.',{inc:{complaint:1}}),{cd:4}),
-card('c_pool','city','radio','street','AQUA RESIDENCES open day','The private tower is holding a “community open day”. Free swim in the rooftop pool for local residents, one hour, photographs may be taken.',
-  opt('Go and swim.','wash',{spirits:2,face:1,money:-1},'There’s a “symbolic” towel fee. The water is warm and blue and you hate how good it feels. Your photo is on their website by evening.',{tag:'swamTower'}),
-  opt('Stay away.','refuse',{spirits:-1},'You watch from the street as people come out with wet hair, looking embarrassed and clean.'),{once:true,when:s=>s.day>=2}),
-card('c_fine','city','radio','home','Excess use','A letter: your building has been fined for “excess use”, to be split by flat. Your share is due Friday. There has been no use at all.',
-  opt('Pay it.','pay',{money:-2,face:1},'It feels like paying for a meal you didn’t eat.'),
-  opt('Refuse, in writing.','complain',{face:-1},'Your letter goes into a file. The file goes into a cupboard.',{inc:{complaint:1}}),{when:s=>s.day>=3,once:true}),
-card('c_hearing','city','official','office','A hearing',s=>`Your complaint file is ${cnt(s,'complaint')} entries thick, and someone noticed. There’s a hearing at the municipality, at ten, on a weekday.`,
-  opt('Go and speak.','complain',{face:-1,spirits:1},'You speak for four minutes. Nobody interrupts. Someone writes it down. Two days later the end date moves forward.',{end:-1,tag:'spoke'}),
-  opt('Send a written statement.','record',{spirits:-1},'Your statement is entered into the record. The record is very large.',{inc:{complaint:1}}),{when:s=>cnt(s,'complaint')>=2&&s.end-s.day>=2,w:2,once:true}),
-card('c_extension','city','radio','home','Due to unforeseen circumstances',s=>`“…extended until ${dayName(s.end)} due to unforeseen technical circumstances. Thank you for your patience.” ${couple(s)?'{partner} turns the radio off with {partner.his} elbow.':'You turn the radio off with your elbow.'}`,
-  opt('“It’s fine. It’s fine.”','smile',{face:1,spirits:-1},'You say it twice, which is how you know.'),
-  opt('Say it out loud on the stairs.','complain',{spirits:1,face:-1},'You say exactly what you think, in the stairwell, where it echoes. Two doors open. One person claps.'),{when:s=>s.ext>0&&s.extToday,w:9,cd:3}),
-card('c_rota','city','radio','home','The new rota','A new delivery rota is published. Your street is on it, but only on days that end in a seven.',
-  opt('Complain at the depot.','complain',{face:-1,water:1},'The clerk adds your street to Tuesdays, in pencil.'),
-  opt('Adjust and say nothing.','smile',{face:1,water:-1},'You rearrange your whole week around the rota. The rota changes again on Thursday.'),{when:s=>s.day>=2,once:true}),
+  opt('Go to work.','pay',{money:1},'The trench is filled in. Good? Nobody knows.'),{when:s=>s.day>=3&&!has(s,'repaired'),cd:3}),
+card('c_crew_thirsty','city','foreman','street','The crew is thirsty','{foreman}’s crew has dug since six. No water in the van either.',
+  opt('Bring them water.','share',{water:-1,spirits:1},'They drink in the trench. {foreman} remembers your door.',{tag:'crewFriend',mem:{foreman:'You brought the crew water.'}}),
+  opt('Not your job.','refuse',{face:-1},'They dig slower all afternoon.'),{when:s=>s.day>=2,once:true}),
+card('c_tanker','city','tanker','street','The last five hundred litres','“Five hundred litres, three streets. Tell me why it should be yours.”',
+  opt('Ask for your street.','knock',{water:2,face:-1},'She picks yours. Two streets watch her go.'),
+  opt('Send her to {elder}’s.','share',{spirits:1,face:1},'{elder} was in that queue. You hear about it for days.',{disp:{elder:1},tag:'tankerFair'}),{when:s=>s.day>=2,cd:5}),
+card('c_mic','city','official','street','Everything is under control','{official}, at a microphone: “Fully under control.” The camera turns to the crowd.',
+  opt('Clap with everyone.','smile',{face:1,spirits:-1},'You’re on the news, clapping.'),
+  opt('Shout “Under whose control?”','complain',{face:-2,spirits:1},'A laugh. Your face on the news, mid-shout.',{tag:'heckled',inc:{complaint:1}}),{cd:5,boost:{election:3}}),
+card('c_reporter','city','reporter','street','For the evening news','“How is your household coping? We want a positive story.”',
+  opt('“We’re managing fine.”','smile',{face:2,spirits:-1},'Your mother says you looked very well.'),
+  opt('“Come see our bathroom.”','record',{face:-2},'They don’t air it. Someone leaks it.',{tag:'filmedBathroom',inc:{complaint:1}}),{cd:5,boost:{election:2}}),
+card('c_resolved','city','radio','stair','Ticket closed','On the door: ISSUE RESOLVED. The tap is dry.',
+  opt('File it again.','complain',{spirits:-1},'This time you copy the whole building.',{inc:{complaint:1}}),
+  opt('Let it go.','wait',{face:1},'You’re not a troublemaker. Just thirsty.'),{when:s=>s.day>=2,cd:4}),
+card('c_tips','city','radio','home','Helpful advice',['Radio tip: “Save water by showering with a friend.”','Radio tip: “A damp cloth is a shower in miniature.”'],
+  opt('Laugh at the radio.','smile',{spirits:1,face:-1},'Someone through the wall laughs too.'),
+  opt('Write to the station.','complain',{spirits:-1},'Polite. Then less polite. Sent.',{inc:{complaint:1}}),{cd:4}),
+card('c_pool','city','radio','street','AQUA RESIDENCES open day','The private tower’s rooftop pool: free for residents, one hour. Photos may be taken.',
+  opt('Go and swim.','wash',{spirits:2,face:1,money:-1},'Warm and blue. Your photo is on their website.',{tag:'swamTower'}),
+  opt('Stay away.','refuse',{spirits:-1},'People come out wet-haired, embarrassed, clean.'),{once:true,when:s=>s.day>=2}),
+card('c_fine','city','radio','home','Excess use','A fine for “excess use”, split by flat. There has been no use at all.',
+  opt('Pay it.','pay',{money:-2,face:1},'Paying for a meal you didn’t eat.'),
+  opt('Refuse, in writing.','complain',{face:-1},'Your letter goes in a file, in a cupboard.',{inc:{complaint:1}}),{when:s=>s.day>=3,once:true}),
+card('c_hearing','city','official','office','A hearing',s=>`Your complaint file is ${cnt(s,'complaint')} entries thick. There’s a hearing at ten.`,
+  opt('Go and speak.','complain',{face:-1,spirits:1},'Four minutes. Nobody interrupts. The end date moves.',{end:-1,tag:'spoke'}),
+  opt('Send a written statement.','record',{spirits:-1},'Entered into the record. The record is very large.',{inc:{complaint:1}}),{when:s=>cnt(s,'complaint')>=2&&s.end-s.day>=2,w:2,once:true}),
+card('c_extension','city','radio','home','Due to unforeseen circumstances',s=>`“…extended until ${dayName(s.end)}. Thank you for your patience.” ${couple(s)?'{partner} turns the radio off with {partner.his} elbow.':'You turn it off with your elbow.'}`,
+  opt('“It’s fine. It’s fine.”','smile',{face:1,spirits:-1},'Twice. That’s how you know.'),
+  opt('Say it out loud.','complain',{spirits:1,face:-1},'It echoes in the stairwell. Someone claps.'),{when:s=>s.ext>0&&s.extToday,w:9,cd:3}),
+card('c_rota','city','radio','home','The new rota','The new rota has your street, on days ending in seven.',
+  opt('Complain at the depot.','complain',{face:-1,water:1},'Your street is added to Tuesdays, in pencil.'),
+  opt('Adjust and say nothing.','smile',{face:1,water:-1},'The rota changes again on Thursday.'),{when:s=>s.day>=2,once:true}),
 
 // ===== events =====
-card('e_strike','event','tanker','street','On strike','{tanker} is standing by her parked tanker with a sign: NOT PAID SINCE APRIL. The tank is full.',
-  opt('Bring her a coffee.','share',{money:-1,spirits:1,face:-1},'She drinks it on the step of the cab. “When this is over,” she says, “your street is first.”',{tag:'tankerFriend',mem:{tanker:'You brought her coffee on the picket line.'}}),
-  opt('Tell her people are thirsty.','complain',{face:1,spirits:-1},'“I know,” she says. “Tell the people who aren’t paying me.”'),{w:0,boost:{strike:8},once:true}),
-card('e_candidate','event','official','street','A bottle with a face','A candidate is handing out bottled water with his own face on the label. A camera crew follows him.',
-  opt('Take a bottle and smile.','smile',{water:1,face:1,spirits:-1},'You are in his campaign video, smiling, holding his face.'),
-  opt('Refuse it.','refuse',{spirits:1,face:-1},'The camera catches you shaking your head. It’s in the opposition’s video by evening.'),{w:0,boost:{election:8},once:true}),
-card('e_burst','event','driver','street','Water down the hill','The burst main is pouring down Titova street. People are running out with saucepans. {driver} is directing traffic.',
-  opt('Fill everything you own.','carry',{water:2,face:-1},'You fill every container, the bath bucket and two vases. A man films you running uphill with a vase.'),
-  opt('Help close it off.','knock',{spirits:1,face:1},'You find the valve with {driver} and two strangers. You are wet to the knees and furious and proud.',{disp:{driver:1},inc:{complaint:1}}),{w:0,boost:{burst:9},once:true}),
+card('e_strike','event','tanker','street','On strike','{tanker} stands by her full tanker: NOT PAID SINCE APRIL.',
+  opt('Bring her a coffee.','share',{money:-1,spirits:1,face:-1},'“When this is over, your street is first.”',{tag:'tankerFriend',mem:{tanker:'You brought her coffee on the picket line.'}}),
+  opt('“People are thirsty.”','complain',{face:1,spirits:-1},'“I know. Tell the people not paying me.”'),{w:0,boost:{strike:8},once:true}),
+card('e_candidate','event','official','street','A bottle with a face','A candidate hands out water with his face on the label.',
+  opt('Take one and smile.','smile',{water:1,face:1,spirits:-1},'You’re in his video, holding his face.'),
+  opt('Refuse it.','refuse',{spirits:1,face:-1},'You’re in the opposition’s video by evening.'),{w:0,boost:{election:8},once:true}),
+card('e_burst','event','driver','street','Water down the hill','The burst main pours down Titova street. People run out with saucepans.',
+  opt('Fill everything you own.','carry',{water:2,face:-1},'Someone films you running uphill with a vase.'),
+  opt('Help close it off.','knock',{spirits:1,face:1},'Wet to the knees. Furious, and proud.',{disp:{driver:1},inc:{complaint:1}}),{w:0,boost:{burst:9},once:true}),
 
 // ===== story context arcs (placed in time; not drawn from the bag) =====
 // The wedding: {sib} marries on the day after the promised end.
-card('x_wed_1','arc','sib','home','After the water comes back','{sib} calls, breathless. “We’ve set the date: {wedDay}! The day after the water comes back. You’ll be there, clean and smiling?”',
-  opt('“Wouldn’t miss it.”','smile',{spirits:1,face:1},'{sib} cries a little on the phone. You write it on the calendar in pen.',{promise:{id:'wedding',text:'Be at the wedding',who:'sib',due:s=>s.announced+1}}),
-  opt('“If the water’s really back.”','complain',{spirits:-1},'“Why wouldn’t it be?” {sib} says. You don’t have an answer that isn’t the whole city.'),{fam:'arc'}),
-card('x_wed_2','arc','sib','home','The outfit','{sib} drops off the outfit you’re wearing to the wedding. It needs washing and pressing. It is white, or it used to be.',
-  opt('Wash it by hand.','wash',{water:-2,face:1},'It dries on the balcony like a flag of surrender. It’s clean.',{tag:'outfitClean'}),
-  opt('Dry cleaner’s across town.','pay',{money:-2,face:1},'The dry cleaner’s has water. They charge like it.',{tag:'outfitClean'}),{fam:'arc'}),
-card('x_wed_3','arc','sib','home','The venue is dry',s=>`{sib} calls. “The restaurant has no water either. They want to cancel. It’s ${has(s,'extended')?'still on, they say, but only if guests bring their own water. Bring your own water to a wedding!':'tomorrow!'}”`,
-  opt('Offer your containers.','share',{water:-2,spirits:1},'You drive them over. The chef hugs you. {sib} hugs you longer.',{tag:'helpedWedding',mem:{sib:'You brought your water to the wedding.'}}),
-  opt('Suggest they postpone.','complain',{spirits:-1,face:-1},'There’s a long silence. “Postpone until when?” You both know the answer is nobody knows.'),{fam:'arc'}),
-card('x_wed_4','arc','sib','street','The day itself','It was supposed to be after the water came back. It isn’t. {sib} is in white in the courtyard, the reception has buckets behind the bar, and you have one clean outfit.',
-  opt('Go and smile for the photos.','smile',{face:2,spirits:1,money:-1},'In every photograph you look rested. Only {sib} knows what that took.',{keep:'wedding',tag:'atWedding'}),
-  opt('Miss it for the tanker.','queue',{water:2,spirits:-2},'You stand in the queue in your good clothes. {sib} sends a photo of the cake, without a message.',{brk:'wedding'}),{fam:'arc'}),
+card('x_wed_1','arc','sib','home','After the water comes back','“{wedDay}! The day after the water’s back. You’ll be there, clean and smiling?”',
+  opt('“Wouldn’t miss it.”','smile',{spirits:1,face:1},'{sib} cries a little. You write it in pen.',{promise:{id:'wedding',text:'Be at the wedding',who:'sib',due:s=>s.announced+1}}),
+  opt('“If the water’s back.”','complain',{spirits:-1},'“Why wouldn’t it be?” You have no short answer.'),{fam:'arc'}),
+card('x_wed_2','arc','sib','home','The outfit','Your wedding outfit needs washing. It’s white, or it used to be.',
+  opt('Wash it by hand.','wash',{water:-2,face:1},'It dries like a flag of surrender. Clean.',{tag:'outfitClean'}),
+  opt('Dry cleaner’s across town.','pay',{money:-2,face:1},'They have water. They charge like it.',{tag:'outfitClean'}),{fam:'arc'}),
+card('x_wed_3','arc','sib','home','The venue is dry',s=>`“The restaurant has no water. ${has(s,'extended')?'Guests must bring their own. To a wedding!':'They want to cancel!'}”`,
+  opt('Offer your containers.','share',{water:-2,spirits:1},'The chef hugs you. {sib} hugs you longer.',{tag:'helpedWedding',mem:{sib:'You brought your water to the wedding.'}}),
+  opt('Suggest they postpone.','complain',{spirits:-1,face:-1},'“Until when?” Nobody knows.'),{fam:'arc'}),
+card('x_wed_4','arc','sib','street','The day itself','The water isn’t back. {sib} is in white. There are buckets behind the bar.',
+  opt('Go, smile for photos.','smile',{face:2,spirits:1,money:-1},'You look rested. Only {sib} knows what it took.',{keep:'wedding',tag:'atWedding'}),
+  opt('Miss it for the tanker.','queue',{water:2,spirits:-2},'{sib} sends a photo of the cake. No message.',{brk:'wedding'}),{fam:'arc'}),
 // The exam: yours, on the promised last day.
-card('x_exam_1','arc','you','home','The exam','Your licensing exam is on {examDay}. The library has air conditioning and working taps. Home has your notes, the kettle and a dry tap.',
-  opt('Study at the library.','leave',{face:1,spirits:-1},'You wash your face in the library bathroom between chapters, like a spy.',{tag:'library'}),
+card('x_exam_1','arc','you','home','The exam','Exam on {examDay}. The library has working taps. Home has your notes.',
+  opt('Study at the library.','leave',{face:1,spirits:-1},'You wash your face between chapters, like a spy.',{tag:'library'}),
   opt('Study at home.','wait',{spirits:1,water:-1},'Three pots of coffee. A chapter and a half.'),{fam:'arc'}),
-card('x_exam_2','arc','you','street','The study group','Your study group meets at a café across the river. You’d miss the depot queue.',
-  opt('Go to the study group.','pay',{money:-1,spirits:1},'You learn more in two hours than in two days at home. Also, the café has a sink.',{tag:'studied'}),
-  opt('Queue for water instead.','queue',{water:2,spirits:-1},'You revise from flashcards in the queue. A stranger quizzes you on contract law.'),{fam:'arc'}),
-card('x_exam_3','arc','you','home','The night before','It’s the night before the exam. You can wash your hair properly, or go to bed early. Not both.',
-  opt('Wash properly.','wash',{water:-2,face:1},'You go to sleep late with wet hair and a strange calm.',{tag:'examClean'}),
-  opt('Sleep early.','wait',{spirits:2},'You sleep nine hours. In the mirror you look like someone who slept nine hours, with that hair.'),{fam:'arc'}),
-card('x_exam_4','arc','you','office','Exam day','The exam hall is hot. The examiner fans himself with the question sheets. He looks at you a beat too long. “Are you all right?”',
-  opt('“Perfectly fine.”','smile',{face:1,spirits:-1},'You write for three hours. You don’t think about water once, which is how you know you were really concentrating.',{tag:'examDone'}),
-  opt('“Our street has no water.”','complain',{face:-1,spirits:1},'He nods slowly. “Mine neither.” He gives you a bottle from under his desk and an extra ten minutes.',{tag:'examDone'}),{fam:'arc'}),
+card('x_exam_2','arc','you','street','The study group','The study group meets across the river. You’d miss the queue.',
+  opt('Join the study group.','pay',{money:-1,spirits:1},'Two good hours. The café has a sink.',{tag:'studied'}),
+  opt('Queue for water instead.','queue',{water:2,spirits:-1},'A stranger quizzes you on contract law.'),{fam:'arc'}),
+card('x_exam_3','arc','you','home','The night before','Wash your hair, or sleep early. Not both.',
+  opt('Wash properly.','wash',{water:-2,face:1},'Late, wet hair, a strange calm.',{tag:'examClean'}),
+  opt('Sleep early.','wait',{spirits:2},'Nine hours. That hair.'),{fam:'arc'}),
+card('x_exam_4','arc','you','office','Exam day','The hall is hot. The examiner looks too long. “Are you all right?”',
+  opt('“Perfectly fine.”','smile',{face:1,spirits:-1},'Three hours. You forget water entirely.',{tag:'examDone'}),
+  opt('“We have no water.”','complain',{face:-1,spirits:1},'“Mine neither.” A bottle, and ten extra minutes.',{tag:'examDone'}),{fam:'arc'}),
 // Just moved in: nobody knows you yet.
-card('x_new_1','arc','you','stair','New in the building','You moved in nine days ago. The boxes are still in the hall. Nobody knows your name, and the water went off the day you arrived.',
-  opt('Knock on doors with biscuits.','knock',{money:-1,spirits:1},'Four doors open. One closes again. You learn the names of everyone who matters.',{disp:{driver:1,elder:1,gossip:1,spiteful:1},tag:'introduced'}),
-  opt('Keep to yourself for now.','hide',{face:1,spirits:-1},'Nobody bothers you. Nobody tells you when the tanker comes, either.'),{fam:'arc'}),
-card('x_new_2','arc','gossip','stair','The group chat','The building has a group chat. It’s where the tanker times are posted. You’re not in it.',
-  opt('Ask {gossip} to add you.','share',{face:-1,water:1},'You’re in. {gossip} introduces you as “the new one, poor thing”. The tanker is on Mostarska at four.',{disp:{gossip:1},tag:'inChat'}),
-  opt('Read the notices yourself.','wait',{spirits:-1},'The notices are three days old. You go to the depot anyway. You find out about the tanker from the empty street.'),{fam:'arc'}),
-card('x_new_3','arc','driver','stair','On your doormat',s=>`There’s a full container on your doormat with a note: “Welcome to the building. — {${bestNb(s)}}”.`,
-  opt('Keep it, gratefully.','share',{water:2,spirits:1},'You put the note on the fridge. It’s the first thing on it.'),
-  opt('Return it with a thank-you.','knock',{spirits:1,face:1},'They wave you off, then invite you in. You stay an hour.',{dispBest:1}),{fam:'arc'}),
-card('x_new_4','arc','spiteful','stair','The building decides',s=>{const warm=['driver','elder','gossip','spiteful'].filter(a=>disp(s,a)>0).length;return warm>=3?'At the building meeting your name comes up. {elder} says you’re all right. {driver} says more than all right. Even {spiteful} doesn’t object.':warm>=2?'At the building meeting your name comes up. Some people nod. {spiteful} wants to know who you are, exactly.':'At the building meeting your name comes up. Nobody is sure who you are. {spiteful} has a suggestion about the water rota for “newcomers”.';},
-  opt('Stand up and speak.','complain',{face:-1,spirits:1},'You introduce yourself properly, to everyone, at once. It is terrifying. Afterwards three people shake your hand.',{tag:'spokeMeeting'}),
-  opt('Smile and nod.','smile',{face:1,spirits:-1},'The meeting decides what it decides. You agree with all of it.'),{fam:'arc'}),
+card('x_new_1','arc','you','stair','New in the building','Boxes in the hall. Nobody knows your name. The water went off the day you arrived.',
+  opt('Knock with biscuits.','knock',{money:-1,spirits:1},'Four doors open. One closes again.',{disp:{driver:1,elder:1,gossip:1,spiteful:1},tag:'introduced'}),
+  opt('Keep to yourself.','hide',{face:1,spirits:-1},'Nobody bothers you. Or tells you about the tanker.'),{fam:'arc'}),
+card('x_new_2','arc','gossip','stair','The group chat','The building’s group chat posts the tanker times. You’re not in it.',
+  opt('Ask to be added.','share',{face:-1,water:1},'“The new one, poor thing.” Tanker at four.',{disp:{gossip:1},tag:'inChat'}),
+  opt('Read the notices yourself.','wait',{spirits:-1},'Three days old. The street is empty.'),{fam:'arc'}),
+card('x_new_3','arc','driver','stair','On your doormat',s=>`A full container on your doormat. “Welcome to the building. — {${bestNb(s)}}”`,
+  opt('Keep it, gratefully.','share',{water:2,spirits:1},'The note is the first thing on your fridge.'),
+  opt('Return it, with thanks.','knock',{spirits:1,face:1},'They invite you in. You stay an hour.',{dispBest:1}),{fam:'arc'}),
+card('x_new_4','arc','spiteful','stair','The building decides',s=>{const warm=['driver','elder','gossip','spiteful'].filter(a=>disp(s,a)>0).length;return warm>=3?'Your name comes up at the meeting. {elder} says you’re all right. Even {spiteful} agrees.':warm>=2?'Your name comes up at the meeting. Some nod. {spiteful} asks who you are, exactly.':'Your name comes up at the meeting. Nobody knows you. {spiteful} suggests a rota for “newcomers”.';},
+  opt('Stand up and speak.','complain',{face:-1,spirits:1},'Terrifying. Three people shake your hand.',{tag:'spokeMeeting'}),
+  opt('Smile and nod.','smile',{face:1,spirits:-1},'You agree with all of it.'),{fam:'arc'}),
 ];
 // (cards with sched:true only come when a choice schedules them; arc cards only when their beat comes up)
 
@@ -1042,13 +1071,13 @@ function startDay(s,first=false){
   const L=LEVELS[s.level];s.today=[];s.extToday=false;
   // announcements: the city extends (or, rarely, shortens) the reduction
   for(const e of s.extPlan)if(!e.done&&e.day<=s.day&&s.day<=s.end){e.done=true;const was=s.end;s.end=Math.min(L.maxLen,s.end+e.add);
-    if(s.end>was){s.ext++;s.extToday=true;s.tags.extended=1;s.ann.push({day:s.day,kind:'ext',from:was,text:`Water supply reduction extended by ${s.end-was} days due to unforeseen technical circumstances. New end date: ${dayName(s.end)}.`});}}
+    if(s.end>was){s.ext++;s.extToday=true;s.tags.extended=1;s.ann.push({day:s.day,kind:'ext',from:was,text:`Extended to ${dayName(s.end)}: ${s.end-was} more day${s.end-was>1?'s':''}. Due to unforeseen technical circumstances.`});}}
   // events: one at a time, a few days each
   s.events=s.events.filter(e=>e.until>=s.day);
   if(!first&&!s.events.length&&s.day<s.end&&rnd(s)<EVENT_P){const id=pickr(s,Object.keys(EVENTS)),E=EVENTS[id],len=ri(s,...E.len);
     s.events.push({id,from:s.day,until:s.day+len-1});s.today.push({kind:'event',id});
     if(id==='burst'&&s.end<L.maxLen&&rnd(s)<.6){const was=s.end;s.end=Math.min(L.maxLen,s.end+ri(s,1,2));s.ext++;s.extToday=true;s.tags.extended=1;
-      s.ann.push({day:s.day,kind:'ext',from:was,text:`Because of the burst main on Titova street, the reduction is extended to ${dayName(s.end)}.`});}}
+      s.ann.push({day:s.day,kind:'ext',from:was,text:`Extended to ${dayName(s.end)}. Because of the burst main on Titova street.`});}}
   // the morning delivery
   const dv=deliveryFor(s,s.day);s.arrival=dv;if(dv){s.m.water=clamp(s.m.water+dv,0,100);}
   s.radio=pickr(s,RADIO[radioTone(s)]);
@@ -1511,9 +1540,9 @@ function px(name,size=18,color){
 }
 
 // ---------- ui.js ----------
-const GAME_VERSION='v5.0';
+const GAME_VERSION='v5.0.2';
 // GAME_BUILD is rewritten automatically on every commit by .githooks/pre-commit (don't edit by hand):
-const GAME_BUILD={n:11,date:'2026-11-03 22:04'};
+const GAME_BUILD={n:13,date:'2026-11-06 16:39'};
 const versionLabel=()=>`${GAME_VERSION} · build ${GAME_BUILD.n}`;
 const app=document.getElementById('app'), dlg=document.getElementById('dialog');
 let S=null, LAD=null, lean=null, saveOK=true;
@@ -1669,6 +1698,7 @@ function mountArt(){ilDefs();}
 function renderScreen(){
   document.title=S?`Day ${S.day} · Redukcija`:'Redukcija';
   if(!S)return titleScreen();
+  if(S.stage==='brief'){if(S.noteDay!==S.day){S.noteDay=S.day;S.notes=morningNotes();S.noteI=0;}if(S.noteI<S.notes.length)return noteScreen();}
   ({brief,card:cardScreen,after:afterScreen,night:nightScreen,ending:endingScreen}[S.stage]||titleScreen)();}
 const TITLE_SEED=20261103;
 function titleScreen(){
@@ -1693,24 +1723,28 @@ const fcRow=(tag,text,ic,cls='')=>`<div class="fc px ${cls}">${ic||''}${tag?`<sp
 function reductionStrip(){const cells=[];
   for(let d=1;d<=S.end;d++)cells.push(`<span class="${d<S.day?'past':d===S.day?'on':''} ${d>S.announced?'added':''}" title="${dayName(d)}">${dayName(d)[0]}</span>`);
   return `<div class="days reduc" aria-label="Day ${S.day} of ${S.end}">${cells.join('')}</div>`;}
+// v5.0.2: story that needs no decision is a card you tap through (a "note"): the day-1 introduction, official notices,
+// a new event, days that passed. They play before the morning screen, which is now only the day, the strip and today's list.
+function splashHTML(){const h=S.splash!==S.day?`<div class="daysplash" aria-hidden="true"><div>${px('sun',44)}<span>Day ${S.day} of ${S.end}</span><strong>${dayName(S.day)}</strong></div></div>`:'';S.splash=S.day;return h;}
+function morningNotes(){const out=[],first=S.day===1&&!S.log.length,ctx=CONTEXTS[S.ctx];
+  if(S.log.length&&S.prevDay&&S.day-S.prevDay>1)out.push({eb:`${dayName(S.day)} morning`,big:jumpLine(S.day-S.prevDay-1)});
+  if(first){
+    out.push({eb:`Level ${S.level} · ${LEVELS[S.level].name}`,big:fill('“Water supply will be reduced for {end} days.”',S),small:`The notice on the door says it ends after ${dayName(S.end)}.`,stamp:'Planned maintenance'});
+    out.push({eb:ctx.name,people:['you','partner'].filter(id=>S.people[id]),big:fill(ctx.line,S),small:S.circ.map(c=>CIRCS[c].line).join(' '),rule:S.circ.map(c=>`${CIRCS[c].name}: ${CIRCS[c].rule}`).join(' · ')});
+    out.push({eb:'The building',people:['driver','elder','gossip','spiteful'],big:'Four neighbours. Each will make up their mind about you.'});}
+  for(const e of S.events.filter(e=>e.from===S.day)){const E=EVENTS[e.id];out.push({eb:E.name,big:E.line,rule:E.rule});}
+  for(const a of S.ann.filter(a=>a.day===S.day)){const[b1,...b2]=a.text.split('. ');out.push({eb:'Municipal water service',big:b2.length?b1+'.':a.text,small:b2.join('. ')||null,stamp:a.kind==='ext'?'Thank you for your patience':null,cls:a.kind});}
+  return out;}
+function noteScreen(){const n=S.notes[S.noteI];
+  const ppl=n.people?`<div class="nppl">${n.people.map(id=>`<div class="who">${portrait(id,'mini',id==='you'||id==='partner'?PLACE.home.c:PLACE.stair.c)}<span>${esc(S.people[id].name)}${id==='you'?' (you)':''}</span></div>`).join('')}</div>`:'';
+  shell(`${splashHTML()}<div class="drop"><button class="card pcard one px resultcard notecard ${n.cls||''}" data-act="note"><span class="nbody"><span class="eyebrow">${esc(n.eb)}</span>${ppl}<span class="nbig">${esc(n.big)}</span>${n.small?`<span class="nsmall">${esc(n.small)}</span>`:''}${n.rule?`<span class="nrule">${esc(n.rule)}</span>`:''}${n.stamp?`<span class="stamp">${esc(n.stamp)}</span>`:''}</span><span class="cta"><span>Tap to continue</span><span class="arrow" aria-hidden="true">→</span></span></button></div>`,{theme:'morning'});}
 function brief(){
-  const rows=[],first=S.day===1&&!S.log.length,ctx=CONTEXTS[S.ctx];
-  for(const a of S.ann.filter(a=>a.day===S.day))rows.push(`<div class="annc px ${a.kind}">${px('radio',18)}<div><span class="eyebrow">Municipal water service · official notice</span><p>${esc(a.text)}</p>${a.kind==='ext'?'<span class="stamp">Thank you for your patience</span>':''}</div></div>`);
+  const rows=[];
   rows.push(S.arrival?fcRow('confirmed',`${achip('water',S.arrival>=13?2:1)} Building delivery this morning`,px('water',18)):fcRow('none','No building delivery this morning.',px('water',18,'var(--line)')));
-  for(const e of S.events){const E=EVENTS[e.id];rows.push(fcRow('expected',`<b>${E.name}</b> · ${esc(E.line)} <span class="muted">${esc(E.rule)}.</span>`,px('sun',18)));}
+  for(const e of S.events){const E=EVENTS[e.id];rows.push(fcRow('expected',`<b>${E.name}</b> · <span class="muted">${esc(E.rule)}</span>`,px('sun',18)));}
   rows.push(fcRow('rumoured',esc(S.radio),px('radio',18)));
-  const splash=S.splash!==S.day?`<div class="daysplash" aria-hidden="true"><div>${px('sun',44)}<span>Day ${S.day} of ${S.end}</span><strong>${dayName(S.day)}</strong></div></div>`:'';
-  S.splash=S.day;
-  const jumped=S.log.length&&S.prevDay&&S.day-S.prevDay>1?`<p class="jumpline">${esc(jumpLine(S.day-S.prevDay-1))}</p>`:'';
-  const intro=first?`<div class="drop"><div class="panel px intro"><span class="eyebrow">Level ${S.level} · ${LEVELS[S.level].name}</span>
-      <h2>${esc(fill('“Water supply will be reduced for {end} days due to planned maintenance.”',S))}</h2>
-      <p class="prose">The notice is on the building door. Citizens are asked to use water responsibly. It ends after ${dayName(S.end)}, it says.</p>
-      <div class="hh">${Object.values(S.people).filter(p=>p.id==='you'||p.id==='partner').map(p=>`<div class="who">${portrait(p.id,'',PLACE.home.c)}<div><strong>${esc(p.id==='you'?p.name+' (you)':p.name)}</strong><span>${esc(p.role)}</span></div></div>`).join('')}</div>
-      <h3 class="eyebrow sect">${px('calendar',14)} ${esc(ctx.name)}</h3><p>${esc(fill(ctx.line,S))}</p>
-      ${S.circ.map(c=>`<h3 class="eyebrow sect">${px('house',14)} ${esc(CIRCS[c].name)}</h3><p>${esc(CIRCS[c].line)} <span class="muted">${esc(CIRCS[c].rule)}.</span></p>`).join('')}
-      <h3 class="eyebrow sect">${px('family',14,'var(--muted)')} The building</h3><div class="nbs">${['driver','elder','gossip','spiteful'].map(a=>`<div class="who">${portrait(a,'mini',PLACE.stair.c)}<div><strong>${esc(S.people[a].name)}</strong><span>${esc(FLOORS[S.people[a].floor])}</span></div></div>`).join('')}</div></div></div>`:'';
-  shell(`${splash}<section class="scene morning"><div class="dayhero px"><div class="sunrise">${px('sun',30)}</div><div><span class="eyebrow">Day ${S.day} of ${S.end}${S.ext?` · was ${S.announced}`:''} · morning</span><h1>${dayName(S.day)}</h1></div></div>
-    ${reductionStrip()}${jumped}${intro}
+  shell(`${splashHTML()}<section class="scene morning"><div class="dayhero px"><div class="sunrise">${px('sun',30)}</div><div><span class="eyebrow">Day ${S.day} of ${S.end}${S.ext?` · was ${S.announced}`:''} · morning</span><h1>${dayName(S.day)}</h1></div></div>
+    ${reductionStrip()}
     <h3 class="eyebrow sect">${px('sun',14)} Today</h3>
     <div class="notice drop">${rows.join('')}</div>
     <div class="actions drop"><button class="primary px" data-act="next">Start the day →</button></div></section>`,{theme:'morning'});}
@@ -1719,29 +1753,28 @@ const TIMES=['Early','Morning','Midday','Afternoon','Evening'];
 function speakerHead(id,eyebrow,place){const pl=PLACE[place]||PLACE.home;
   return `<div class="phead" style="--place:${pl.c}">${portrait(id,'big','#fbf8f1')}<div class="who"><span class="lbl">${eyebrow}</span><strong>${esc(id==='you'?'You':nameOf(id))}</strong><span>${esc(id==='you'?(S.people.partner?'Your household':'On your own'):roleOf(id))}</span></div><span class="placetag">${px('place',13)}${pl.n}</span></div>`;}
 function progress(){return `<div class="progress" aria-label="Decision ${S.idx+1} of ${S.deck.length}">${S.deck.map((_,i)=>`<span class="${i<S.idx?'done':i===S.idx?'now':''}"></span>`).join('')}</div>`;}
-function choiceBtn(v,i){return `<button class="choice px ${i?'r':'l'}" data-choice="${i}">
-    <span class="ct"><span class="pict px" title="${PICTNAME[v.pict]||''}">${pict(v.pict)}</span><span class="cl">${esc(v.label)}</span><span class="arrow px" aria-hidden="true">${i?'→':'←'}</span></span>
+// v5.0.1: the choices are the card's own bottom half, left choice on the left, right on the right, so the swipe and the layout agree.
+function choiceBtn(v,i){return `<button class="half ${i?'r':'l'}" data-choice="${i}" title="${PICTNAME[v.pict]||''}">
+    <span class="hl">${i?'':'<span class="ha" aria-hidden="true">←</span>'}<span>${esc(v.label)}</span>${i?'<span class="ha" aria-hidden="true">→</span>':''}</span>
     ${arrowChips(v.fx,v.x)}</button>`;}
 function cardScreen(){
   const c=currentCard(S),vs=[optionView(c.a,S),optionView(c.b,S)],text=cardText(S,c);
   const eyebrow=c.fam==='arc'?`${CONTEXTS[S.ctx].name}`:`${TIMES[S.idx]||'Evening'} · ${S.idx+1} of ${S.deck.length}`;
-  shell(`${progress()}<div class="cardwrap drop"><article class="card pcard px" id="card" tabindex="0" aria-describedby="hint">
-    <span class="lean l">← ${esc(vs[0].label)}</span><span class="lean r">${esc(vs[1].label)} →</span>
+  shell(`${progress()}<div class="cardwrap drop"><article class="card pcard one px" id="card" tabindex="0" aria-label="Swipe left or right, or tap a choice">
     ${speakerHead(c.who,eyebrow,c.place)}
-    <h2>${esc(fill(c.title,S))}</h2><p class="prose">${esc(text)}</p></article></div>
-    <div class="choices px" role="group" aria-label="Your choices">${vs.map(choiceBtn).join('')}</div>
-    <p class="under" id="hint">Swipe the card or tap a choice · arrows show which way a meter moves, not exactly how far</p>`);
+    <h2>${esc(fill(c.title,S))}</h2><p class="prose">${esc(text)}</p>
+    <div class="halves" role="group" aria-label="Your choices">${vs.map(choiceBtn).join('')}</div></article></div>`);
   bindSwipe(vs);}
 function afterScreen(){
   const r=S.result,c=currentCard(S),last=S.idx>=S.deck.length-1,go=S.pending?'What happens next':last?'Put the day to bed':'Continue';
   const notes=[];if(r.promise)notes.push(promiseChip('A promise','Promise made'));if(r.keep)notes.push(promiseChip('Kept','Promise kept','gain'));
   if(r.brk)notes.push(`<span class="chip px cost" style="--c:var(--strain)">${px('promise',15,'var(--strain)')}Promise broken</span>`);
   if(r.end)notes.push(`<span class="chip px gain" style="--c:var(--file)">${px('calendar',15,'#fff')}New end date: ${dayName(S.end)}</span>`);
-  shell(`${progress()}<div class="drop"><button class="card pcard px resultcard" data-act="next" aria-label="${go}" aria-describedby="resbody">
+  shell(`${progress()}<div class="drop"><button class="card pcard one px resultcard" data-act="next" aria-label="${go}" aria-describedby="resbody">
     <div id="resbody">${speakerHead(r.who,'After the decision',r.place)}
     <div class="selected"><span class="pict px">${pict(r.pict,20)}</span>${esc(r.choice)}</div><div class="resfx">${deltaChips(r.d)}${notes.length?`<span class="chips">${notes.join('')}</span>`:''}</div><p class="outcome">${esc(r.resp)}</p></div>
-    <span class="cta"><span>${go}</span><span class="arrow px" aria-hidden="true">→</span></span></button></div>
-    <p class="under" style="text-align:left">${saveOK?'Saved on this device.':'Saving is unavailable in this browser. Keep this tab open.'}</p>`);}
+    <span class="cta"><span>${go==='Continue'?'Tap to continue':go}</span><span class="arrow" aria-hidden="true">→</span></span></button></div>
+    ${saveOK?'':'<p class="under" style="text-align:left">Saving is unavailable in this browser. Keep this tab open.</p>'}`);}
 // Night: no HUD; the household uses water, money and patience overnight, Face drifts back to the middle.
 // "Running low" and, from level 2, "Running high": both edges end the run.
 function nightScreen(){
@@ -1751,7 +1784,7 @@ function nightScreen(){
     if(v<=WARN_LOW)warn.push(['low',`${MLABEL[k]} is low (${v}). At 0: ${EDGES[EDGE_OF[k].low].title.replace('.','')}`]);
     else if(top&&v>=WARN_HIGH)warn.push(['high',`${MLABEL[k]} is high (${v}). At 100: ${EDGES[EDGE_OF[k].high].title.replace('.','')}`]);
     else if(!ends&&next<=WARN_LOW)warn.push(['warn',`${MLABEL[k]} will be ${Math.max(0,next)} by tomorrow night unless something changes.`]);}
-  const passed=r.jump?`<p class="jumpline">${r.jump>1?'Tonight, and two more days, pass.':'Tonight and the next day pass.'} Each day still costs the household its water, money and patience.</p>`:'';
+  const passed=r.jump?`<p class="jumpline">${r.jump>1?'Tonight and two more days pass.':'Tonight and the next day pass.'}</p>`:'';
   const foot=k=>{const d=a[k]-b[k];return `<span>${d?sign(d):'±0'} overnight${k==='face'?' · drifts to 50':''}${k==='water'&&!ends&&r.deliv?` · delivery tomorrow +${r.deliv}`:k==='water'&&!ends?' · no delivery tomorrow':''}</span>`;};
   shown={...a};
   const btn=ends?'The water comes back →':edge?'Morning →':'Sleep →';
@@ -1763,13 +1796,13 @@ function nightScreen(){
     ${r.broke.map(id=>`<p class="warning">${px('warn',16)}<span>Promise broken: ${esc(S.promises[id].text.toLowerCase())}. Spirits ▼▼.</span></p>`).join('')}
     <h3 class="eyebrow sect">Overnight</h3>
     <div class="nightbars drop">${METERS.map(k=>bar(k,a[k],{from:b[k],cls:'wide',foot:foot(k)})).join('')}</div>
-    <p class="under" style="text-align:left">Every night the household uses water (${LEVELS[S.level].night.water} at this size), Spirits and Money tick down, and Face drifts back towards the middle: keeping up an act takes effort. ${top?'Both edges end the run.':'At this level only the bottom edges end the run.'}</p>
+    <p class="under" style="text-align:left">${top?'Both edges end the run.':'Only the bottom edges end the run.'}</p>
     <div class="actions drop"><button class="primary px" data-act="next">${btn}</button></div></section>`,{hud:false,theme:'night'});}
 function nightLine(){const t=S.tags,two=!!S.people.partner;
   const lines=[two?'{partner} leaves a bowl under the tap. You leave it there too.':'You leave a bowl under the tap. Just in case.',
-    'Through the wall, someone is boiling a kettle. Everyone can hear everything now.',
-    S.events.some(e=>e.id==='heat')?'The heat doesn’t break at night. The building sleeps with its doors open.':'The containers stand in the hall like a row of patient guests.',
-    t.extended?'The radio said “extended”. Nobody in the building says the word out loud.':'Somebody in the stairwell is counting down the days on the notice with a pencil.',
+    'Through the wall, someone boils a kettle.',
+    S.events.some(e=>e.id==='heat')?'The heat doesn’t break at night. The building sleeps with its doors open.':'The containers wait in the hall like patient guests.',
+    t.extended?'Nobody in the building says “extended” out loud.':'Someone counts down the days on the notice, in pencil.',
     two?'{partner} is asleep with the notebook open on {partner.his} chest.':'You fall asleep with the notebook open on your chest.'];
   return fill(lines[(S.day+S.seed)%lines.length],S);}
 function endingScreen(){
@@ -1798,7 +1831,7 @@ function epilogue(s){const out=[];
 function modal(html){dlg.innerHTML=html;if(!dlg.open)dlg.showModal();}
 function rulesHTML(){return `<header><h2>How to play</h2><button class="close" data-close aria-label="Close">×</button></header>
   <p>The city announces a <strong>water reduction</strong> for a fixed number of days. Get your household through it. The city will probably extend it. Make it to the end and the next run is a bigger household.</p>
-  <p>Each day has five cards. Each card is someone with a situation and two things you could do. <strong>Swipe the card</strong>, tap a choice, or press <kbd>←</kbd> <kbd>→</kbd>.</p>
+  <p>Each day has five cards. Each card is someone with a situation and two things you could do. <strong>Swipe the card</strong> left or right, tap one of its two halves, or press <kbd>←</kbd> <kbd>→</kbd>.</p>
   <h3>${px('water',18)} ${px('spirits',18)} ${px('face',18)} ${px('money',18)} Four meters</h3>
   <p><b>Water</b> is what’s in the containers. <b>Spirits</b> is how the household is holding up. <b>Face</b> is how well you keep up “everything is fine” in public. <b>Money</b> pays for food, containers and favours.</p>
   <p>Every meter has <strong>two edges</strong>. Run out and the run ends. From level 2, so does too much: a hoarder gets reported, a household that’s too comfortable gets frozen out, a family that looks too fine ends up on a billboard, and anyone with spare money is assumed to be reselling water.</p>
@@ -1830,15 +1863,16 @@ function endingsHTML(){const L=LAD;
 // ---------- swipe ----------
 function bindSwipe(vs){
   const el=document.getElementById('card');if(!el)return;
-  let x0=null,dx=0,id=null;lean=null;
-  const setLean=l=>{if(l===lean)return;lean=l;el.dataset.lean=l??'';document.querySelectorAll('.choice[data-choice]').forEach((b,i)=>b.classList.toggle('hot',i===l));setPreview(l==null?null:vs[l].fx);};
-  el.addEventListener('pointerdown',e=>{if(e.button>0)return;x0=e.clientX;dx=0;id=e.pointerId;el.setPointerCapture(id);el.classList.add('dragging');});
+  let x0=null,dx=0,id=null,hit=null;lean=null;
+  const setLean=l=>{if(l===lean)return;lean=l;el.dataset.lean=l??'';el.querySelectorAll('.half[data-choice]').forEach((b,i)=>b.classList.toggle('hot',i===l));setPreview(l==null?null:vs[l].fx);};
+  el.addEventListener('pointerdown',e=>{if(e.button>0)return;x0=e.clientX;dx=0;id=e.pointerId;hit=e.target.closest('.half');el.setPointerCapture(id);el.classList.add('dragging');});
   el.addEventListener('pointermove',e=>{if(x0==null||e.pointerId!==id)return;dx=e.clientX-x0;el.style.transform=`translateX(${dx}px) rotate(${dx/22}deg)`;setLean(dx<-30?0:dx>30?1:null);});
   const up=()=>{if(x0==null)return;el.classList.remove('dragging');const l=dx<-100?0:dx>100?1:null;x0=null;
     if(l!=null){Sound.swipe();el.style.transform=`translateX(${dx<0?-600:600}px) rotate(${dx/10}deg)`;el.style.opacity='0';setTimeout(()=>pick(l,true),180);}
+    else if(Math.abs(dx)<10&&hit){el.style.transform='';pick(+hit.dataset.choice);}
     else{el.style.transform='';setLean(null);}};
   el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
-  document.querySelectorAll('.choice[data-choice]').forEach((b,i)=>{
+  el.querySelectorAll('.half[data-choice]').forEach((b,i)=>{
     b.addEventListener('mouseenter',()=>setLean(i));b.addEventListener('focus',()=>setLean(i));
     b.addEventListener('mouseleave',()=>setLean(null));b.addEventListener('blur',()=>setLean(null));});}
 function pick(i,played){const c=currentCard(S);if(!c||S.stage!=='card')return;if(!played)Sound.swipe();choose(S,c,i);commit();}
@@ -1920,6 +1954,7 @@ document.addEventListener('click',e=>{
     new(){startLevel(LAD.level);},
     rules(){modal(rulesHTML());},endings(){modal(endingsHTML());},
     quit(){app.innerHTML=`<section class="title"><div><h1 style="font-size:44px">See you tomorrow.</h1><p class="lead">Your run is saved on this device. You can close this tab.</p><div class="menu"><button class="secondary px" data-act="totitle">Back to the title</button></div></div></section>`;},
+    note(){S.noteI++;commit();},
     next(){if(S.stage==='after'&&performance.now()<guardUntil)return;if(S.stage==='brief')afterBrief(S);else if(S.stage==='after')advance(S);else if(S.stage==='night')nextMorning(S);commit();},
     sound(){Sound.toggle();refreshSoundBtns();},music(){Sound.set('music',!Sound.music);refreshSoundBtns();},sfx(){Sound.set('sfx',!Sound.sfx);refreshSoundBtns();},
     pause(){modal(pauseHTML());},family(){modal(familyHTML());},history(){modal(historyHTML());},
@@ -1937,7 +1972,7 @@ document.addEventListener('keydown',e=>{
   if(k==='f'||k==='F'){modal(familyHTML());return;}
   if(k==='h'||k==='H'){modal(historyHTML());return;}
   if(S.stage==='card'){if(k==='ArrowLeft'||k==='1'){pick(0);e.preventDefault();}if(k==='ArrowRight'||k==='2'){pick(1);e.preventDefault();}return;}
-  if((k==='Enter'||k===' ')&&document.querySelector('[data-act="next"]')&&!e.target.closest?.('button')){document.querySelector('[data-act="next"]').click();e.preventDefault();}
+  const go=document.querySelector('[data-act="next"],[data-act="note"]');if((k==='Enter'||k===' '||(k==='ArrowRight'&&go?.dataset.act==='note'))&&go&&!e.target.closest?.('button')){go.click();e.preventDefault();}
 });
 LAD=loadLadder();
 render();

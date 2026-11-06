@@ -28,6 +28,6 @@ Web prototype (v5.0): phone portrait, plus a landscape layout for desktop (HUD m
 
 **ChatGPT originals:** `Until_the_Taps_Return.html` and `Until_the_Taps_Return_Game_Design.docx` are the first concept (v0). Kept for reference, not used by the game.
 
-**How to play (touch):** swipe the card left or right, or tap a choice. Dragging the card previews which meters move on the bars.
+**How to play (touch):** swipe the card left or right, or tap one of its two bottom halves (the left choice is on the left). Dragging the card previews which meters move on the bars.
 **Mouse:** hover a choice to preview, click to choose.
 **Keyboard:** ← / → (or 1 / 2) choose, Enter continue, F household, H this run so far, Esc or P pause, M sound on/off.

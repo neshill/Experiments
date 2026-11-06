@@ -2,6 +2,18 @@
 
 Newest first. Each version is a git tag (`v1`, …) on the last commit of that version, so `git checkout v1` gives you that build exactly (v4.2–v4.4 landed in one commit, tagged `v4.4`). The build number is the commit count, shown on the title screen as `v1 · build N`. Full design notes for every version live in `GDD.md` (its change log).
 
+## v5.0.2 — 2026-11-06 · build 13
+About half the reading. Rules, numbers and balance unchanged.
+- **Shorter cards:** every situation is one or two short sentences, every response one line.
+- **Notes:** story without a decision is a card you tap through, before the morning: the day-1 introduction (the notice, your household, the building), official notices, a new event, days that pass.
+- **Morning and night trimmed:** the morning is the day, the strip and today's delivery, event and radio; the night lost its explanation paragraph.
+
+## v5.0.1 — 2026-11-06 · build 12
+One card instead of three pieces. Rules and numbers unchanged.
+- **The choices are the card's bottom halves:** left choice on the left, right on the right, each with its label and arrow chips. Swipe or tap a half; leaning darkens it and fades the other. The tray and the hint line are gone.
+- **The result plays on the same card,** with *Tap to continue* where the choices were.
+- **Shorter labels:** 40 choice labels cut to four words or fewer.
+
 ## v5.0 — 2026-11-03 · build 10
 The new core from `PROPOSAL-v5.md`: a replayable game you climb, instead of one authored week. v4.4's week is tagged `v4.4`.
 - **One reduction per run:** the city announces it for a fixed number of days (5 at level 1, 7 at level 2) and usually extends it. Reach the end, however far it moved, and you move up a level. Hit an edge and you replay the level with a new household.
