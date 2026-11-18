@@ -69,6 +69,9 @@ const OFFICES=CHAPTER.offices.slice();
 CHAPTER_ORDER.forEach(k=>CHAPTERS[k].offices.forEach(d=>{if(d.male==null)d.male=d.title==='Mr.';d.label=d.name}));
 // look: the existing office whose art a placeholder office uses
 const lookOf=d=>d.look||d.name;
+// v34: an office with its own pictures uses them; the clerk uses her own portrait once one exists (PUPPETS, js/puppets.js).
+const sceneOf=d=>ART['office_'+d.name]?d.name:lookOf(d);
+const clerkOf=d=>(typeof PUPPETS!=='undefined'&&PUPPETS[d.name])?d.name:lookOf(d);
 // FT1P is an unforeseen complication: it happens when one line is left, at some offices. Which offices is decided at the start
 // of each chapter (S.ftPlan), so "My Friend Went Last Week" can tell you the truth about it. At least one office always does it.
 const FT1P_CHANCE=0.45;

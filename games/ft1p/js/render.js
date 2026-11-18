@@ -77,7 +77,7 @@ function drawBubble(anim){
   el.className=`bubble ${clerk?'c':'k'} ${anim?'pop':''}`;el.setAttribute('role','status');el.dataset.gb='1';
   el.innerHTML=`<b>${esc(clerk?d.clerk:L`${d.pal}, next window`)}</b>${esc(fillT(l,[]))}`;
   stage.appendChild(el);if(LANG==='sr')cyrTree(el);
-  aimBubble(stage,el,lookOf(d));
+  aimBubble(stage,el,clerkOf(d));
 }
 
 // Frame the clerk by the rule of thirds: her eyes on the upper third line, her face centred on the left third line.
@@ -104,7 +104,7 @@ const FACE_RIGHT={'Registry':0.663,'Police':0.658,'Tax Office':0.698,'Bureau':0.
 // The portrait canvas is scaled to fit its box (object-fit: contain, anchored bottom-left), so the drawn picture's width is worked out first.
 function aimBubble(stage,el,office){
   const it=stage.querySelector('.intent');if(it)stage.style.setProperty('--ib',it.offsetHeight+'px');
-  const img=stage.querySelector('.portrait'),fr=FACE_RIGHT[office];if(!img||!fr||!el.classList.contains('c'))return fitBubble(stage,el);
+  const img=stage.querySelector('.portrait'),fr=FACE_RIGHT[office]||(PUPPETS[office]&&PUPPETS[office].faceRight);if(!img||!fr||!el.classList.contains('c'))return fitBubble(stage,el);
   const nw=img.naturalWidth||img.width,nh=img.naturalHeight||img.height;
   if(!nw){img.addEventListener('load',()=>{if(el.isConnected)aimBubble(stage,el,office)},{once:true});return}
   const W=stage.clientWidth,iw=img.clientWidth,ih=img.clientHeight,k=Math.min(iw/nw,ih/nh);

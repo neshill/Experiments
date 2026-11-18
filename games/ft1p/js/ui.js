@@ -244,9 +244,9 @@ function officeView(){
   const tgtMsg=tg?{original:L`Pick an original in your hand`,copy:L`Pick a copy to notarize`,row:L`Pick a line on the checklist to tick off`,dated:C(tg.src).key==='reissue'?L`Pick a document to re-issue (dated today)`:L`Pick a document to backdate`}[tg.type]:'';
   return `<main class="withdock">
     <section class="stage hero" aria-label="${esc(d.full)}">
-      <img class="bg" src="${ART['office_'+lookOf(d)]||ART.office_Registry}" alt="">
+      <img class="bg" src="${ART['office_'+sceneOf(d)]||ART.office_Registry}" alt="">
       <div class="band" style="background:${st.color}"><b>${S.officeIdx+1}. ${esc(d.full)}</b><span>${esc(d.window)} · ${esc(clerkName(d))}</span></div>
-      ${S.tut?`<div class="portrait pupwrap ${S.tut.talk?'talk':''}" role="img" aria-label="${esc(clerkName(d))}">${PUPPY_SVG}</div>`:`<canvas class="portrait" data-office="${esc(lookOf(d))}" width="${pupW(lookOf(d))}" height="${PUP_H}" role="img" aria-label="${esc(clerkName(d))}"></canvas>`}
+      ${S.tut?`<div class="portrait pupwrap ${S.tut.talk?'talk':''}" role="img" aria-label="${esc(clerkName(d))}">${PUPPY_SVG}</div>`:`<canvas class="portrait" data-office="${esc(clerkOf(d))}" width="${pupW(clerkOf(d))}" height="${PUP_H}" role="img" aria-label="${esc(clerkName(d))}"></canvas>`}
       <div class="intent ${blockedNext()?'blocked':''}">
         <div class="txt"><span class="k">${blockedNext()?L`Next action · blocked`:L`Next action`}</span><span class="act">${esc(il.name)}</span><span class="eff">${esc(il.effect)}</span></div>
         ${blockedNext()?ICON.blocked:ICON[o.intent.type]||ICON.sigh}
@@ -366,7 +366,7 @@ function screen(){
       <button class="btn quiet" data-act="shred" data-uid="0">${L`Keep everything`}</button></div></main>`;
   case 'end':{const win=S.result==='win',d=cur();
     return `<main><div class="sheet">
-      <img class="hero-img" src="${ART['office_'+lookOf(d)]}" alt="">
+      <img class="hero-img" src="${ART['office_'+sceneOf(d)]}" alt="">
       <span class="big-stamp ${win?'':'red'}">${win?L`Pension approved`:L`Patience: 0`}</span>
       <h2>${win?L`You did it. A whole life of paperwork.`:L`You walk out of the ${esc(d.full)}.`}</h2>
       <p class="kicker">${esc(curChar().name)} · ${L`Chapter ${S.chapter+1}: ${CHAPTER.title}`}${S.reform?' · '+L`Reform ${S.reform}`:''}</p>
@@ -379,7 +379,7 @@ function screen(){
 }
 function rulesBody(){return `      <p>${L`<b>A run is a life in three chapters</b>: Youth (a student ID), First job (a salary account) and Old age (your first pension). Each chapter is four offices and a boss office. Your cards, patience, Favours and Traces carry over; between chapters years pass and your papers get older. Pick who you are before each run: Amra plays by the book, Braco calls in Favours, Dado pays in envelopes and leaves Traces. Clerks who hear about your Traces ask around, and that costs patience.`}</p>
       <p>${L`Chapter 2 in detail:`} ${L`You got the job. Your employer pays salaries only into a local bank account, and your first payday is soon. The bank wants your Employment Registration. The employment bureau wants a Tax Number. The tax office wants a Certificate of Residence. The police want a Citizenship Certificate. The registry wants your birth certificate. You have 80 patience.`}</p>
-      <div class="route">${OFFICES.map((x,i)=>`<figure><img src="${ART['ext_'+lookOf(x)]}" alt=""><figcaption>${i+1}. ${esc(x.short)}<small>${esc(x.goal)}</small></figcaption></figure>`).join('')}</div>
+      <div class="route">${OFFICES.map((x,i)=>`<figure><img src="${ART['ext_'+sceneOf(x)]}" alt=""><figcaption>${i+1}. ${esc(x.short)}<small>${esc(x.goal)}</small></figcaption></figure>`).join('')}</div>
       <ul class="rules">
         <li>${L`Your cards (your deck) are <b>documents</b> and <b>actions</b>. Each turn you draw back up to 5. At the end of every turn you choose up to 3 cards to keep; the rest are discarded. Keep none to draw a fresh 5.`}</li>
         <li>${L`There is no limit on cards per turn: play everything that helps. The clock is the <b>turns</b>: when the window closes for the day (the lights around End turn), you lose patience (5, then 8, then 11… the longer you stay at one office) and every paper gets a day older.`}</li>

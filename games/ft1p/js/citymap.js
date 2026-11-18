@@ -101,7 +101,7 @@ function mapHTML(live){
     const st=S.result==='win'||i<S.officeIdx?'done':i===S.officeIdx?'now':'ahead',reach=live&&i===S.officeIdx&&nx.includes('office');
     const isSel=reach&&sel&&sel.id==='office';
     const tag=st==='done'?T('Approved'):reach?T('Open now'):st==='now'?(S.screen==='map'?T('Next'):T('You are here')):T('Ahead');
-    const inner=`<img src="${ART['ext_'+lookOf(x)]}" alt=""><span class="co-t"><b>${i+1}. ${esc(x.short)}</b></span><i>${tag}</i>`;
+    const inner=`<img src="${ART['ext_'+sceneOf(x)]}" alt=""><span class="co-t"><b>${i+1}. ${esc(x.short)}</b></span><i>${tag}</i>`;
     nodes+=reach?`<button class="coffice reach ${isSel?'sel':''}" style="${P(officeX(i),MAP_MID)}" data-act="mapSel" data-leg="${cl}" data-id="office" aria-label="${esc(x.full)}. ${T('Go in.')}">${inner}</button>`
       :`<div class="coffice ${st}" style="${P(officeX(i),MAP_MID)}">${inner}</div>`;
   });
@@ -122,7 +122,7 @@ function mapCard(){
   const Lg=S.map[s.leg],ok=s.leg===S.officeIdx-1&&nx.includes(s.id);
   const back=`<button class="btn quiet" data-act="mapUnsel">${ok?L`Back`:L`OK`}</button>`;
   if(s.id==='office'){const o=OFFICES[s.leg+1],tram=Lg.at<0;
-    return `<div class="mapcard"><span class="mc-i office"><img src="${ART['ext_'+lookOf(o)]}" alt=""></span><div class="mc-t"><span class="kicker">${tram?L`Tram`:L`Office ${s.leg+2}`} · ${esc(clerkName(o))}</span><b>${esc(o.full)}</b><p>${esc(o.goal)}</p>
+    return `<div class="mapcard"><span class="mc-i office"><img src="${ART['ext_'+sceneOf(o)]}" alt=""></span><div class="mc-t"><span class="kicker">${tram?L`Tram`:L`Office ${s.leg+2}`} · ${esc(clerkName(o))}</span><b>${esc(o.full)}</b><p>${esc(o.goal)}</p>
       <ul class="mc-l">${moodsKnown(s.leg+1).map(k=>`<li class="${MOODS[k].good?'get':'haz'}"><b>${L`Mood`}</b>${LG(o,()=>esc(L(MOODS[k].title)+' '+L(MOODS[k].text)))}</li>`).join('')}${moodHidden(s.leg+1)?`<li class="haz"><b>${L`Mood`}</b>${L`One more you'll only see at the window.`}</li>`:''}${tram?`<li class="get"><b>${L`Get`}</b>${L`Straight there: 1 day instead of 2. Your papers stay a day fresher.`}</li><li class="haz"><b>${L`Miss`}</b>${L`No stop on the way.`}</li>`:`<li class="get"><b>${L`Takes`}</b>${L`1 day. Then the window opens.`}</li>`}</ul></div>
       <div class="mc-b">${ok?`<button class="btn primary" data-act="mapGo">${tram?L`Take the tram`:L`Go in`}</button>`:''}${back}</div></div>`}
   const n=Lg.nodes[s.id],nd=NODES[n.k],hz=n.hz&&NODES[n.hz];
@@ -168,7 +168,7 @@ function overlay(){
     return `<button class="overlay rcpt ${sheet?'sheetov':''} ${ov.drive?'drive':''}" data-act="dismiss" aria-label="${L`Dismiss`}"><div class="ov-box ${esc(ov.kind||'')}">
       <div class="rc-top">${ov.icon?`<span class="rc-ic">${ov.icon}</span>`:''}<div class="rc-tt">${ov.kicker?`<span class="kicker">${esc(ov.kicker)}</span>`:''}<b>${esc(ov.head||'')}</b></div>${ov.stamp&&!(ov.stop&&chips)?`<span class="rc-stamp ${ov.kind==='bad'?'red':''}">${esc(ov.stamp)}</span>`:''}</div>
       <p>${esc(ov.text)}</p>${chips?`<div class="rc-chips">${chips}</div>`:''}<small>${L`Tap to continue`}</small></div></button>`}
-  const face=ov.head&&ov.clerk&&S.office?(S.tut?`<span class="ovface pupface" aria-hidden="true">${PUPPY_HEAD}</span>`:`<canvas class="ovface" data-office="${esc(lookOf(cur()))}" width="168" height="186" aria-hidden="true"></canvas>`):'';
+  const face=ov.head&&ov.clerk&&S.office?(S.tut?`<span class="ovface pupface" aria-hidden="true">${PUPPY_HEAD}</span>`:`<canvas class="ovface" data-office="${esc(clerkOf(cur()))}" width="168" height="186" aria-hidden="true"></canvas>`):'';
   return `<button class="overlay" data-act="dismiss" aria-label="${L`Dismiss`}"><div class="ov-box">
     ${ov.head?`<div class="ov-top">${face}<div class="ov-head">${esc(ov.head)}</div></div>`:''}<div class="ov-stamp ${ov.violet?'violet':''}">${esc(ov.stamp)}</div><p>${esc(ov.text)}</p>${ov.hint?`<p><b>${esc(ov.hint)}</b></p>`:''}<small>${L`Tap to continue`}</small></div></button>`;
 }

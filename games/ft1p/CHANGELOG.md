@@ -2,6 +2,11 @@
 
 Newest first. Each version is a git tag (`v24`, `v22`, …) on the last commit of that version, so `git checkout v22` gives you that build exactly. The build number is the commit count, shown on the title screen as `v24 · build N`. Full design notes for every version live in the game design doc's change log.
 
+## v34 — 2026-11-18
+- **New art for everything that was a placeholder:** 8 documents (school certificate to land registry extract), the 12 cards added in v30 plus My Friend Went Last Week, 7 Vitrina keepsakes (shopping bag, Rolodex, 1984 calendar, flask, medal, Deutschmark note, bookmark), and the inside and outside of the 8 offices that used to borrow another office's look (Health Centre, Grammar School, University Admissions, Pension Fund, Health Insurance Fund, Court, Land Registry, Pension Commission). Source pictures and prompts: `assets-v33/`.
+- **The 8 new clerks have their own portraits.** For now they are still pictures that breathe but don't blink, talk or tilt their head; the layered puppets for them are a later step. Their chapter-3 colours and small talk still come from the office they used to borrow.
+- No rule changes.
+
 ## v33 — 2026-11-06
 - **Play data (opt-in).** The title screen asks once: "Help test the game?" With a yes, the game sends anonymous play events to Mixpanel plus a screen recording (session replay), so playtests show where people hesitate, mis-tap or quit without anyone writing it up. Options (title and pause menu) has a switch to turn it off or on again. Typed text (the feedback form) is never recorded.
 - Events: Session Start, Screen (time on each screen, seconds to the first tap, taps and dead taps), Tap (every button), Card Tap (including blocked taps and why), Run Start/End, Office Enter/Done, Turn End, Map Stop, Errand, Reward Pick, Tutorial steps, Feedback Sent, Dead Tap (taps on things that do nothing), JS Error, Leave/Return.
